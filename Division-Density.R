@@ -32,23 +32,22 @@ require(extrafont)
 # load population 400m H3 hexagon
 
 bd_hex <-
-  st_read("Kontur_Population_20231101.gpkg") %>%
+  st_read("Data/Kontur_Population_20231101.gpkg") %>%
   st_transform(3106)
 
 # load population by administrative boundary
 bd_admin <-
-  st_read("Bangladesh_boundaries_20230628.gpkg") %>%
+  st_read("Data/Bangladesh_boundaries_20230628.gpkg") %>%
   st_transform(3106)
 
+# Checking 'name_en' column in bd_admin data frame
+distinct_names <- bd_admin %>%
+  distinct(name_en)
+print(distinct_names)
 
-# Assuming bd_admin is a data frame or a tibble with a 'name_en' column
-#distinct_names <- bd_admin %>%
-#  distinct(name_en)
 
-# Print or View the distinct names
-#print(distinct_names)
-# Creating BD Boundary -------------------
-
+# Creating Dhaka Division Boundary 
+# Select any District or Division and use it as a filter for plot only that part of the Map
 bd_boundary <-
   bd_admin %>%
   filter(name_en == 'Dhaka Division') %>% # Filtering Dhaka Only
@@ -65,9 +64,6 @@ bd_boundary %>%
 dhaka_hex <- st_intersection(bd_hex, bd_boundary) %>% 
   st_transform(crs = 3106)
 
-
-
-# Clean the data
 
 # check the plot
 ggplot(dhaka_hex) +
@@ -92,8 +88,8 @@ bottom_right <- st_point(c(bbox[["xmax"]], bbox[["ymin"]])) %>%
   st_sfc(crs = 3106)
 top_left <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
   st_sfc(crs = 3106)
-# top_right <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
-#   st_sfc(crs = 3106)
+top_right <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
+  st_sfc(crs = 3106)
 
 
 
@@ -111,6 +107,9 @@ if(width > height) {
 }
 
 # convert to raster to convert to matrix
+# For interactively checking the 3D plot set the size low it'll help to render in real time.
+# For saving the 3D image in better Quality change it to higher.
+
 # size = 1000 * 2.5
 size = 1000 * 3.5
 
@@ -124,14 +123,14 @@ pop_matrix <- matrix(pop_raster$population,
                      nrow = floor(size * w_ratio),
                      ncol = floor(size * h_ratio))
 
+  
+  
+# Create color palette using MetBrewer 
+# color <- MetBrewer::met.brewer(name="Morgenstern", direction = 1)
 
-----------------------------------
-  
-  
-  
-  # Create color palette VanGogh3 
-color <- MetBrewer::met.brewer(name="Morgenstern", direction = 1)
-# color <- MetBrewer::met.brewer(name="Benedictus", direction = -1)
+# Create color palette using RColorBrewer
+library(RColorBrewer)
+color <- brewer.pal(n = 9, name = "BuPu")
 
 # Define the range of colors you want (for example, colors 5 to 10)
 # exclude_range <- 7
@@ -153,9 +152,9 @@ swatchplot(color)
 
 
 # plotting 3D
-library(rgl)
-# rgl::rgl.close()
-#rgl::close3d()
+# library(rgl)
+
+rgl::close3d()
 
 pop_matrix %>%
   height_shade(texture = tx) %>%
@@ -177,7 +176,7 @@ render_camera(theta = -10,
 
 
 
-outfile <- glue::glue("Dhaka_Benedictus_47.png")
+outfile <- glue::glue("Plots/Dhaka_Benedictus_47.png")
 
 {
   start_time <- Sys.time()
@@ -217,7 +216,7 @@ install.packages("extrafont")
 library(extrafont)
 font_import(pattern = "Philosopher")
 
-pop_raster <- image_read("final_plot_bd_Benedictus_3.png")
+pop_raster <- image_read("Plots/final_plot_bd_Benedictus_3.png")
 
 text_color <- darken(subset_colors[3], .4)
 swatchplot(text_color)
@@ -256,4 +255,4 @@ pop_raster %>%
                  size = 25,
                  # degrees = 0,
   ) %>%
-  image_write("Annotated_plot_bd_Benedictus_3.png", format = "png", quality = 100)
+  image_write("Plots/Annotated_plot_bd_Benedictus_3.png", format = "png", quality = 100)

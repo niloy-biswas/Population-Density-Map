@@ -31,22 +31,22 @@ require(extrafont)
 # load population 400m H3 hexagon
 
 bd_hex <-
-  st_read("Kontur_Population_20231101.gpkg") %>%
+  st_read("Data/Kontur_Population_20231101.gpkg") %>%
   st_transform(3106)
 
 # load population by administrative boundary
 bd_admin <-
-  st_read("Bangladesh_boundaries_20230628.gpkg") %>%
+  st_read("Data/Bangladesh_boundaries_20230628.gpkg") %>%
   st_transform(3106)
 
 
-# Assuming bd_admin is a data frame or a tibble with a 'name_en' column
-#distinct_names <- bd_admin %>%
-#  distinct(name_en)
+# Checking 'name_en' column in bd_admin data frame
+distinct_names <- bd_admin %>%
+  distinct(name_en)
+print(distinct_names)
 
-# Print or View the distinct names
-#print(distinct_names)
-# Creating BD Boundary -------------------
+
+# Creating BD Boundary
 
 bd_boundary <-
   bd_admin %>%
@@ -56,10 +56,7 @@ bd_boundary <-
   st_make_valid()
 
 
-
-# Clean the data
-
-# check the plot
+# check the boundary plot
 ggplot(bd_hex) +
   geom_sf(aes(fill = population),
           color = "gray66",
@@ -82,8 +79,8 @@ bottom_right <- st_point(c(bbox[["xmax"]], bbox[["ymin"]])) %>%
   st_sfc(crs = 3106)
 top_left <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
   st_sfc(crs = 3106)
-# top_right <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
-#   st_sfc(crs = 3106)
+top_right <- st_point(c(bbox[["xmin"]], bbox[["ymax"]])) %>%
+  st_sfc(crs = 3106)
 
 
 
@@ -97,11 +94,13 @@ if(width > height) {
 } else {
   h_ratio = 1.1
   w_ratio = width / height
-  
 }
 
 # convert to raster to convert to matrix
-# size = 1000 * 2.5
+# For interactively checking the 3D plot set the size low it'll help to render in real time.
+# For saving the 3D image in better Quality change it to higher.
+
+# size = 100
 size = 1000 * 3.5
 
 pop_raster <- st_rasterize(
@@ -119,16 +118,15 @@ pop_matrix <- matrix(pop_raster$population,
 
 
 
-# Create color palette VanGogh3 
+# Create color palette from MetBrewer Library
 color <- MetBrewer::met.brewer(name="Benedictus", direction = -1)
-# color <- MetBrewer::met.brewer(name="Benedictus", direction = -1)
 
-# Define the range of colors you want (for example, colors 5 to 10)
+# Define the range of colors you want to exclude (for example, colors 5 to 10)
 # exclude_range <- 7
-exclude_indices <- c(1)
+# exclude_indices <- c(1)
 
 # Create a subset of colors excluding the specified indices
-subset_colors <- color[-exclude_indices]
+# subset_colors <- color[-exclude_indices]
 
 # Create a subset of colors excluding the specified range
 # subset_colors <- color[setdiff(seq_along(color), exclude_range)]
@@ -141,10 +139,9 @@ tx <- grDevices::colorRampPalette(subset_colors, bias = 4.5)(256)
 swatchplot(tx)
 swatchplot(subset_colors)
 
-
 # plotting 3D
 
-# rgl::rgl.close()
+# Close any existing 3D plot before plotting another
 rgl::close3d()
 
 pop_matrix %>%
@@ -161,8 +158,10 @@ render_camera(theta = 0,
               fov = 100
 )
 
+# To interactively view the 3D plot
+rgl::rglwidget()
 
-outfile <- glue::glue("Dhaka_Benedictus_4.png")
+outfile <- glue::glue("Plots/Dhaka_Benedictus_4.png")
 
 {
   start_time <- Sys.time()
