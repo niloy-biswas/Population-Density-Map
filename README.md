@@ -1,6 +1,5 @@
 # Population Density Map
 
-## Description
 This repository contains scripts and data for creating population density maps, with a focus on Bangladesh. It utilizes R programming for data analysis and visualization.
 
 ## Files
@@ -16,7 +15,19 @@ This repository contains scripts and data for creating population density maps, 
 - R programming environment.
 - Relevant R libraries as per the scripts.
 
+## Bangladesh
+![Bangladesh](Plots/Bangladesh_population_density)
+
+## Dhaka
+![Bangladesh](Plots/Dhaka_population_density)
+
+## Chittagong
+![Bangladesh](Plots/Chittagong_population_density)
+
+
+## Barishal
+![Bangladesh](Plots/Barishal_population_density)
+
+
 ## Contributing
 Contributions to improve the scripts or extend the data coverage are welcome. Please fork the repository, make your changes, and submit a pull request.
-
-![Bangladesh](Plots/Annotated_plot_bd_Benedictus_3.png)
