@@ -49,3 +49,5 @@ po/*~
 rsconnect/
 
 .DS_Store
+
+.Data/kontur_population_IN_20231101.gpkg.zip
