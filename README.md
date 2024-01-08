@@ -29,22 +29,22 @@ This repository contains scripts and data for creating population density maps, 
 ![Barishal](Annotated_Small_Plots/Barishal_population_density.png)
 
 ## India
-![India](Annotated_Small_Plots/India population density Map.jpg)
+![India](Annotated_Small_Plots/India%20population%20density%20Map.jpg)
 
 ## Nepal
-![Nepal](Annotated_Small_Plots/Nepal population density Map.jpg)
+![Nepal](Annotated_Small_Plots/Nepal%20population%20density%20Map.jpg)
 
 ## Bhutan
-![Bhutan](Annotated_Small_Plots/Bhutan population density Map.jpg)
+![Bhutan](Annotated_Small_Plots/Bhutan%20population%20density%20Map.jpg)
 
 ## Sri Lanka
-![Sri Lanka](Annotated_Small_Plots/Sri_Lanka population density Map.jpg)
+![Sri Lanka](Annotated_Small_Plots/Sri_Lanka%20population%20density%20Map.jpg)
 
 ## Mayanmar
-![Sri Lanka](Annotated_Small_Plots/Mayanmar population density Map.jpg)
+![Sri Lanka](Annotated_Small_Plots/Mayanmar%20population%20density%20Map.jpg)
 
 ## Maldives
-![Maldives](Annotated_Small_Plots/MalDives population density Map.jpg)
+![Maldives](Annotated_Small_Plots/MalDives%20population%20density%20Map.jpg)
 
 
 ## Contributing
