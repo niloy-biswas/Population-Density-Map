@@ -16,17 +16,35 @@ This repository contains scripts and data for creating population density maps, 
 - Relevant R libraries as per the scripts.
 
 ## Bangladesh
-![Bangladesh](Plots/Bangladesh_population_density.png)
+![Bangladesh](Annotated_Small_Plots/Bangladesh_population_density.png)
 
 ## Dhaka
-![Dhaka](Plots/Dhaka_population_density.png)
+![Dhaka](Annotated_Small_Plots/Dhaka_population_density.png)
 
 ## Chittagong
-![Chittagong](Plots/Chittagong_population_density.png)
+![Chittagong](Annotated_Small_Plots/Chittagong_population_density.png)
 
 
 ## Barishal
-![Barishal](Plots/Barishal_population_density.png)
+![Barishal](Annotated_Small_Plots/Barishal_population_density.png)
+
+## India
+![India](Annotated_Small_Plots/India population density Map.jpg)
+
+## Nepal
+![Nepal](Annotated_Small_Plots/Nepal population density Map.jpg)
+
+## Bhutan
+![Bhutan](Annotated_Small_Plots/Bhutan population density Map.jpg)
+
+## Sri Lanka
+![Sri Lanka](Annotated_Small_Plots/Sri_Lanka population density Map.jpg)
+
+## Mayanmar
+![Sri Lanka](Annotated_Small_Plots/Mayanmar population density Map.jpg)
+
+## Maldives
+![Maldives](Annotated_Small_Plots/MalDives population density Map.jpg)
 
 
 ## Contributing
