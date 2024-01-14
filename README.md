@@ -40,8 +40,8 @@ This repository contains scripts and data for creating population density maps, 
 ## Sri Lanka
 ![Sri Lanka](Annotated_Small_Plots/Sri_Lanka%20population%20density%20Map.jpg)
 
-## Mayanmar
-![Sri Lanka](Annotated_Small_Plots/Mayanmar%20population%20density%20Map.jpg)
+## Myanmar
+![Myanmar](Annotated_Small_Plots/Myanmar%20population%20density%20Map.jpg)
 
 ## Maldives
 ![Maldives](Annotated_Small_Plots/MalDives%20population%20density%20Map.jpg)

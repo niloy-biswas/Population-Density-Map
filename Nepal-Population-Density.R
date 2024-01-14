@@ -149,7 +149,7 @@ pop_matrix %>%
           shadowdepth = 0.8)
 
 # Adjusting Camera Angle
-render_camera(theta = 180,
+render_camera(theta = 0,
               phi = 45,
               zoom = 0.50,
               fov = 100
@@ -158,7 +158,7 @@ render_camera(theta = 180,
 # To interactively view the 3D plot
 rgl::rglwidget()
 
-outfile <- glue::glue("Plots/Nepal.png")
+outfile <- glue::glue("Plots/Nepal3.png")
 
 {
   start_time <- Sys.time()
@@ -170,7 +170,7 @@ outfile <- glue::glue("Plots/Nepal.png")
   render_highquality(
     filename = outfile,
     interactive = F,
-    lightdirection = 230, #Degree
+    lightdirection = 50, #Degree
     lightaltitude = c(30, 80),
     #lightcolor = c(subset_colors[4], "white"),
     lightcolor = c("white", "white"),  # Set both lights to white
