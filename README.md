@@ -46,6 +46,15 @@ This repository contains scripts and data for creating population density maps, 
 ## Maldives
 ![Maldives](Annotated_Small_Plots/MalDives%20population%20density%20Map.jpg)
 
+## Israel
+![Israel](Annotated_Small_Plots/Israel%20population%20density%20Map.png)
+
+## Palestine
+![Palestine](Annotated_Small_Plots/Palestine%20population%20density%20Map.png)
+
+## Israel & Palestine
+![Israel & Palestine](Annotated_Small_Plots/Israel%20&%20Palestine%20population%20density%20Map.png)
+
 
 ## Contributing
 Contributions to improve the scripts or extend the data coverage are welcome. Please fork the repository, make your changes, and submit a pull request.
