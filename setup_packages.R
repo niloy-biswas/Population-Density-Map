@@ -2,7 +2,7 @@
 # Run this script once to install all required packages for BD-Population-Density.R
 
 packages <- c(
-  "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer", "rayrender", "extrafont", "magick", "tidyverse", "ggplot2", "colorspace", "showtext"
+  "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer", "rayrender", "magick", "tidyverse", "ggplot2", "colorspace", "showtext"
 )
 
 for (pkg in packages) {
@@ -15,6 +15,5 @@ for (pkg in packages) {
 if (!requireNamespace("rayrender", quietly = TRUE)) {
   install.packages("rayrender")
 }
-# Import Philosopher font for extrafont (run only once)
-library(extrafont)
-font_import(pattern = "Philosopher", prompt = FALSE)
+# No extrafont/font_import needed. 
+# For font management, add 'showtext' to the package list and use showtext::font_add_google("Philosopher") in your main script.
