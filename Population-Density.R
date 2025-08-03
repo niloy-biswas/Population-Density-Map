@@ -1,4 +1,3 @@
-
 # Before running this script, please run setup_packages.R to install all required packages.
 
 
@@ -19,8 +18,10 @@ library(rayrender)
 library(magick)
 
 # Source custom functions
-source("functions.R")
-source("create_pop_matrix.R")
+source("./scripts/helpers.R")
+source("./scripts/create_pop_matrix.R")
+source("./scripts/plot_population_3d.R")
+source("./scripts/annotate_population_map.R")
 
 # ---- Color Palette for 3D Plot ----
 palette_list <- create_palette()
@@ -31,20 +32,34 @@ palette_texture <- palette_list$tx
 # Data
 # load population 400m H3 hexagon
 
+crs <-  3106 # EPSG code for Bangladesh
+
 bd_hex <-
   st_read("Data/Kontur_Population_20231101.gpkg") %>%
-  st_transform(3106)
+  st_transform(crs)
 
 # load population by administrative boundary
 bd_admin <-
   st_read("Data/Bangladesh_boundaries_20230628.gpkg") %>%
-  st_transform(3106)
+  st_transform(crs)
 
-outfile <- "Plots/Dhaka_Benedictus_4R.png"
 
 
 pop_matrix <- create_pop_matrix(hex=bd_hex, admin =  bd_admin, crs=3106)
-plot_population_3d(pop_matrix, palette_texture, subset_colors, outfile)
+
+# BD-Population-Density.R
+bangladesh_camera <- list(theta = 0.0,
+                       phi = 70.0,
+                       zoom = 0.55,
+                       fov = 100.0)
+
+plotfile <- "Plots/Dhaka_Benedictus_4R.png"
+
+plot_population_3d(pop_matrix = pop_matrix,
+                   palette_texture =  palette_texture,
+                   subset_colors =  subset_colors,
+                   camera= bangladesh_camera, 
+                   outfile =  plotfile)
 
 annotate_population_map(
   input_path = outfile,
