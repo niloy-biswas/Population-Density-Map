@@ -1,30 +1,23 @@
-install.packages("sf",dependencies=TRUE)
-install.packages("tmap",dependencies=TRUE)
-install.packages("mapview",dependencies=TRUE)
-install.packages("stars",dependencies=TRUE)
-install.packages("rayshader",dependencies=TRUE)
-install.packages("MetBrewer",dependencies=TRUE)
-install.packages("rayrender")
-install.packages("extrafont",dependencies=TRUE)
-install.packages("magick",dependencies=TRUE)
+
+# Before running this script, please run setup_packages.R to install all required packages.
 
 
 options(rgl.useNULL = FALSE)
 
 # Packages
 
-require(tidyverse)
-require(sf)
-require(tmap)
-require(ggplot2)
-require(mapview)
-require(stars)
-require(rayshader)
-require(MetBrewer)
-require(colorspace)
-require(rayrender)
-require(magick)
-require(extrafont)
+library(tidyverse)
+library(sf)
+library(tmap)
+library(ggplot2)
+library(mapview)
+library(stars)
+library(rayshader)
+library(MetBrewer)
+library(colorspace)
+library(rayrender)
+library(magick)
+library(extrafont)
 
 
 # Data
@@ -194,12 +187,8 @@ outfile <- glue::glue("Plots/Dhaka_Benedictus_4.png")
 
 
 # ---------------------------Anotate
-# Install and load the showtext package
-install.packages("showtext")
-library(showtext)
-install.packages("extrafont")
 library(extrafont)
-font_import(pattern = "Philosopher")
+library(showtext)
 
 pop_raster <- image_read("final_plot_bd_Benedictus_3.png")
 
@@ -210,8 +199,6 @@ swatchplot(text_color)
 # Automatically enable font support
 showtext_auto()
 
-# Download and register the Philosopher font from Google Fonts
-font_add_google("Philosopher", regular = "400", bold = "700")
 
 pop_raster %>%
   image_annotate("Bangladesh",
