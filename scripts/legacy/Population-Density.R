@@ -35,12 +35,12 @@ palette_texture <- palette_list$tx
 crs <-  3106 # EPSG code for Bangladesh
 
 bd_hex <-
-  st_read("Data/Kontur_Population_20231101.gpkg") %>%
+  st_read("data/Kontur_Population_20231101.gpkg") %>%
   st_transform(crs)
 
 # load population by administrative boundary
 bd_admin <-
-  st_read("Data/Bangladesh_boundaries_20230628.gpkg") %>%
+  st_read("data/Bangladesh_boundaries_20230628.gpkg") %>%
   st_transform(crs)
 
 
@@ -53,7 +53,7 @@ bangladesh_camera <- list(theta = 0.0,
                        zoom = 0.55,
                        fov = 100.0)
 
-plotfile <- "Plots/Dhaka_Benedictus_4R.png"
+plotfile <- "output/plots/Dhaka_Benedictus_4R.png"
 
 plot_population_3d(pop_matrix = pop_matrix,
                    palette_texture =  palette_texture,
