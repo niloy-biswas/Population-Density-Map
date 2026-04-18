@@ -132,6 +132,10 @@ See the comment block at the top of `scripts/countries.R` for what each paramete
 
 ![Israel & Palestine](output/annotated/Israel%20&%20Palestine%20population%20density%20Map.png)
 
+## Finland
+
+![Finland](output/annotated/Finland_population_density.png)
+
 ## Contributing
 
 Fork the repo, add your country config to `scripts/countries.R`, and submit a pull request.
