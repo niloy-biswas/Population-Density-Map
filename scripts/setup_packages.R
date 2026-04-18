@@ -1,8 +1,10 @@
 # setup_packages.R
-# Run this script once to install all required packages for BD-Population-Density.R
+# Run once to install all required packages.
 
 packages <- c(
-  "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer", "rayrender", "magick", "tidyverse", "ggplot2", "colorspace", "showtext"
+  "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer",
+  "rayrender", "magick", "tidyverse", "ggplot2", "colorspace",
+  "showtext", "RColorBrewer", "crayon", "glue", "png", "raster"
 )
 
 for (pkg in packages) {
@@ -11,9 +13,7 @@ for (pkg in packages) {
   }
 }
 
-# rayrender sometimes needs to be installed separately
+# rayrender sometimes needs separate install
 if (!requireNamespace("rayrender", quietly = TRUE)) {
   install.packages("rayrender")
 }
-# No extrafont/font_import needed. 
-# For font management, add 'showtext' to the package list and use showtext::font_add_google("Philosopher") in your main script.
