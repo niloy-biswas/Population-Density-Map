@@ -16,44 +16,44 @@ This repository contains scripts and data for creating population density maps, 
 - Relevant R libraries as per the scripts.
 
 ## Bangladesh
-![Bangladesh](Annotated_Small_Plots/Bangladesh_population_density.png)
+![Bangladesh](output/annotated/Bangladesh_population_density.png)
 
 ## Dhaka
-![Dhaka](Annotated_Small_Plots/Dhaka_population_density.png)
+![Dhaka](output/annotated/Dhaka_population_density.png)
 
 ## Chittagong
-![Chittagong](Annotated_Small_Plots/Chittagong_population_density.png)
+![Chittagong](output/annotated/Chittagong_population_density.png)
 
 
 ## Barishal
-![Barishal](Annotated_Small_Plots/Barishal_population_density.png)
+![Barishal](output/annotated/Barishal_population_density.png)
 
 ## India
-![India](Annotated_Small_Plots/India%20population%20density%20Map.jpg)
+![India](output/annotated/India%20population%20density%20Map.jpg)
 
 ## Nepal
-![Nepal](Annotated_Small_Plots/Nepal%20population%20density%20Map.jpg)
+![Nepal](output/annotated/Nepal%20population%20density%20Map.jpg)
 
 ## Bhutan
-![Bhutan](Annotated_Small_Plots/Bhutan%20population%20density%20Map.jpg)
+![Bhutan](output/annotated/Bhutan%20population%20density%20Map.jpg)
 
 ## Sri Lanka
-![Sri Lanka](Annotated_Small_Plots/Sri_Lanka%20population%20density%20Map.jpg)
+![Sri Lanka](output/annotated/Sri_Lanka%20population%20density%20Map.jpg)
 
 ## Myanmar
-![Myanmar](Annotated_Small_Plots/Myanmar%20population%20density%20Map.jpg)
+![Myanmar](output/annotated/Myanmar%20population%20density%20Map.jpg)
 
 ## Maldives
-![Maldives](Annotated_Small_Plots/MalDives%20population%20density%20Map.jpg)
+![Maldives](output/annotated/MalDives%20population%20density%20Map.jpg)
 
 ## Israel
-![Israel](Annotated_Small_Plots/Israel%20population%20density%20Map.png)
+![Israel](output/annotated/Israel%20population%20density%20Map.png)
 
 ## Palestine
-![Palestine](Annotated_Small_Plots/Palestine%20population%20density%20Map.png)
+![Palestine](output/annotated/Palestine%20population%20density%20Map.png)
 
 ## Israel & Palestine
-![Israel & Palestine](Annotated_Small_Plots/Israel%20&%20Palestine%20population%20density%20Map.png)
+![Israel & Palestine](output/annotated/Israel%20&%20Palestine%20population%20density%20Map.png)
 
 
 ## Contributing
