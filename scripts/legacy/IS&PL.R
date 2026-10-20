@@ -20,22 +20,22 @@ require(extrafont)
 # load population 400m H3 hexagon
 
 ps_hex <-
-  st_read("Data/kontur_population_PS_20231101.gpkg") %>%
+  st_read("data/kontur_population_PS_20231101.gpkg") %>%
   st_transform(3106)
 
 # load population by administrative boundary
 ps_admin <-
-  st_read("Data/kontur_topology_boundaries_PS_20230628.gpkg") %>%
+  st_read("data/kontur_topology_boundaries_PS_20230628.gpkg") %>%
   st_transform(3106)
 
 
 il_hex <-
-  st_read("Data/kontur_population_IL_20231101.gpkg") %>%
+  st_read("data/kontur_population_IL_20231101.gpkg") %>%
   st_transform(3106)
 
 # load population by administrative boundary
 il_admin <-
-  st_read("Data/kontur_topology_boundaries_IL_20230628.gpkg") %>%
+  st_read("data/kontur_topology_boundaries_IL_20230628.gpkg") %>%
   st_transform(3106)
 
 
@@ -46,14 +46,14 @@ library(dplyr) # for the pipe operator %>%
 merged_hex <- rbind(il_hex, ps_hex)
 
 # Writing the merged data to a new GeoPackage
-st_write(merged_hex, "Data/merged_population_20231101.gpkg")
+st_write(merged_hex, "data/merged_population_20231101.gpkg")
 
 
 # Merging the two sf objects
 merged_admin <- rbind(il_admin, ps_admin)
 
 # Writing the merged data to a new GeoPackage
-st_write(merged_admin, "Data/kontur_boundaries_IL&PS_20230628.gpkg")
+st_write(merged_admin, "data/kontur_boundaries_IL&PS_20230628.gpkg")
 
 
 

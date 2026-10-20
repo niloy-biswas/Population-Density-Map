@@ -31,12 +31,12 @@ require(extrafont)
 # load population 400m H3 hexagon
 
 il_hex <-
-  st_read("Data/kontur_population_IL_20231101.gpkg") %>%
+  st_read("data/kontur_population_IL_20231101.gpkg") %>%
   st_transform(3106)
 
 # load population by administrative boundary
 il_admin <-
-  st_read("Data/kontur_topology_boundaries_IL_20230628.gpkg") %>%
+  st_read("data/kontur_topology_boundaries_IL_20230628.gpkg") %>%
   st_transform(3106)
 
 
