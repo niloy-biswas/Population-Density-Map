@@ -32,7 +32,7 @@ scripts/
 data/                         # Kontur .gpkg inputs (~218 MB, committed). Lowercase `data/`
 output/                       # Rendered images (README gallery). Committed
 web/
-  index.html, app.js, style.css, og.jpg
+  index.html, app.js, style.css, og.jpg, apple-touch-icon.png
   data/countries.json         # GENERATED: picker index
   data/<key>/hexes.json       # GENERATED: hexagons, palette, views, labels, places
   data/<key>/boundaries.geojson  # GENERATED: region/district outlines
@@ -112,6 +112,7 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 - **deck.gl `CollisionFilterExtension` hides every label in interleaved mode.** It was tried and reverted, which is why the Maldives labels overlap at the whole-country view.
 - **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height. Use `renderOverlays()`.
 - **`map.cameraForBounds()` factors in the current pitch,** so presets framed inconsistently. `cameraFor()` replaces it; don't switch back.
+- **`web/index.html` names countries by hand** in the meta descriptions and the JSON-LD block (the exporter doesn't touch it). Update them when adding a country.
 - **District labels** appear at the country's default zoom + 1.2 (a relative threshold), not at a fixed zoom.
 - **Case sensitivity:** the folder is `data/` (lowercase). It was once tracked as `Data/` and broke Linux/CI. Keep paths lowercase.
 - **Git LFS:** `data/kontur_boundaries_IN_20230628.gpkg.zip` is an LFS pointer, and git-lfs may not be installed. India's population file isn't in `data/` at all, so India can't be rendered or exported.
