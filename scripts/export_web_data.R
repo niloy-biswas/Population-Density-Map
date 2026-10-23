@@ -34,6 +34,8 @@ source("./scripts/countries.R")
 
 web_data_dir <- "web/data"
 simplify_metres <- 150
+# Decimal places in boundaries.geojson (4 ≈ 11 m).
+coordinate_precision <- 4
 
 # Defaults for each country's `web` list in countries.R.
 # levels: Kontur admin_level per tier (subdistrict levels are tried in order,
@@ -52,7 +54,9 @@ web_settings <- function(cfg) {
   list(
     levels  = modifyList(web_defaults$levels, as.list(web$levels)),
     views   = web$views,
-    palette = if (is.null(web$palette)) web_defaults$palette else web$palette
+    palette = if (is.null(web$palette)) web_defaults$palette else web$palette,
+    crop    = web$crop,
+    bounds  = web$bounds
   )
 }
 
@@ -61,6 +65,42 @@ slugify <- function(x) gsub("(^-|-$)", "", gsub("[^a-z0-9]+", "-", tolower(x)))
 bbox_vec <- function(geom) {
   b <- st_bbox(st_transform(geom, 4326))
   round(unname(c(b["xmin"], b["ymin"], b["xmax"], b["ymax"])), 3)
+}
+
+# Admin polygons at level 2 (the country) and the tiers in `levels` only:
+# the full files run to hundreds of MB (France: 500), mostly finer levels
+# the explorer never uses.
+read_admin <- function(file, levels) {
+  layer <- st_layers(file)$name[1]
+  wanted <- paste0("'", unique(c("2", unlist(levels))), "'", collapse = ", ")
+  st_read(file, quiet = TRUE, query = sprintf(
+    'SELECT * FROM "%s" WHERE CAST(admin_level AS TEXT) IN (%s)', layer, wanted
+  ))
+}
+
+# Lon/lat box (west, south, east, north) as a polygon in `crs`.
+bounds_box <- function(bounds, crs) {
+  box <- st_bbox(setNames(bounds, c("xmin", "ymin", "xmax", "ymax")),
+                 crs = 4326)
+  st_transform(st_as_sfc(box), crs)
+}
+
+# Hexagons (by centroid, so none are cut in half) and admin polygons inside
+# `bounds`, for countries whose files reach far beyond the area worth mapping:
+# France's overseas territories span the globe. Planar maths: s2 rejects some
+# Kontur polygons, and the box edges should follow lon/lat lines anyway.
+crop_country <- function(hex, admin, bounds) {
+  old <- suppressMessages(sf_use_s2(FALSE))
+  on.exit(suppressMessages(sf_use_s2(old)))
+  centres <- suppressWarnings(st_centroid(st_geometry(hex)))
+  inside <- st_intersects(centres, bounds_box(bounds, st_crs(hex)))
+  hex <- hex[lengths(inside) > 0, ]
+  box <- bounds_box(bounds, st_crs(admin))
+  admin <- admin[lengths(suppressMessages(st_intersects(admin, box))) > 0, ]
+  admin <- suppressWarnings(suppressMessages(
+    st_crop(st_make_valid(admin), st_bbox(box))
+  ))
+  list(hex = hex, admin = admin)
 }
 
 # English name where Kontur has one, else the local name. Some files (the
@@ -93,8 +133,14 @@ outlined_areas <- function(admin, levels) {
 # Country first, then extra presets from countries.R, then regions in
 # alphabetical order.
 build_views <- function(cfg, web, admin) {
+  # No st_union() first: same box, but slow for files with 10k+ polygons.
+  bounds <- if (is.null(web$bounds)) {
+    bbox_vec(st_geometry(admin))
+  } else {
+    round(web$bounds, 3)
+  }
   country <- list(list(id = slugify(cfg$name), label = cfg$name,
-                       bounds = bbox_vec(st_union(admin))))
+                       bounds = bounds))
 
   extra <- lapply(web$views, function(v) {
     list(id = v$id, label = v$label, bounds = round(v$bounds, 3))
@@ -107,7 +153,13 @@ build_views <- function(cfg, web, admin) {
          bounds = bbox_vec(regions[i, ]))
   })
 
-  c(country, extra, region_views)
+  views <- c(country, extra, region_views)
+  # Ids are URL hashes, so a preset can't share a region's slug.
+  ids <- vapply(views, `[[`, "", "id")
+  if (anyDuplicated(ids)) {
+    stop(cfg$name, ": duplicate view id ", ids[anyDuplicated(ids)])
+  }
+  views
 }
 
 # Kontur admin polygons include maritime zones, so outlines and labels are
@@ -184,17 +236,43 @@ build_places <- function(hex, admin, levels) {
   list(place = as.integer(place), places = places)
 }
 
+# Drop line parts that collapse to one point at the GeoJSON's coordinate
+# precision: GDAL writes those as points inside a GeometryCollection, which
+# deck.gl's GeoJsonLayer rejects, taking every outline in the file with it.
+# Points and collections from the clipping become empty lines; untouched
+# geometries are returned as they are.
+drop_specks <- function(geom, precision) {
+  keep <- function(m) {
+    nrow(unique(round(m[, 1:2, drop = FALSE], precision))) > 1
+  }
+  st_sfc(lapply(geom, function(g) {
+    parts <- switch(class(g)[2],
+                    LINESTRING = list(unclass(g)),
+                    MULTILINESTRING = unclass(g),
+                    list())
+    kept <- Filter(keep, parts)
+    if (length(kept) == length(parts) && length(parts) > 0) return(g)
+    if (length(kept) == 0) return(st_linestring())
+    st_multilinestring(kept)
+  }), crs = st_crs(geom))
+}
+
 write_boundaries <- function(areas, land, out_file) {
   # Outlines only, clipped to land so maritime zone edges don't cross the sea.
   areas <- st_simplify(areas, preserveTopology = TRUE,
                        dTolerance = simplify_metres)
   lines <- suppressWarnings(st_intersection(st_boundary(areas), land))
-  lines <- st_transform(lines[!st_is_empty(lines), ], 4326)
+  lines <- st_transform(lines, 4326)
+  st_geometry(lines) <- drop_specks(st_geometry(lines), coordinate_precision)
+  lines <- lines[!st_is_empty(lines), ]
   out <- st_sf(name = lines$label, kind = lines$kind,
                geometry = st_geometry(lines))
   if (file.exists(out_file)) file.remove(out_file)
   st_write(out, out_file, driver = "GeoJSON", quiet = TRUE,
-           layer_options = c("COORDINATE_PRECISION=4", "RFC7946=YES"))
+           layer_options = c(
+             paste0("COORDINATE_PRECISION=", coordinate_precision),
+             "RFC7946=YES"
+           ))
 }
 
 # Index of exported countries for the picker, rebuilt from the folders so a
@@ -218,12 +296,17 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
   if (is.null(cfg)) stop("Unknown country key: ", country_key)
   web <- web_settings(cfg)
 
-  admin <- st_read(cfg$admin_file, quiet = TRUE)
+  admin <- read_admin(cfg$admin_file, web$levels)
   hex <- st_read(cfg$hex_file, quiet = TRUE)
   if (!all(c("h3", "population") %in% names(hex))) {
     stop(cfg$hex_file, " has no h3/population columns")
   }
   hex <- hex[hex$population > 0, ]
+  if (!is.null(web$crop)) {
+    cropped <- crop_country(hex, admin, web$crop)
+    hex <- cropped$hex
+    admin <- cropped$admin
+  }
   # Tallest columns last, so they draw over their neighbours at low pitch.
   hex <- hex[order(hex$population), ]
 
