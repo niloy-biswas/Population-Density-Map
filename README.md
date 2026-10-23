@@ -174,7 +174,7 @@ Each run rebuilds `countries.json` from the folders in `web/data/`, so search al
    )
    ```
 
-   `web` also takes `views` (extra camera presets, like Bangladesh's "Dhaka city"), `palette` (column colours) and `crop` (a lon/lat box; hexagons and areas outside it are dropped). France, the Netherlands, Norway and the UK use `crop` to leave out overseas territories, Svalbard and Rockall, which would otherwise stretch the country view across oceans. `bounds` sets only the first (country) view and keeps everything else: Spain, Portugal and Japan use it so the Canaries, Azores, Madeira and Okinawa stay on the map (with their own region buttons) without shrinking the mainland. See the comment at the top of `countries.R`.
+   `web` also takes `views` (extra camera presets, like Bangladesh's "Dhaka city"), `palette` (the country's default column colours; visitors can also switch to the Bangladesh, India or Nepal render palettes from the map's layers button) and `crop` (a lon/lat box; hexagons and areas outside it are dropped). France, the Netherlands, Norway and the UK use `crop` to leave out overseas territories, Svalbard and Rockall, which would otherwise stretch the country view across oceans. `bounds` sets only the first (country) view and keeps everything else: Spain, Portugal and Japan use it so the Canaries, Azores, Madeira and Okinawa stay on the map (with their own region buttons) without shrinking the mainland. See the comment at the top of `countries.R`.
 
 3. Export it, preview, and push:
 
