@@ -38,7 +38,8 @@ web/
   app.js, style.css, og.jpg, apple-touch-icon.png
   index.html                  # GENERATED: landing page ("population density map", shows Bangladesh)
   <slug>/index.html           # GENERATED: one page per country (slug = key with hyphens: sri-lanka)
-  data/countries.json         # GENERATED: search index + summary facts (countries, views, top regions)
+  sitemap.xml                 # GENERATED: every page + the day its content last changed
+  data/countries.json         # GENERATED: search index + summary facts (countries, views, per km², top regions)
   data/<key>/hexes.json       # GENERATED: hexagons, palette, views, labels, places
   data/<key>/boundaries.geojson  # GENERATED: region/district outlines
 .github/workflows/pages.yml   # Deploys web/ only, on push to main touching web/**
@@ -79,7 +80,8 @@ web = list(
   views   = list(list(id = "dhaka-city", label = "Dhaka city", bounds = c(w, s, e, n))),
   palette = c("#b5e3e6", ...),  # low → high; default is the shared teal ramp
   crop    = c(w, s, e, n),       # drop hexagons/areas outside (France, NL, Norway, UK)
-  bounds  = c(w, s, e, n)        # country view only; islands kept (Spain, Portugal, Japan)
+  bounds  = c(w, s, e, n),       # country view only; islands kept (Spain, Portugal, Japan)
+  land_km2 = 735                 # land area override for people per km² (Maldives, Singapore)
 )
 ```
 
@@ -96,7 +98,7 @@ web = list(
 - **UI (Google Maps style):** top-left column (`.panel`, used by `framePadding()`) holds the search combobox, a scrolling chip row of the country's views, and a summary card with the legend. The card's chevron hides chips + card (`.panel__details`) behind a "<Country> · N people" pill; open by default, remembered in `localStorage` (`pdm-panel-collapsed`). The hamburger opens an About popover. Bottom-right, `.view-ctrl` is added as a MapLibre control above zoom/compass: a layers popover (column height, tilt, rotate, reset) and a 3D/flat toggle. Defaults: height 1.5×, every view opens at `DEFAULT_PITCH` = 30°.
 - **Search** (`buildSearchIndex`, `searchPlaces`): matches countries + manifest views, accent-insensitive; ranks name-start, then word-start, then mid-word, then country > city > region, then shorter names. Until the visitor types, the box shows the current place and the list shows all countries (it doubles as the country dropdown). Picking a view of another country calls `loadCountry(key, viewId)`.
 - **URLs:** `<slug>/` or `<slug>/#<viewId>`, one real page per country so search engines index each (they ignore hashes). `ROOT` (the folder of `app.js`) resolves `data/` and links from any page, so the same JS runs at `/` locally and `/Population-Density-Map/` live. The landing page shows `DEFAULT_COUNTRY` (Bangladesh, matching `og.jpg`; first country if it is ever removed) and keeps its URL and title until the visitor goes elsewhere; `syncUrl()` then `replaceState`s to the country page and sets its title and canonical. Old `#<key>` / `#<key>/<viewId>` links on the landing page redirect. Don't rely on manifest order: it is alphabetical, so Austria became the landing page by accident once.
-- **Country pages** share one template; the exporter fills in title, description, canonical, JSON-LD, the h1 and stat, and a closed `<details>` "<Country> in numbers" summary (from `countries.json` facts). `renderSummary()` in `app.js` rebuilds that summary on country switch, so keep it in step with `summary_html()` in the exporter, and the page title with `pageTitle()`. The About menu's country list is plain `<a>` links (crawlable); `bindCountryLinks()` turns clicks into in-place switches and makes the hrefs absolute.
+- **Country pages** share one template; the exporter fills in title, description, canonical, JSON-LD (`WebApplication`, plus a `BreadcrumbList` on country pages), the h1 (eyebrow + country name, so keep the eyebrow visible on phones: Google indexes the mobile layout) and stat, and a closed `<details>` "<Country> in numbers" summary (from `countries.json` facts). `renderSummary()` in `app.js` rebuilds that summary on country switch, so keep it in step with `summary_html()` in the exporter, and the page title with `pageTitle()`. The About menu's country list is plain `<a>` links (crawlable); `bindCountryLinks()` turns clicks into in-place switches and makes the hrefs absolute.
 - **Layers** (deck `MapboxOverlay`, `interleaved: true`):
   - `H3HexagonLayer` columns, inserted `beforeId` the basemap's first symbol layer so city names stay on top
   - `GeoJsonLayer` outlines, drawn with `depthCompare: 'always'` so they show over the columns, inserted `beforeId` our label layers
@@ -115,8 +117,10 @@ Per country: read hexagons + admin polygons (`read_admin()` loads only level 2 a
 2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (1 km raster, 1.5 km buffer, holes filled), in EPSG:3857.
 3. **`outlined_areas()`** gives the region + district polygons, tagged `kind = "region" | "district"`. Outlines and labels are clipped to the land mask.
 4. **`build_views()`** produces the country, then `web$views`, then regions alphabetically.
-5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search and `country_facts()` (densest hexagon's place, top 5 regions, or districts if there are no named regions) for the summary.
-6. **`write_pages()`** fills `scripts/templates/explorer.html` into `web/index.html` and `web/<slug>/index.html`, and removes page folders of countries no longer exported. To remove a country, delete its `web/data/` folder and re-run any export.
+5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search and `country_facts()` for the summary and stat line: people per km² of land, the densest hexagon's place, top 5 regions (districts if there are no named regions). Land area comes from `land_area_km2()`: Natural Earth 1:50m matched by **name** (Bangladesh's and Sri Lanka's file names carry no ISO code; "Israel & Palestine" sums both), cut to `web$crop`. It is within a few % of official figures except for microstates, where 1:50m drops most of the land; those set `web$land_km2`. Ukraine comes out ~6% under the official figure (Natural Earth likely leaves out Crimea), left as is. Check a new country's figure against its official land area.
+6. **`write_pages()`** fills `scripts/templates/explorer.html` into `web/index.html` and `web/<slug>/index.html`, writes `web/sitemap.xml`, and removes page folders of countries no longer exported. To remove a country, delete its `web/data/` folder and re-run any export.
+   - `write_page()` only rewrites a page whose content changed, and `write_sitemap()` keeps the previous `lastmod` for unchanged pages, so re-running the export doesn't redate everything. Don't switch it to "today" for all pages: search engines stop trusting a `lastmod` that always changes.
+   - The sitemap lives under the project path, so search engines only find it via Search Console or a `Sitemap:` line in niloy.tech's `robots.txt` (the user-site repo, not this one).
 
 The JS only knows `kind`, never admin-level numbers. Keep it that way.
 

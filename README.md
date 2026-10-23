@@ -34,6 +34,7 @@ Population/
 │   ├── app.js, style.css
 │   ├── index.html         # Landing page (generated)
 │   ├── <country>/         # One page per country, e.g. sri-lanka/ (generated)
+│   ├── sitemap.xml        # Every page, for search engines (generated)
 │   └── data/
 │       ├── countries.json # Search index: countries + their views (generated)
 │       └── <country>/     # hexes.json + boundaries.geojson (generated)
