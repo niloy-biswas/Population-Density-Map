@@ -45,6 +45,9 @@
     city: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
     region: '<path d="M9 4L3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4zM9 4v14M15 6v14"/>',
   };
+  // Opened by the bare link and unknown hashes. Explicit, because countries.json is alphabetical and a
+  // new country (Austria) once quietly took over the landing page. Matches og.jpg.
+  const DEFAULT_COUNTRY = 'bangladesh';
   const SITE_TITLE = 'Niloy Biswas';
   const FALLBACK = 'The rendered maps are on <a href="https://github.com/niloy-biswas/Population-Density-Map">GitHub</a>.';
 
@@ -138,7 +141,9 @@
 
   function parseHash() {
     const [key, viewId] = decodeURIComponent(location.hash.slice(1)).split('/');
-    return { key: countries.some((c) => c.key === key) ? key : countries[0].key, viewId };
+    const known = (k) => countries.some((c) => c.key === k);
+    const fallback = known(DEFAULT_COUNTRY) ? DEFAULT_COUNTRY : countries[0].key;
+    return { key: known(key) ? key : fallback, viewId };
   }
 
   // Swap in another country's data, labels and presets; the map itself stays.
