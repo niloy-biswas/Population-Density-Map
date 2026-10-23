@@ -1,9 +1,21 @@
 [
   {
+    "key": "austria",
+    "name": "Austria",
+    "total": 9009078,
+    "hexagons": 86915
+  },
+  {
     "key": "bangladesh",
     "name": "Bangladesh",
     "total": 173889934,
     "hexagons": 148387
+  },
+  {
+    "key": "belgium",
+    "name": "Belgium",
+    "total": 11787187,
+    "hexagons": 40991
   },
   {
     "key": "bhutan",
@@ -12,10 +24,52 @@
     "hexagons": 9077
   },
   {
+    "key": "czechia",
+    "name": "Czechia",
+    "total": 10548451,
+    "hexagons": 80168
+  },
+  {
+    "key": "denmark",
+    "name": "Denmark",
+    "total": 5912004,
+    "hexagons": 67267
+  },
+  {
     "key": "finland",
     "name": "Finland",
     "total": 5550413,
     "hexagons": 261427
+  },
+  {
+    "key": "france",
+    "name": "France",
+    "total": 64954611,
+    "hexagons": 596104
+  },
+  {
+    "key": "germany",
+    "name": "Germany",
+    "total": 83526777,
+    "hexagons": 363550
+  },
+  {
+    "key": "greece",
+    "name": "Greece",
+    "total": 10347613,
+    "hexagons": 108125
+  },
+  {
+    "key": "hungary",
+    "name": "Hungary",
+    "total": 9631859,
+    "hexagons": 60772
+  },
+  {
+    "key": "ireland",
+    "name": "Ireland",
+    "total": 5068093,
+    "hexagons": 70410
   },
   {
     "key": "israel",
@@ -28,6 +82,18 @@
     "name": "Israel & Palestine",
     "total": 14930171,
     "hexagons": 18151
+  },
+  {
+    "key": "italy",
+    "name": "Italy",
+    "total": 58913879,
+    "hexagons": 312901
+  },
+  {
+    "key": "japan",
+    "name": "Japan",
+    "total": 123294123,
+    "hexagons": 229211
   },
   {
     "key": "maldives",
@@ -48,15 +114,93 @@
     "hexagons": 105556
   },
   {
+    "key": "netherlands",
+    "name": "Netherlands",
+    "total": 17476877,
+    "hexagons": 50287
+  },
+  {
+    "key": "nigeria",
+    "name": "Nigeria",
+    "total": 224135234,
+    "hexagons": 637762
+  },
+  {
+    "key": "norway",
+    "name": "Norway",
+    "total": 5472839,
+    "hexagons": 185959
+  },
+  {
+    "key": "pakistan",
+    "name": "Pakistan",
+    "total": 241582115,
+    "hexagons": 380718
+  },
+  {
     "key": "palestine",
     "name": "Palestine",
     "total": 5550127,
     "hexagons": 6018
   },
   {
+    "key": "poland",
+    "name": "Poland",
+    "total": 41080699,
+    "hexagons": 320640
+  },
+  {
+    "key": "portugal",
+    "name": "Portugal",
+    "total": 10359135,
+    "hexagons": 88728
+  },
+  {
+    "key": "romania",
+    "name": "Romania",
+    "total": 19961091,
+    "hexagons": 137471
+  },
+  {
+    "key": "singapore",
+    "name": "Singapore",
+    "total": 5995474,
+    "hexagons": 1271
+  },
+  {
+    "key": "spain",
+    "name": "Spain",
+    "total": 47551642,
+    "hexagons": 286702
+  },
+  {
     "key": "sri_lanka",
     "name": "Sri Lanka",
     "total": 21894168,
     "hexagons": 46713
+  },
+  {
+    "key": "sweden",
+    "name": "Sweden",
+    "total": 10617084,
+    "hexagons": 286945
+  },
+  {
+    "key": "switzerland",
+    "name": "Switzerland",
+    "total": 8922173,
+    "hexagons": 41959
+  },
+  {
+    "key": "ukraine",
+    "name": "Ukraine",
+    "total": 37863034,
+    "hexagons": 297089
+  },
+  {
+    "key": "united_kingdom",
+    "name": "United Kingdom",
+    "total": 67743873,
+    "hexagons": 224522
   }
 ]
