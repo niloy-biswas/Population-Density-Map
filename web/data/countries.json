@@ -4,5 +4,59 @@
     "name": "Bangladesh",
     "total": 173889934,
     "hexagons": 148387
+  },
+  {
+    "key": "bhutan",
+    "name": "Bhutan",
+    "total": 876550,
+    "hexagons": 9077
+  },
+  {
+    "key": "finland",
+    "name": "Finland",
+    "total": 5550413,
+    "hexagons": 261427
+  },
+  {
+    "key": "israel",
+    "name": "Israel",
+    "total": 9380044,
+    "hexagons": 12133
+  },
+  {
+    "key": "israel_palestine",
+    "name": "Israel & Palestine",
+    "total": 14930171,
+    "hexagons": 18151
+  },
+  {
+    "key": "maldives",
+    "name": "Maldives",
+    "total": 518768,
+    "hexagons": 1019
+  },
+  {
+    "key": "myanmar",
+    "name": "Myanmar",
+    "total": 54795072,
+    "hexagons": 212821
+  },
+  {
+    "key": "nepal",
+    "name": "Nepal",
+    "total": 31353925,
+    "hexagons": 105556
+  },
+  {
+    "key": "palestine",
+    "name": "Palestine",
+    "total": 5550127,
+    "hexagons": 6018
+  },
+  {
+    "key": "sri_lanka",
+    "name": "Sri Lanka",
+    "total": 21894168,
+    "hexagons": 46713
   }
 ]
