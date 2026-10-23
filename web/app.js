@@ -137,7 +137,7 @@
     el.stat.textContent = `${fmtShort.format(data.total)} people · ${fmtShort.format(hexes.length)} hexagons`;
     el.country.value = data.key;
     el.map.setAttribute('aria-label', `Interactive 3D population density map of ${data.name}`);
-    document.title = `${data.name} Population Density in 3D | ${SITE_TITLE}`;
+    document.title = `${data.name} 3D Population Density Map | ${SITE_TITLE}`;
     renderViews();
     renderLegend(data.palette);
   }
