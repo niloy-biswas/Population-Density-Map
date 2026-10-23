@@ -20,12 +20,14 @@
 #     Region and district outlines (property "kind"), simplified and clipped
 #     to land.
 #
-# Then rebuilds web/data/countries.json, the index behind the country picker,
-# from every exported country folder.
+# Then rebuilds web/data/countries.json, the index behind the search box
+# (countries plus their city and region views), from every exported country
+# folder.
 #
 # Usage (from repo root):
 #   Rscript scripts/export_web_data.R bangladesh
 #   Rscript scripts/export_web_data.R bangladesh nepal
+#   Rscript scripts/export_web_data.R --manifest   # countries.json only
 
 library(sf)
 library(jsonlite)
@@ -275,14 +277,21 @@ write_boundaries <- function(areas, land, out_file) {
            ))
 }
 
-# Index of exported countries for the picker, rebuilt from the folders so a
-# deleted folder drops out on the next export.
+# Index of exported countries for the search box, rebuilt from the folders so
+# a deleted folder drops out on the next export. Each country lists its views
+# (minus the country itself) so search can reach a city or region without
+# fetching every hexes.json; presets from countries.R are tagged "city".
 write_manifest <- function(data_dir = web_data_dir) {
   files <- Sys.glob(file.path(data_dir, "*", "hexes.json"))
   entries <- lapply(files, function(f) {
     d <- fromJSON(f, simplifyVector = FALSE)
+    presets <- vapply(countries[[d$key]]$web$views, `[[`, "", "id")
+    views <- lapply(d$views[-1], function(v) {
+      list(id = v$id, label = v$label,
+           kind = if (v$id %in% presets) "city" else "region")
+    })
     list(key = d$key, name = d$name, total = d$total,
-         hexagons = length(d$h3))
+         hexagons = length(d$h3), views = views)
   })
   entries <- entries[order(vapply(entries, `[[`, "", "name"))]
   write_json(entries, file.path(data_dir, "countries.json"),
@@ -347,5 +356,6 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
 
 keys <- commandArgs(trailingOnly = TRUE)
 if (length(keys) == 0) keys <- "bangladesh"
-for (k in keys) export_web_data(k)
+# --manifest: only rebuild countries.json from the existing folders.
+for (k in setdiff(keys, "--manifest")) export_web_data(k)
 write_manifest()
