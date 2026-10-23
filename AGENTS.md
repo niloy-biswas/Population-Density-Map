@@ -27,9 +27,11 @@ scripts/
   annotate_population_map.R   # magick title/credits on the PNG
   check_boundary_plot.R       # (see Known issues: currently a no-op)
   export_web_data.R           # Web data exporter (all web data comes from here)
+  download_kontur.R           # Fetch Kontur files by ISO code → data/kontur/
   setup_packages.R            # install.packages for everything
   legacy/                     # Old per-country scripts. Reference only, don't edit
 data/                         # Kontur .gpkg inputs (~218 MB, committed). Lowercase `data/`
+  kontur/                     # Downloaded by download_kontur.R. GITIGNORED (~3 GB)
 output/                       # Rendered images (README gallery). Committed
 web/
   index.html, app.js, style.css, og.jpg, apple-touch-icon.png
@@ -46,6 +48,9 @@ Never hand-edit `web/data/`. Regenerate it with the exporter.
 ```bash
 # Rendered map (slow: 500 ray samples by default; pauses at a readline prompt)
 Rscript -e 'source("run_country.R"); run_country("bangladesh")'
+
+# Fetch Kontur files (population + boundaries) by ISO code; skips existing
+Rscript scripts/download_kontur.R GB DE
 
 # Web data for one or more countries (also rebuilds web/data/countries.json)
 Rscript scripts/export_web_data.R bangladesh nepal
@@ -68,9 +73,13 @@ Each entry is `key = list(...)`. The rayshader fields (`crs`, `size`, `palette`,
 web = list(
   levels  = list(region = "4", district = "6", subdistrict = c("8", "10")),  # Kontur admin_level per tier
   views   = list(list(id = "dhaka-city", label = "Dhaka city", bounds = c(w, s, e, n))),
-  palette = c("#b5e3e6", ...)   # low → high; default is the shared teal ramp
+  palette = c("#b5e3e6", ...),  # low → high; default is the shared teal ramp
+  crop    = c(w, s, e, n),       # drop hexagons/areas outside (France, NL, Norway, UK)
+  bounds  = c(w, s, e, n)        # country view only; islands kept (Spain, Portugal, Japan)
 )
 ```
+
+- The 24 countries added in the second batch (Europe, Japan, Pakistan, Nigeria, Singapore, ...) are **web-only**: just `name`/`hex_file`/`admin_file`/`web`, with files in `data/kontur/`. `run_country()` stops with a clear error for them until rayshader fields are added.
 
 - Defaults (`web_defaults` in `export_web_data.R`) are Bangladesh's levels and the teal palette.
 - `character(0)` means "this tier doesn't exist in the file".
@@ -83,8 +92,9 @@ web = list(
 - **URL hash:** `#<country>` or `#<country>/<viewId>`. Unknown hashes fall back to the first country and get rewritten.
 - **Layers** (deck `MapboxOverlay`, `interleaved: true`):
   - `H3HexagonLayer` columns, inserted `beforeId` the basemap's first symbol layer so city names stay on top
-  - `GeoJsonLayer` outlines + `TextLayer` labels, drawn with `depthCompare: 'always'` so they show over the columns
-- **`renderLayers(animate)`** rebuilds the columns; **`renderOverlays()`** rebuilds only outlines/labels and reuses the current column layer.
+  - `GeoJsonLayer` outlines, drawn with `depthCompare: 'always'` so they show over the columns, inserted `beforeId` our label layers
+- **Labels are MapLibre symbol layers** (`pdm-labels-region` above `pdm-labels-district`, one GeoJSON source), added on load and refilled per country by `labelFeatures()`. MapLibre's collision detection thins them like the basemap's own names; `symbol-sort-key` ranks each label by the people in its area (summed from the hexes), so bigger areas win. The region layer sits above, so regions are placed before districts. They are styled like the basemap's own place names (Noto Sans Regular, black, 1 px blurred white halo, normal case); regions are just 2 px larger.
+- **`renderLayers(animate)`** rebuilds the columns and outlines. Nothing rebuilds on zoom.
 - **Column height** = `diagonal(view.bounds) × 0.07 / country.max × slider`, so city views get shorter columns. **Colour** = palette at `sqrt(pop / max)`, because the data is heavily skewed.
 - **Camera framing** (`cameraFor`) uses its own Web Mercator maths plus panel-aware `padding`.
 - **Basemap:** OpenFreeMap `bright`. On load, label `text-field`s are forced to English, and `label_state`, road shields and POI layers are hidden.
@@ -92,7 +102,7 @@ web = list(
 
 ## Exporter pipeline (`scripts/export_web_data.R`)
 
-Per country: read hexagons + admin polygons, then:
+Per country: read hexagons + admin polygons (`read_admin()` loads only level 2 and the configured tiers via an SQL query; the full files reach 500 MB), apply `web$crop` if set (`crop_country()`), then:
 
 1. **`build_places()`** tags each hexagon centroid with subdistrict/district/region. Distinct combinations are stored once in `places`; the per-hex `place` column is an index (-1 = none).
 2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (1 km raster, 1.5 km buffer, holes filled), in EPSG:3857.
@@ -109,12 +119,18 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 - **Not every hexagon file is EPSG:3857.** `data/merged_population_20231101.gpkg` (Israel & Palestine, built by `legacy/IS&PL.R`) is EPSG:3106. The land mask transforms explicitly.
 - **The Israel, Palestine and Israel & Palestine boundary files have no name columns** (only `id`, `admin_level`, `maritime`). They export with hexagons + country view only. This is expected, not a bug.
 - **`name_en` can be NA.** `area_names()` falls back to `name`, then to NA.
-- **deck.gl `CollisionFilterExtension` hides every label in interleaved mode.** It was tried and reverted, which is why the Maldives labels overlap at the whole-country view.
-- **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height. Use `renderOverlays()`.
+- **deck.gl `CollisionFilterExtension` hides every label in interleaved mode.** It was tried and reverted; that's why labels moved to MapLibre symbol layers instead of a deck `TextLayer`. Don't move them back.
+- **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height.
 - **`map.cameraForBounds()` factors in the current pitch,** so presets framed inconsistently. `cameraFor()` replaces it; don't switch back.
 - **`web/index.html` names countries by hand** in the meta descriptions and the JSON-LD block (the exporter doesn't touch it). Update them when adding a country.
-- **District labels** appear at the country's default zoom + 1.2 (a relative threshold), not at a fixed zoom.
+- **District labels** appear at the country's default zoom + 1.2 (a relative threshold, set per country with `map.setLayerZoomRange()`), not at a fixed zoom. Past that, collision decides which show.
+- **Button and label names drop admin suffixes** (`ADMIN_SUFFIX` in `app.js`: "Division", "Prefecture", "State", ...). A city preset named like a region then shows two identical buttons ("Lagos" vs "Lagos State"), so presets are called "<City> city".
 - **Case sensitivity:** the folder is `data/` (lowercase). It was once tracked as `Data/` and broke Linux/CI. Keep paths lowercase.
+- **`data/kontur/` is gitignored.** A fresh clone has none of the newer countries' inputs; re-run `download_kontur.R` with the ISO codes from the `hex_file` paths before exporting them. Don't commit those files: France's boundaries are 500 MB.
+- **Overseas territories wreck the country view and the land mask.** France's hexagon file spans lon -178 to 168; the 1 km land-mask raster over that extent would exhaust memory. Check a new country's hexagon extent; if it reaches far beyond the mainland, set `web$crop`. Spain (Canaries), Portugal (Azores) and Japan are wide but kept whole on purpose.
+- **GDAL turns tiny outline pieces into GeometryCollections.** With `COORDINATE_PRECISION=4` (~11 m), a short clipped segment collapses to one point and GDAL writes it as a MultiPoint inside a GeometryCollection. deck.gl's GeoJsonLayer then rejects the whole `boundaries.geojson` (no outlines at all), and logs it only once per session, so a multi-country browser run under-reports it. `drop_specks()` removes those parts before writing; keep it, and check exported geometry types are only LineString/MultiLineString.
+- **View ids are URL hashes and must be unique.** A preset named after a region (Japan's "Tokyo" preset vs Tokyo Prefecture) collides; `build_views()` now stops on duplicates.
+- **Don't edit `export_web_data.R` while an export is running.** Rscript reads the file as it goes, so an edit mid-run makes it fail with a parse error after the current country.
 - **Git LFS:** `data/kontur_boundaries_IN_20230628.gpkg.zip` is an LFS pointer, and git-lfs may not be installed. India's population file isn't in `data/` at all, so India can't be rendered or exported.
 - **Running `run_country()` overwrites** `output/plots/<Name>.png` and `output/annotated/<Name>_population_density.png`, which are committed README images. For smoke tests, copy the config under a throwaway name with low `size`/`samples`.
 - **Rendered-map side effects:** `create_pop_matrix()` calls `readline()`. Under `Rscript` it returns "" and continues. `annotate_population_map()` calls `swatchplot()`, which leaves an `Rplots.pdf` at the repo root under `Rscript`; delete it, don't commit it.
