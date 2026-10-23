@@ -51,3 +51,6 @@ rsconnect/
 .DS_Store
 
 data/kontur_population_IN_20231101.gpkg.zip
+
+# Kontur files fetched by scripts/download_kontur.R (some exceed 100 MB)
+data/kontur/
