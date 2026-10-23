@@ -3,7 +3,7 @@
 3D population density maps from Kontur population data, in two forms:
 
 - **Rendered maps**: ray-traced images made in R with Rayshader (gallery below).
-- **[Interactive explorer](https://niloy.tech/Population-Density-Map/)**: the same hexagons as 3D columns in the browser. Pick a country, fly between its regions, tilt the view and hover any column for its location and people per km². Bangladesh is live; more countries plug in with one export command.
+- **[Interactive explorer](https://niloy.tech/Population-Density-Map/)**: the same hexagons as 3D columns in the browser. Pick a country, fly between its regions, tilt the view and hover any column for its location and people per km². All ten maps with local data are live; more countries plug in with one export command.
 
 [![Interactive 3D population map of Bangladesh](web/og.jpg)](https://niloy.tech/Population-Density-Map/)
 
@@ -100,7 +100,7 @@ See the comment block at the top of `scripts/countries.R` for what each paramete
 
 - tags every hexagon with its subdistrict, district and region (for the hover tooltip)
 - turns the country, its regions and any extra presets into view buttons
-- writes region and district outlines and labels, clipped to land (Kontur's boundaries include sea areas)
+- writes region and district outlines and labels, clipped to land: Kontur's boundaries include sea areas, so they are cut to Natural Earth land plus the populated hexagons
 
 ```bash
 Rscript scripts/export_web_data.R bangladesh          # one country
@@ -127,7 +127,14 @@ Each run rebuilds `countries.json` from the folders in `web/data/`, so the picke
    | Country    | region | district | subdistrict |
    |------------|--------|----------|-------------|
    | Bangladesh | 4      | 6        | 8, 10       |
+   | Bhutan     | 4      | 6        | none        |
+   | Finland    | 6      | 7        | 8           |
+   | Maldives   | 4      | none     | 9           |
+   | Myanmar    | 3      | 7        | 9           |
    | Nepal      | 3      | 7        | 8           |
+   | Sri Lanka  | 4      | 6        | 7           |
+
+   Use `character(0)` for a tier the file lacks. The Israel and Palestine boundary files carry no area names, so those maps show the columns and the country view without region buttons, outlines or place names.
 
    The defaults are Bangladesh's. For anything else, add a `web` list to the country's block:
 
@@ -148,7 +155,7 @@ Each run rebuilds `countries.json` from the folders in `web/data/`, so the picke
 
 To remove a country, delete its `web/data/<country>/` folder and run the export for any remaining country to rebuild the index.
 
-Each country adds roughly 3 to 5 MB of JSON (about 1 MB as served, since GitHub Pages compresses it). India at this hexagon size would be several times larger, so it needs coarser hexagons first.
+Countries range from under 50 KB of JSON (Maldives) to about 7 MB (Finland, Myanmar); GitHub Pages compresses that to at most about 1.1 MB per country as served. India isn't in the explorer: its population file isn't in `data/`, and at this hexagon size it would be several times larger than any current country, so it would need coarser hexagons first.
 
 ## Maps
 
