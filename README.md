@@ -32,7 +32,7 @@ Population/
 ├── web/                   # Interactive explorer (static, deployed to GitHub Pages)
 │   ├── index.html, app.js, style.css
 │   └── data/
-│       ├── countries.json # Countries in the picker (generated)
+│       ├── countries.json # Search index: countries + their views (generated)
 │       └── <country>/     # hexes.json + boundaries.geojson (generated)
 └── .github/workflows/pages.yml  # Deploys web/ on push to main
 ```
@@ -99,12 +99,12 @@ See the comment block at the top of `scripts/countries.R` for what each paramete
 
 ## Web Explorer
 
-`web/` is a static page with no build step. [deck.gl](https://deck.gl) draws each Kontur H3 hexagon (about 0.74 km²) as a 3D column over a [MapLibre](https://maplibre.org) basemap from [OpenFreeMap](https://openfreemap.org). The page reads `web/data/countries.json` to fill the country picker, then loads one country's folder at a time. Links are shareable: `#bangladesh`, `#bangladesh/dhaka-city`.
+`web/` is a static page with no build step. [deck.gl](https://deck.gl) draws each Kontur H3 hexagon (about 0.74 km²) as a 3D column over a [MapLibre](https://maplibre.org) basemap from [OpenFreeMap](https://openfreemap.org). The page reads `web/data/countries.json` for the search box (every country plus its cities and regions, so typing "Dhaka" offers Dhaka city in Bangladesh), then loads one country's folder at a time. Links are shareable: `#bangladesh`, `#bangladesh/dhaka-city`.
 
 `scripts/export_web_data.R` writes that data. For each country it:
 
 - tags every hexagon with its subdistrict, district and region (for the hover tooltip)
-- turns the country, its regions and any extra presets into view buttons
+- turns the country, its regions and any extra presets into views (the chips under the search box)
 - writes region and district outlines and labels, clipped to land: Kontur's boundaries include sea areas, so they are cut to Natural Earth land plus the populated hexagons
 
 ```bash
@@ -112,7 +112,7 @@ Rscript scripts/export_web_data.R bangladesh          # one country
 Rscript scripts/export_web_data.R bangladesh nepal    # several
 ```
 
-Each run rebuilds `countries.json` from the folders in `web/data/`, so the picker always matches what's exported.
+Each run rebuilds `countries.json` from the folders in `web/data/`, so search always matches what's exported. To rebuild only that file, run `Rscript scripts/export_web_data.R --manifest`.
 
 **Preview locally:** `python3 -m http.server -d web`, then open [localhost:8000](http://localhost:8000).
 
