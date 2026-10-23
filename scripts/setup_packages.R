@@ -5,7 +5,8 @@ packages <- c(
   "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer",
   "rayrender", "magick", "tidyverse", "ggplot2", "colorspace",
   "showtext", "RColorBrewer", "crayon", "glue", "png", "raster",
-  "jsonlite", "rnaturalearth", "rnaturalearthdata" # web export only
+  "jsonlite", "rnaturalearth", "rnaturalearthdata", # web export only
+  "R.utils" # download_kontur.R
 )
 
 for (pkg in packages) {

@@ -33,6 +33,10 @@ run_country <- function(country_key) {
       "\nAvailable:", paste(names(countries), collapse = ", ")
     ))
   }
+  if (is.null(cfg$crs)) {
+    stop(cfg$name, " is web-explorer only: add crs, size, palette, zscale, ",
+         "camera, ... to its countries.R entry to render it")
+  }
 
   message("Loading data for: ", cfg$name)
   hex <- st_read(cfg$hex_file) %>% st_transform(cfg$crs)

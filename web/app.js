@@ -17,12 +17,20 @@
   const INK = [15, 23, 42];
   // Tallest column = this share of the view's diagonal, so city views get shorter columns than the country.
   const HEIGHT_PER_DIAGONAL = 0.07;
-  // Region labels always show; district labels once zoomed this far past the country's default view
+  // Region labels can show at any zoom; district labels once zoomed this far past the country's default view
   // (relative, because a fixed zoom shows every Bhutan gewog at once yet none of Finland's sub-regions).
+  // Within that, MapLibre's collision detection keeps only labels that fit, most populous first.
   const DISTRICT_LABEL_ZOOM_STEP = 1.2;
-  // Admin suffixes dropped from labels and buttons ("Dhaka Division" → "Dhaka").
-  const ADMIN_SUFFIX = / (Hill )?District$| Division$| Province$| Pradesh$| Region$| Union Territory$| Gewog$| sub-region$/;
-  // Draw on top of the columns regardless of depth, so outlines and names stay readable.
+  // Our labels are MapLibre symbol layers, not a deck.gl TextLayer: deck's CollisionFilterExtension
+  // hides every label in interleaved mode, while MapLibre thins labels like the basemap's own.
+  // Region layer last, so regions are placed (and win collisions) before districts.
+  const LABEL_SOURCE = 'pdm-labels';
+  const LABEL_LAYERS = { district: 'pdm-labels-district', region: 'pdm-labels-region' };
+  // Same look as the basemap's place names (label_city / label_town in the OpenFreeMap style).
+  const LABEL_FONT = ['Noto Sans Regular'];
+  // Admin suffixes dropped from labels and buttons ("Dhaka Division" → "Dhaka", "Aichi Prefecture" → "Aichi").
+  const ADMIN_SUFFIX = / (Hill )?District$| Division$| Province$| Pradesh$| Region$| Union Territory$| Gewog$| sub-region$| Prefecture$| Voivodeship$| State$/;
+  // Draw on top of the columns regardless of depth, so outlines stay readable.
   const ALWAYS_ON_TOP = { depthCompare: 'always', depthWriteEnabled: false };
   const PANEL_STATE_KEY = 'pdm-panel-collapsed';
   const SITE_TITLE = 'Niloy Biswas';
@@ -58,9 +66,6 @@
   let hexes = [];
   let boundaries;
   let view;
-  let columns; // current H3HexagonLayer
-  let showDistricts = false;
-  let districtLabelZoom = Infinity;
   let loadToken = 0;
 
   initPanelToggle();
@@ -130,8 +135,9 @@
       return { h3: id, p, place: data.place[i], color: colorAt(palette, p / data.max) };
     });
 
-    showDistricts = false;
-    districtLabelZoom = cameraFor(data.views[0]).zoom + DISTRICT_LABEL_ZOOM_STEP;
+    map.getSource(LABEL_SOURCE).setData(labelFeatures());
+    const districtLabelZoom = cameraFor(data.views[0]).zoom + DISTRICT_LABEL_ZOOM_STEP;
+    map.setLayerZoomRange(LABEL_LAYERS.district, districtLabelZoom, 24);
 
     el.name.textContent = data.name;
     el.stat.textContent = `${fmtShort.format(data.total)} people · ${fmtShort.format(hexes.length)} hexagons`;
@@ -162,6 +168,7 @@
       useEnglishLabels();
       // Columns go under the basemap's place labels, so city and town names stay on top.
       firstSymbolId = map.getStyle().layers.find((l) => l.type === 'symbol')?.id;
+      addLabelLayers();
       overlay = new deck.MapboxOverlay({ interleaved: true, layers: [], getTooltip });
       map.addControl(overlay);
 
@@ -180,6 +187,52 @@
     }
   }
 
+  function addLabelLayers() {
+    map.addSource(LABEL_SOURCE, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    for (const [kind, id] of Object.entries(LABEL_LAYERS)) {
+      const region = kind === 'region';
+      map.addLayer({
+        id,
+        type: 'symbol',
+        source: LABEL_SOURCE,
+        filter: ['==', ['get', 'kind'], kind],
+        layout: {
+          'text-field': ['get', 'text'],
+          'text-font': LABEL_FONT,
+          'text-size': region ? 14 : 12,
+          'text-max-width': 8,
+          'text-padding': 6,
+          'symbol-sort-key': ['get', 'rank'],
+        },
+        paint: {
+          'text-color': '#000',
+          'text-halo-color': '#fff',
+          'text-halo-width': 1,
+          'text-halo-blur': 1,
+        },
+      });
+    }
+  }
+
+  // Label points ranked by the people living in each area (lower rank is placed first),
+  // so where names collide the bigger region or district keeps its label.
+  function labelFeatures() {
+    const people = { region: new Map(), district: new Map() };
+    hexes.forEach(({ p, place }) => {
+      const [, district, region] = country.places[place] || [];
+      if (region) people.region.set(region, (people.region.get(region) || 0) + p);
+      if (district) people.district.set(district, (people.district.get(district) || 0) + p);
+    });
+    return {
+      type: 'FeatureCollection',
+      features: country.labels.map((l) => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: l.position },
+        properties: { kind: l.kind, text: shortName(l.name), rank: -(people[l.kind]?.get(l.name) || 0) },
+      })),
+    };
+  }
+
   function bindControls() {
     for (const input of [el.height, el.pitch, el.bearing, el.reset]) input.disabled = false;
     el.country.addEventListener('change', () => loadCountry(el.country.value));
@@ -188,13 +241,6 @@
     el.bearing.addEventListener('input', () => map.jumpTo({ bearing: Number(el.bearing.value) }));
     el.reset.addEventListener('click', () => view && goTo(view));
     map.on('move', syncCameraControls);
-    map.on('zoom', () => {
-      const show = map.getZoom() >= districtLabelZoom;
-      if (show !== showDistricts && country) {
-        showDistricts = show;
-        renderOverlays();
-      }
-    });
     window.addEventListener('hashchange', () => {
       const { key, viewId } = parseHash();
       if (key !== country?.key) loadCountry(key, viewId);
@@ -281,16 +327,9 @@
     return (tallest / country.max) * Number(el.height.value);
   }
 
-  // Rebuild the columns (new country, view or height), then the overlays on top.
+  // Rebuild the columns (new country, view or height) and the outlines over them.
   function renderLayers(animate) {
-    columns = hexLayer(animate);
-    renderOverlays();
-  }
-
-  // Outlines and labels only. Reuses the current column layer as-is, so toggling district
-  // labels mid-flight doesn't cancel the column height transition.
-  function renderOverlays() {
-    overlay.setProps({ layers: [columns, boundaryLayer(), labelLayer()] });
+    overlay.setProps({ layers: [hexLayer(animate), boundaryLayer()] });
   }
 
   function hexLayer(animate) {
@@ -317,28 +356,11 @@
   function boundaryLayer() {
     return new deck.GeoJsonLayer({
       id: 'boundaries',
+      beforeId: LABEL_LAYERS.district, // under our labels, so lines don't cross the names
       data: boundaries,
       getLineColor: (f) => [...INK, f.properties.kind === 'region' ? 200 : 90],
       getLineWidth: (f) => (f.properties.kind === 'region' ? 2 : 1),
       lineWidthUnits: 'pixels',
-      parameters: ALWAYS_ON_TOP,
-    });
-  }
-
-  function labelLayer() {
-    return new deck.TextLayer({
-      id: 'labels',
-      data: country.labels.filter((l) => l.kind === 'region' || showDistricts),
-      getPosition: (d) => d.position,
-      getText: (d) => (d.kind === 'region' ? shortName(d.name).toUpperCase() : shortName(d.name)),
-      getSize: (d) => (d.kind === 'region' ? 14 : 12),
-      getColor: [...INK, 255],
-      fontFamily: 'Inter, system-ui, sans-serif',
-      fontWeight: 700,
-      characterSet: 'auto',
-      fontSettings: { sdf: true },
-      outlineWidth: 4,
-      outlineColor: [255, 255, 255, 235],
       parameters: ALWAYS_ON_TOP,
     });
   }
