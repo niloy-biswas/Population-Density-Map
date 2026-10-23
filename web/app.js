@@ -36,6 +36,28 @@
   // Draw on top of the columns regardless of depth, so outlines stay readable.
   const ALWAYS_ON_TOP = { depthCompare: 'always', depthWriteEnabled: false };
   const PANEL_STATE_KEY = 'pdm-panel-collapsed';
+  const PALETTE_STATE_KEY = 'pdm-palette';
+  // Column palettes, low → high. "default" is the country's own (hexes.json, the exporter's teal ramp).
+  // The rest copy the README's rendered maps: create_palette() in scripts/helpers.R applied to that
+  // country's palette in scripts/countries.R (its subset_colors).
+  const PALETTES = [
+    { id: 'default', label: 'Teal' },
+    {
+      id: 'benedictus', label: 'Benedictus', note: 'Bangladesh render', // MetBrewer, reversed
+      colors: ['#1a318b', '#4060c8', '#6996e3', '#a1c2ed', '#c5daf6', '#eaf3ff', '#ffffff',
+        '#f9e0e8', '#f9b4c9', '#f28aaa', '#d8527c', '#b93961', '#9a133d'],
+    },
+    {
+      id: 'okeeffe', label: 'O’Keeffe', note: 'India render', // MetBrewer OKeeffe1, reversed
+      colors: ['#133e7e', '#225bb2', '#447fdd', '#7db0ea', '#bad6f9', '#f6f2ee', '#fbc2a9',
+        '#ee956a', '#da6c42', '#973d21', '#6b200c'],
+    },
+    {
+      id: 'piyg', label: 'Pink-green', note: 'Nepal render', // ColorBrewer PiYG, reversed
+      colors: ['#276419', '#4d9221', '#7fbc41', '#b8e186', '#e6f5d0', '#f7f7f7', '#fde0ef',
+        '#f1b6da', '#de77ae', '#c51b7d', '#8e0152'],
+    },
+  ];
   const SEARCH_LIMIT = 8;
   // Countries first, then city presets, then regions, when matches score the same.
   const KIND_ORDER = { country: 0, city: 1, region: 2 };
@@ -76,6 +98,7 @@
     layersToggle: document.querySelector('[data-layers-toggle]'),
     layers: document.querySelector('[data-layers]'),
     tiltToggle: document.querySelector('[data-tilt-toggle]'),
+    palettes: document.querySelector('[data-palettes]'),
     height: document.querySelector('[data-height]'),
     heightValue: document.querySelector('[data-height-value]'),
     pitch: document.querySelector('[data-pitch]'),
@@ -98,6 +121,8 @@
   let results = [];
   let activeResult = -1;
   let searchTyped = false; // false while the box just shows the current place
+  const savedPalette = localStorage.getItem(PALETTE_STATE_KEY);
+  let paletteId = PALETTES.some((p) => p.id === savedPalette) ? savedPalette : PALETTES[0].id;
 
   initPanelToggle();
   const setMenuOpen = initPopover(el.menuToggle, el.menu);
@@ -163,11 +188,8 @@
   function setCountry(data, outlines) {
     country = data;
     boundaries = outlines;
-    const palette = data.palette.map(hexToRgb);
-    hexes = data.h3.map((id, i) => {
-      const p = data.population[i];
-      return { h3: id, p, place: data.place[i], color: colorAt(palette, p / data.max) };
-    });
+    hexes = data.h3.map((id, i) => ({ h3: id, p: data.population[i], place: data.place[i] }));
+    applyPalette();
 
     map.getSource(LABEL_SOURCE).setData(labelFeatures());
     const districtLabelZoom = cameraFor(data.views[0]).zoom + DISTRICT_LABEL_ZOOM_STEP;
@@ -179,7 +201,7 @@
     el.map.setAttribute('aria-label', `Interactive 3D population density map of ${data.name}`);
     document.title = `${data.name} 3D Population Density Map | ${SITE_TITLE}`;
     renderViews();
-    renderLegend(data.palette);
+    renderPalettes();
   }
 
   // ---- Map ----
@@ -279,6 +301,12 @@
     });
     el.pitch.addEventListener('input', () => map.jumpTo({ pitch: Number(el.pitch.value) }));
     el.bearing.addEventListener('input', () => map.jumpTo({ bearing: Number(el.bearing.value) }));
+    el.palettes.addEventListener('change', (e) => {
+      paletteId = e.target.value;
+      localStorage.setItem(PALETTE_STATE_KEY, paletteId);
+      applyPalette();
+      renderLayers(false);
+    });
     el.tiltToggle.addEventListener('click', () => {
       map.easeTo({ pitch: map.getPitch() > 0 ? 0 : DEFAULT_PITCH, duration: reduceMotion ? 0 : 500 });
     });
@@ -392,6 +420,7 @@
       getHexagon: (d) => d.h3,
       getElevation: (d) => d.p,
       getFillColor: (d) => d.color,
+      updateTriggers: { getFillColor: paletteId }, // same data array, new colours
       extruded: true,
       coverage: 1,
       elevationScale: elevationScale(),
@@ -682,15 +711,43 @@
     el.searchClear.hidden = !el.search.value;
   }
 
+  // ---- Palettes ----
+
+  function paletteColors(id) {
+    return PALETTES.find((p) => p.id === id).colors || country.palette;
+  }
+
+  // Colour every hexagon with the chosen palette and match the legend.
+  function applyPalette() {
+    const colors = paletteColors(paletteId);
+    const palette = colors.map(hexToRgb);
+    for (const d of hexes) d.color = colorAt(palette, d.p / country.max);
+    renderLegend(colors);
+  }
+
+  // Swatch radios; rebuilt per country because "default" shows that country's own palette.
+  function renderPalettes() {
+    el.palettes.replaceChildren(...PALETTES.map((p) => {
+      const label = document.createElement('label');
+      label.className = 'palettes__option';
+      if (p.note) label.title = `As in the ${p.note}`;
+      label.innerHTML = `<input type="radio" name="palette" value="${p.id}">
+        <span class="palettes__swatch" style="background: ${gradientCss(paletteColors(p.id))}"></span>
+        <span class="palettes__name"></span>`;
+      label.querySelector('.palettes__name').textContent = p.label;
+      label.querySelector('input').checked = p.id === paletteId;
+      return label;
+    }));
+  }
+
   function renderLegend(palette) {
-    const stops = palette.map((c, i) => `${c} ${((i / (palette.length - 1)) * 100).toFixed(1)}%`).join(', ');
     // Ticks sit where sqrt(p / max) = 0, 0.25, 0.5, 0.75, 1, matching the colour scale.
     const ticks = [0, 0.25, 0.5, 0.75, 1]
       .map((t) => `<span>${fmtShort.format(Math.round(t * t * country.max))}</span>`)
       .join('');
     el.legend.innerHTML = `
       <p class="legend__title">People per hexagon (~0.74 km²)</p>
-      <div class="legend__bar" style="background: linear-gradient(90deg, ${stops})"></div>
+      <div class="legend__bar" style="background: ${gradientCss(palette)}"></div>
       <div class="legend__ticks">${ticks}</div>
       <p class="legend__source">Data: Kontur Population 2023</p>`;
     el.legend.hidden = false;
@@ -704,6 +761,11 @@
     const i = Math.min(Math.floor(pos), palette.length - 2);
     const f = pos - i;
     return palette[i].map((v, k) => Math.round(v + (palette[i + 1][k] - v) * f));
+  }
+
+  function gradientCss(colors) {
+    const stops = colors.map((c, i) => `${c} ${((i / (colors.length - 1)) * 100).toFixed(1)}%`);
+    return `linear-gradient(90deg, ${stops.join(', ')})`;
   }
 
   function hexToRgb(hex) {

@@ -551,6 +551,70 @@ a {
   transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
 
+/* Colour swatches, two per row; the native radio stays for keyboard and screen readers. */
+.view-settings__palettes {
+  min-width: 0;
+  margin: 0;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Floated, or the legend would sit on the fieldset's top border. */
+.view-settings__palettes legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.palettes {
+  clear: both;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.palettes__option {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.palettes__option:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+}
+
+.palettes__option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.palettes__option:has(input:checked) {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.palettes__option:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.palettes__swatch {
+  height: 10px;
+  border-radius: 3px;
+}
+
 .view-settings__reset:hover {
   color: var(--text-primary);
   background: var(--glass-fill-hover);
