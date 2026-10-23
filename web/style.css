@@ -782,7 +782,7 @@ a {
     padding: 12px 14px;
   }
 
-  .card__eyebrow,
+  /* The eyebrow stays: it is half of the h1, and search engines index the phone layout. */
   .legend__source {
     display: none;
   }

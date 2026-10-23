@@ -230,15 +230,19 @@
     const districtLabelZoom = cameraFor(data.views[0]).zoom + DISTRICT_LABEL_ZOOM_STEP;
     map.setLayerZoomRange(LABEL_LAYERS.district, districtLabelZoom, 24);
 
+    const facts = countries.find((c) => c.key === data.key);
     el.name.textContent = data.name;
-    el.stat.textContent = `${fmtShort.format(data.total)} people · ${fmtShort.format(hexes.length)} hexagons`;
+    // Same as stat_line() in scripts/export_web_data.R.
+    el.stat.textContent = `${fmtShort.format(facts.total)} people · ${facts.per_km2
+      ? `${fmt.format(facts.per_km2)} per km²`
+      : `${fmtShort.format(facts.hexagons)} hexagons`}`;
     el.expandLabel.textContent = `${data.name} · ${fmtShort.format(data.total)} people`;
     el.map.setAttribute('aria-label', `Interactive 3D population density map of ${data.name}`);
     for (const a of el.countryLinks) {
       if (a.dataset.country === data.key) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     }
-    renderSummary(countries.find((c) => c.key === data.key));
+    renderSummary(facts);
     renderViews();
     renderPalettes();
   }
@@ -575,9 +579,12 @@
 
   // Same markup as summary_html() in scripts/export_web_data.R, which fills it in on each country's page.
   function renderSummary(c) {
+    const density = c.per_km2
+      ? ` on about ${fmt.format(c.land_km2)} km² of land, roughly ${fmt.format(c.per_km2)} per km²`
+      : '';
     const densest = c.densest ? `, in ${c.densest},` : '';
-    const text = `${c.name} has ${fmt.format(c.total)} people across ${fmt.format(c.hexagons)} populated hexagons. `
-      + `The densest hexagon${densest} holds ${fmt.format(c.max)} people, about ${fmt.format(c.max_per_km2)} per km².`;
+    const text = `${c.name} has ${fmt.format(c.total)} people${density}. They live in ${fmt.format(c.hexagons)} `
+      + `populated hexagons; the densest${densest} holds ${fmt.format(c.max)} people, about ${fmt.format(c.max_per_km2)} per km².`;
     const items = c.top.map((a) => {
       const share = Math.round((100 * a.people) / c.total);
       return `<li><span class="summary__name">${escapeHtml(a.name)}</span>`
