@@ -35,7 +35,7 @@ data/                         # Kontur .gpkg inputs (~218 MB, committed). Lowerc
 output/                       # Rendered images (README gallery). Committed
 web/
   index.html, app.js, style.css, og.jpg, apple-touch-icon.png
-  data/countries.json         # GENERATED: picker index
+  data/countries.json         # GENERATED: search index (countries + view ids/labels)
   data/<key>/hexes.json       # GENERATED: hexagons, palette, views, labels, places
   data/<key>/boundaries.geojson  # GENERATED: region/district outlines
 .github/workflows/pages.yml   # Deploys web/ only, on push to main touching web/**
@@ -54,6 +54,7 @@ Rscript scripts/download_kontur.R GB DE
 
 # Web data for one or more countries (also rebuilds web/data/countries.json)
 Rscript scripts/export_web_data.R bangladesh nepal
+Rscript scripts/export_web_data.R --manifest   # only rebuild countries.json
 
 # Preview the explorer
 python3 -m http.server 8000 -d web      # → http://localhost:8000/#bangladesh
@@ -88,8 +89,10 @@ web = list(
 ## Web explorer architecture (`web/app.js`)
 
 - **No build step.** Libraries load from jsDelivr with pinned versions + SRI hashes in `index.html`: MapLibre 5.24.0, h3-js 4.5.0, deck.gl 9.4.0. If you bump a version, recompute its `integrity`: `curl -s URL | openssl dgst -sha384 -binary | openssl base64 -A`. MapLibre 6 is ESM-only (no UMD file to pin with SRI), which is why it stays on 5.x.
-- **Boot:** fetch `data/countries.json` → country picker → `initMap()` (once) → `loadCountry(key, viewId)`. A `loadToken` guards against out-of-order responses when switching quickly.
-- **URL hash:** `#<country>` or `#<country>/<viewId>`. Unknown hashes fall back to the first country and get rewritten.
+- **Boot:** fetch `data/countries.json` → `buildSearchIndex()` → `initMap()` (once) → `loadCountry(key, viewId)`. A `loadToken` guards against out-of-order responses when switching quickly.
+- **UI (Google Maps style):** top-left column (`.panel`, used by `framePadding()`) holds the search combobox, a scrolling chip row of the country's views, and a summary card with the legend. The card's chevron hides chips + card (`.panel__details`) behind a "<Country> · N people" pill; open by default, remembered in `localStorage` (`pdm-panel-collapsed`). The hamburger opens an About popover. Bottom-right, `.view-ctrl` is added as a MapLibre control above zoom/compass: a layers popover (column height, tilt, rotate, reset) and a 3D/flat toggle. Defaults: height 1.5×, every view opens at `DEFAULT_PITCH` = 30°.
+- **Search** (`buildSearchIndex`, `searchPlaces`): matches countries + manifest views, accent-insensitive; ranks name-start, then word-start, then mid-word, then country > city > region, then shorter names. Until the visitor types, the box shows the current place and the list shows all countries (it doubles as the country dropdown). Picking a view of another country calls `loadCountry(key, viewId)`.
+- **URL hash:** `#<country>` or `#<country>/<viewId>`. The bare link and unknown hashes open `DEFAULT_COUNTRY` (Bangladesh, matching `og.jpg`; first country if it is ever removed) and get rewritten. Don't rely on manifest order: it is alphabetical, so Austria became the landing page by accident once.
 - **Layers** (deck `MapboxOverlay`, `interleaved: true`):
   - `H3HexagonLayer` columns, inserted `beforeId` the basemap's first symbol layer so city names stay on top
   - `GeoJsonLayer` outlines, drawn with `depthCompare: 'always'` so they show over the columns, inserted `beforeId` our label layers
@@ -108,7 +111,7 @@ Per country: read hexagons + admin polygons (`read_admin()` loads only level 2 a
 2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (1 km raster, 1.5 km buffer, holes filled), in EPSG:3857.
 3. **`outlined_areas()`** gives the region + district polygons, tagged `kind = "region" | "district"`. Outlines and labels are clipped to the land mask.
 4. **`build_views()`** produces the country, then `web$views`, then regions alphabetically.
-5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`. To remove a country, delete its folder and re-run any export.
+5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search. To remove a country, delete its folder and re-run any export.
 
 The JS only knows `kind`, never admin-level numbers. Keep it that way.
 
@@ -120,6 +123,8 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 - **The Israel, Palestine and Israel & Palestine boundary files have no name columns** (only `id`, `admin_level`, `maritime`). They export with hexagons + country view only. This is expected, not a bug.
 - **`name_en` can be NA.** `area_names()` falls back to `name`, then to NA.
 - **deck.gl `CollisionFilterExtension` hides every label in interleaved mode.** It was tried and reverted; that's why labels moved to MapLibre symbol layers instead of a deck `TextLayer`. Don't move them back.
+- **No `mask-image` on the chip row.** A masked parent breaks the chips' `backdrop-filter` and paints a pale box behind the whole row.
+- **Popovers inside the search pill use `--glass-solid`, not blur.** A `backdrop-filter` nested in another one can't see the chips/card behind it, so a translucent list showed them through. `.search` also needs `z-index: 1`: each blurred piece is its own stacking context, and later siblings would paint over the results.
 - **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height.
 - **`map.cameraForBounds()` factors in the current pitch,** so presets framed inconsistently. `cameraFor()` replaces it; don't switch back.
 - **`web/index.html` names countries by hand** in the meta descriptions and the JSON-LD block (the exporter doesn't touch it). Update them when adding a country.
@@ -146,8 +151,9 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 
 There's no test suite. What has worked:
 
-- **Web:** serve `web/` locally and drive headless Chrome over the DevTools protocol with WebGL enabled: `--headless=new --use-angle=swiftshader --enable-unsafe-swiftshader`. Set exact viewport size with `Emulation.setDeviceMetricsOverride`, because `--window-size` includes browser chrome. Check:
-  - `.panel__view` buttons render and `[data-status]` becomes hidden
+- **Web:** serve `web/` locally and drive headless Chrome over the DevTools protocol with WebGL enabled: `--headless=new --use-angle=swiftshader --enable-unsafe-swiftshader`. Set exact viewport size with `Emulation.setDeviceMetricsOverride`, because `--window-size` includes browser chrome. Node 22+ has a global `WebSocket`, so no puppeteer is needed. Check:
+  - `.chips__chip` buttons render and `[data-status]` becomes hidden
+  - search: type "dhaka", Enter → `#bangladesh/dhaka-city`
   - the `.deck-tooltip` text on hover
   - hash routing and country switching
   - screenshots look right

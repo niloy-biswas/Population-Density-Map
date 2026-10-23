@@ -3,204 +3,2949 @@
     "key": "austria",
     "name": "Austria",
     "total": 9009078,
-    "hexagons": 86915
+    "hexagons": 86915,
+    "views": [
+      {
+        "id": "burgenland",
+        "label": "Burgenland",
+        "kind": "region"
+      },
+      {
+        "id": "carinthia",
+        "label": "Carinthia",
+        "kind": "region"
+      },
+      {
+        "id": "lower-austria",
+        "label": "Lower Austria",
+        "kind": "region"
+      },
+      {
+        "id": "salzburg",
+        "label": "Salzburg",
+        "kind": "region"
+      },
+      {
+        "id": "styria",
+        "label": "Styria",
+        "kind": "region"
+      },
+      {
+        "id": "tyrol",
+        "label": "Tyrol",
+        "kind": "region"
+      },
+      {
+        "id": "upper-austria",
+        "label": "Upper Austria",
+        "kind": "region"
+      },
+      {
+        "id": "vienna",
+        "label": "Vienna",
+        "kind": "region"
+      },
+      {
+        "id": "vorarlberg",
+        "label": "Vorarlberg",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "bangladesh",
     "name": "Bangladesh",
     "total": 173889934,
-    "hexagons": 148387
+    "hexagons": 148387,
+    "views": [
+      {
+        "id": "dhaka-city",
+        "label": "Dhaka city",
+        "kind": "city"
+      },
+      {
+        "id": "barishal-division",
+        "label": "Barishal Division",
+        "kind": "region"
+      },
+      {
+        "id": "chattogram-division",
+        "label": "Chattogram Division",
+        "kind": "region"
+      },
+      {
+        "id": "dhaka-division",
+        "label": "Dhaka Division",
+        "kind": "region"
+      },
+      {
+        "id": "khulna-division",
+        "label": "Khulna Division",
+        "kind": "region"
+      },
+      {
+        "id": "mymensingh-division",
+        "label": "Mymensingh Division",
+        "kind": "region"
+      },
+      {
+        "id": "rajshahi-division",
+        "label": "Rajshahi Division",
+        "kind": "region"
+      },
+      {
+        "id": "rangpur-division",
+        "label": "Rangpur Division",
+        "kind": "region"
+      },
+      {
+        "id": "sylhet-division",
+        "label": "Sylhet Division",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "belgium",
     "name": "Belgium",
     "total": 11787187,
-    "hexagons": 40991
+    "hexagons": 40991,
+    "views": [
+      {
+        "id": "brussels-capital",
+        "label": "Brussels-Capital",
+        "kind": "region"
+      },
+      {
+        "id": "flanders",
+        "label": "Flanders",
+        "kind": "region"
+      },
+      {
+        "id": "wallonia",
+        "label": "Wallonia",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "bhutan",
     "name": "Bhutan",
     "total": 876550,
-    "hexagons": 9077
+    "hexagons": 9077,
+    "views": [
+      {
+        "id": "bumthang-district",
+        "label": "Bumthang District",
+        "kind": "region"
+      },
+      {
+        "id": "chukha",
+        "label": "Chukha",
+        "kind": "region"
+      },
+      {
+        "id": "dagana-district",
+        "label": "Dagana District",
+        "kind": "region"
+      },
+      {
+        "id": "gasa-district",
+        "label": "Gasa District",
+        "kind": "region"
+      },
+      {
+        "id": "haa-district",
+        "label": "Haa District",
+        "kind": "region"
+      },
+      {
+        "id": "lhuntse-district",
+        "label": "Lhuntse District",
+        "kind": "region"
+      },
+      {
+        "id": "mongar-district",
+        "label": "Mongar District",
+        "kind": "region"
+      },
+      {
+        "id": "paro-district",
+        "label": "Paro District",
+        "kind": "region"
+      },
+      {
+        "id": "pemagatshel-district",
+        "label": "Pemagatshel District",
+        "kind": "region"
+      },
+      {
+        "id": "punakha-district",
+        "label": "Punakha District",
+        "kind": "region"
+      },
+      {
+        "id": "samdrup-jongkhar-district",
+        "label": "Samdrup Jongkhar District",
+        "kind": "region"
+      },
+      {
+        "id": "samtse-district",
+        "label": "Samtse District",
+        "kind": "region"
+      },
+      {
+        "id": "sarpang-district",
+        "label": "Sarpang District",
+        "kind": "region"
+      },
+      {
+        "id": "thimphu-district",
+        "label": "Thimphu District",
+        "kind": "region"
+      },
+      {
+        "id": "trashigang-district",
+        "label": "Trashigang District",
+        "kind": "region"
+      },
+      {
+        "id": "trashiyangtse-district",
+        "label": "Trashiyangtse District",
+        "kind": "region"
+      },
+      {
+        "id": "trongsa-district",
+        "label": "Trongsa District",
+        "kind": "region"
+      },
+      {
+        "id": "tsirang-district",
+        "label": "Tsirang District",
+        "kind": "region"
+      },
+      {
+        "id": "wangdue-phodrang-district",
+        "label": "Wangdue Phodrang District",
+        "kind": "region"
+      },
+      {
+        "id": "zhemgang-district",
+        "label": "Zhemgang District",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "czechia",
     "name": "Czechia",
     "total": 10548451,
-    "hexagons": 80168
+    "hexagons": 80168,
+    "views": [
+      {
+        "id": "hlavn-m-sto-praha",
+        "label": "Hlavní město Praha",
+        "kind": "region"
+      },
+      {
+        "id": "jiho-esk-kraj",
+        "label": "Jihočeský kraj",
+        "kind": "region"
+      },
+      {
+        "id": "jihomoravsk-kraj",
+        "label": "Jihomoravský kraj",
+        "kind": "region"
+      },
+      {
+        "id": "karlovarsk-kraj",
+        "label": "Karlovarský kraj",
+        "kind": "region"
+      },
+      {
+        "id": "kraj-vyso-ina",
+        "label": "Kraj Vysočina",
+        "kind": "region"
+      },
+      {
+        "id": "kr-lov-hradeck-kraj",
+        "label": "Královéhradecký kraj",
+        "kind": "region"
+      },
+      {
+        "id": "libereck-kraj",
+        "label": "Liberecký kraj",
+        "kind": "region"
+      },
+      {
+        "id": "olomouc-region",
+        "label": "Olomouc Region",
+        "kind": "region"
+      },
+      {
+        "id": "pardubick-kraj",
+        "label": "Pardubický kraj",
+        "kind": "region"
+      },
+      {
+        "id": "plze-sk-kraj",
+        "label": "Plzeňský kraj",
+        "kind": "region"
+      },
+      {
+        "id": "steck-kraj",
+        "label": "Ústecký kraj",
+        "kind": "region"
+      },
+      {
+        "id": "zl-nsk-kraj",
+        "label": "Zlínský kraj",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "denmark",
     "name": "Denmark",
     "total": 5912004,
-    "hexagons": 67267
+    "hexagons": 67267,
+    "views": [
+      {
+        "id": "capital-region-of-denmark",
+        "label": "Capital Region of Denmark",
+        "kind": "region"
+      },
+      {
+        "id": "central-denmark-region",
+        "label": "Central Denmark Region",
+        "kind": "region"
+      },
+      {
+        "id": "north-denmark-region",
+        "label": "North Denmark Region",
+        "kind": "region"
+      },
+      {
+        "id": "region-of-southern-denmark",
+        "label": "Region of Southern Denmark",
+        "kind": "region"
+      },
+      {
+        "id": "region-zealand",
+        "label": "Region Zealand",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "finland",
     "name": "Finland",
     "total": 5550413,
-    "hexagons": 261427
+    "hexagons": 261427,
+    "views": [
+      {
+        "id": "central-finland",
+        "label": "Central Finland",
+        "kind": "region"
+      },
+      {
+        "id": "central-ostrobothnia",
+        "label": "Central Ostrobothnia",
+        "kind": "region"
+      },
+      {
+        "id": "kainuu",
+        "label": "Kainuu",
+        "kind": "region"
+      },
+      {
+        "id": "kanta-h-me",
+        "label": "Kanta-Häme",
+        "kind": "region"
+      },
+      {
+        "id": "kymenlaakso",
+        "label": "Kymenlaakso",
+        "kind": "region"
+      },
+      {
+        "id": "lapland",
+        "label": "Lapland",
+        "kind": "region"
+      },
+      {
+        "id": "north-karelia",
+        "label": "North Karelia",
+        "kind": "region"
+      },
+      {
+        "id": "north-ostrobothnia",
+        "label": "North Ostrobothnia",
+        "kind": "region"
+      },
+      {
+        "id": "north-savo",
+        "label": "North Savo",
+        "kind": "region"
+      },
+      {
+        "id": "ostrobothnia",
+        "label": "Ostrobothnia",
+        "kind": "region"
+      },
+      {
+        "id": "p-ij-t-h-me",
+        "label": "Päijät-Häme",
+        "kind": "region"
+      },
+      {
+        "id": "pirkanmaa",
+        "label": "Pirkanmaa",
+        "kind": "region"
+      },
+      {
+        "id": "satakunta",
+        "label": "Satakunta",
+        "kind": "region"
+      },
+      {
+        "id": "south-karelia",
+        "label": "South Karelia",
+        "kind": "region"
+      },
+      {
+        "id": "south-ostrobothnia",
+        "label": "South Ostrobothnia",
+        "kind": "region"
+      },
+      {
+        "id": "south-savo",
+        "label": "South Savo",
+        "kind": "region"
+      },
+      {
+        "id": "southwest-finland",
+        "label": "Southwest Finland",
+        "kind": "region"
+      },
+      {
+        "id": "uusimaa",
+        "label": "Uusimaa",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "france",
     "name": "France",
     "total": 64954611,
-    "hexagons": 596104
+    "hexagons": 596104,
+    "views": [
+      {
+        "id": "paris",
+        "label": "Paris",
+        "kind": "city"
+      },
+      {
+        "id": "auvergne-rh-ne-alpes",
+        "label": "Auvergne-Rhône-Alpes",
+        "kind": "region"
+      },
+      {
+        "id": "bourgogne-franche-comt",
+        "label": "Bourgogne-Franche-Comté",
+        "kind": "region"
+      },
+      {
+        "id": "brittany",
+        "label": "Brittany",
+        "kind": "region"
+      },
+      {
+        "id": "centre-val-de-loire",
+        "label": "Centre-Val de Loire",
+        "kind": "region"
+      },
+      {
+        "id": "corsica",
+        "label": "Corsica",
+        "kind": "region"
+      },
+      {
+        "id": "grand-est",
+        "label": "Grand Est",
+        "kind": "region"
+      },
+      {
+        "id": "hauts-de-france",
+        "label": "Hauts-de-France",
+        "kind": "region"
+      },
+      {
+        "id": "ile-de-france",
+        "label": "Ile-de-France",
+        "kind": "region"
+      },
+      {
+        "id": "normandy",
+        "label": "Normandy",
+        "kind": "region"
+      },
+      {
+        "id": "nouvelle-aquitaine",
+        "label": "Nouvelle-Aquitaine",
+        "kind": "region"
+      },
+      {
+        "id": "occitania",
+        "label": "Occitania",
+        "kind": "region"
+      },
+      {
+        "id": "pays-de-la-loire",
+        "label": "Pays de la Loire",
+        "kind": "region"
+      },
+      {
+        "id": "provence-alpes-c-te-d-azur",
+        "label": "Provence-Alpes-Côte d'Azur",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "germany",
     "name": "Germany",
     "total": 83526777,
-    "hexagons": 363550
+    "hexagons": 363550,
+    "views": [
+      {
+        "id": "baden-w-rttemberg",
+        "label": "Baden-Württemberg",
+        "kind": "region"
+      },
+      {
+        "id": "bavaria",
+        "label": "Bavaria",
+        "kind": "region"
+      },
+      {
+        "id": "berlin",
+        "label": "Berlin",
+        "kind": "region"
+      },
+      {
+        "id": "brandenburg",
+        "label": "Brandenburg",
+        "kind": "region"
+      },
+      {
+        "id": "bremen",
+        "label": "Bremen",
+        "kind": "region"
+      },
+      {
+        "id": "hamburg",
+        "label": "Hamburg",
+        "kind": "region"
+      },
+      {
+        "id": "hesse",
+        "label": "Hesse",
+        "kind": "region"
+      },
+      {
+        "id": "lower-saxony",
+        "label": "Lower Saxony",
+        "kind": "region"
+      },
+      {
+        "id": "mecklenburg-vorpommern",
+        "label": "Mecklenburg-Vorpommern",
+        "kind": "region"
+      },
+      {
+        "id": "north-rhine-westphalia",
+        "label": "North Rhine-Westphalia",
+        "kind": "region"
+      },
+      {
+        "id": "rhineland-palatinate",
+        "label": "Rhineland-Palatinate",
+        "kind": "region"
+      },
+      {
+        "id": "saarland",
+        "label": "Saarland",
+        "kind": "region"
+      },
+      {
+        "id": "saxony",
+        "label": "Saxony",
+        "kind": "region"
+      },
+      {
+        "id": "saxony-anhalt",
+        "label": "Saxony-Anhalt",
+        "kind": "region"
+      },
+      {
+        "id": "schleswig-holstein",
+        "label": "Schleswig-Holstein",
+        "kind": "region"
+      },
+      {
+        "id": "thuringia",
+        "label": "Thuringia",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "greece",
     "name": "Greece",
     "total": 10347613,
-    "hexagons": 108125
+    "hexagons": 108125,
+    "views": [
+      {
+        "id": "attica",
+        "label": "Attica",
+        "kind": "region"
+      },
+      {
+        "id": "central-greece",
+        "label": "Central Greece",
+        "kind": "region"
+      },
+      {
+        "id": "central-macedonia",
+        "label": "Central Macedonia",
+        "kind": "region"
+      },
+      {
+        "id": "eastern-macedonia-and-thrace",
+        "label": "Eastern Macedonia and Thrace",
+        "kind": "region"
+      },
+      {
+        "id": "epirus",
+        "label": "Epirus",
+        "kind": "region"
+      },
+      {
+        "id": "ioanian-islands",
+        "label": "Ioanian Islands",
+        "kind": "region"
+      },
+      {
+        "id": "northern-aegean",
+        "label": "Northern Aegean",
+        "kind": "region"
+      },
+      {
+        "id": "peloponnese-region",
+        "label": "Peloponnese Region",
+        "kind": "region"
+      },
+      {
+        "id": "region-of-crete",
+        "label": "Region of Crete",
+        "kind": "region"
+      },
+      {
+        "id": "south-aegean",
+        "label": "South Aegean",
+        "kind": "region"
+      },
+      {
+        "id": "thessaly",
+        "label": "Thessaly",
+        "kind": "region"
+      },
+      {
+        "id": "western-greece",
+        "label": "Western Greece",
+        "kind": "region"
+      },
+      {
+        "id": "western-macedonia",
+        "label": "Western Macedonia",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "hungary",
     "name": "Hungary",
     "total": 9631859,
-    "hexagons": 60772
+    "hexagons": 60772,
+    "views": [
+      {
+        "id": "b-cs-kiskun",
+        "label": "Bács-Kiskun",
+        "kind": "region"
+      },
+      {
+        "id": "baranya",
+        "label": "Baranya",
+        "kind": "region"
+      },
+      {
+        "id": "b-k-s",
+        "label": "Békés",
+        "kind": "region"
+      },
+      {
+        "id": "borsod-aba-j-zempl-n",
+        "label": "Borsod-Abaúj-Zemplén",
+        "kind": "region"
+      },
+      {
+        "id": "budapest",
+        "label": "Budapest",
+        "kind": "region"
+      },
+      {
+        "id": "csongr-d-csan-d",
+        "label": "Csongrád-Csanád",
+        "kind": "region"
+      },
+      {
+        "id": "fej-r",
+        "label": "Fejér",
+        "kind": "region"
+      },
+      {
+        "id": "gy-r-moson-sopron",
+        "label": "Győr-Moson-Sopron",
+        "kind": "region"
+      },
+      {
+        "id": "hajd-bihar",
+        "label": "Hajdú-Bihar",
+        "kind": "region"
+      },
+      {
+        "id": "heves",
+        "label": "Heves",
+        "kind": "region"
+      },
+      {
+        "id": "j-sz-nagykun-szolnok",
+        "label": "Jász-Nagykun-Szolnok",
+        "kind": "region"
+      },
+      {
+        "id": "kom-rom-esztergom",
+        "label": "Komárom-Esztergom",
+        "kind": "region"
+      },
+      {
+        "id": "n-gr-d",
+        "label": "Nógrád",
+        "kind": "region"
+      },
+      {
+        "id": "pest",
+        "label": "Pest",
+        "kind": "region"
+      },
+      {
+        "id": "somogy",
+        "label": "Somogy",
+        "kind": "region"
+      },
+      {
+        "id": "szabolcs-szatm-r-bereg",
+        "label": "Szabolcs-Szatmár-Bereg",
+        "kind": "region"
+      },
+      {
+        "id": "tolna",
+        "label": "Tolna",
+        "kind": "region"
+      },
+      {
+        "id": "vas",
+        "label": "Vas",
+        "kind": "region"
+      },
+      {
+        "id": "veszpr-m",
+        "label": "Veszprém",
+        "kind": "region"
+      },
+      {
+        "id": "zala",
+        "label": "Zala",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "ireland",
     "name": "Ireland",
     "total": 5068093,
-    "hexagons": 70410
+    "hexagons": 70410,
+    "views": [
+      {
+        "id": "county-carlow",
+        "label": "County Carlow",
+        "kind": "region"
+      },
+      {
+        "id": "county-cavan",
+        "label": "County Cavan",
+        "kind": "region"
+      },
+      {
+        "id": "county-clare",
+        "label": "County Clare",
+        "kind": "region"
+      },
+      {
+        "id": "county-cork",
+        "label": "County Cork",
+        "kind": "region"
+      },
+      {
+        "id": "county-donegal",
+        "label": "County Donegal",
+        "kind": "region"
+      },
+      {
+        "id": "county-dublin",
+        "label": "County Dublin",
+        "kind": "region"
+      },
+      {
+        "id": "county-galway",
+        "label": "County Galway",
+        "kind": "region"
+      },
+      {
+        "id": "county-kerry",
+        "label": "County Kerry",
+        "kind": "region"
+      },
+      {
+        "id": "county-kildare",
+        "label": "County Kildare",
+        "kind": "region"
+      },
+      {
+        "id": "county-kilkenny",
+        "label": "County Kilkenny",
+        "kind": "region"
+      },
+      {
+        "id": "county-laois",
+        "label": "County Laois",
+        "kind": "region"
+      },
+      {
+        "id": "county-leitrim",
+        "label": "County Leitrim",
+        "kind": "region"
+      },
+      {
+        "id": "county-limerick",
+        "label": "County Limerick",
+        "kind": "region"
+      },
+      {
+        "id": "county-longford",
+        "label": "County Longford",
+        "kind": "region"
+      },
+      {
+        "id": "county-louth",
+        "label": "County Louth",
+        "kind": "region"
+      },
+      {
+        "id": "county-mayo",
+        "label": "County Mayo",
+        "kind": "region"
+      },
+      {
+        "id": "county-meath",
+        "label": "County Meath",
+        "kind": "region"
+      },
+      {
+        "id": "county-monaghan",
+        "label": "County Monaghan",
+        "kind": "region"
+      },
+      {
+        "id": "county-offaly",
+        "label": "County Offaly",
+        "kind": "region"
+      },
+      {
+        "id": "county-roscommon",
+        "label": "County Roscommon",
+        "kind": "region"
+      },
+      {
+        "id": "county-sligo",
+        "label": "County Sligo",
+        "kind": "region"
+      },
+      {
+        "id": "county-tipperary",
+        "label": "County Tipperary",
+        "kind": "region"
+      },
+      {
+        "id": "county-waterford",
+        "label": "County Waterford",
+        "kind": "region"
+      },
+      {
+        "id": "county-westmeath",
+        "label": "County Westmeath",
+        "kind": "region"
+      },
+      {
+        "id": "county-wexford",
+        "label": "County Wexford",
+        "kind": "region"
+      },
+      {
+        "id": "county-wicklow",
+        "label": "County Wicklow",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "israel",
     "name": "Israel",
     "total": 9380044,
-    "hexagons": 12133
+    "hexagons": 12133,
+    "views": []
   },
   {
     "key": "israel_palestine",
     "name": "Israel & Palestine",
     "total": 14930171,
-    "hexagons": 18151
+    "hexagons": 18151,
+    "views": []
   },
   {
     "key": "italy",
     "name": "Italy",
     "total": 58913879,
-    "hexagons": 312901
+    "hexagons": 312901,
+    "views": [
+      {
+        "id": "abruzzo",
+        "label": "Abruzzo",
+        "kind": "region"
+      },
+      {
+        "id": "aosta-valley",
+        "label": "Aosta Valley",
+        "kind": "region"
+      },
+      {
+        "id": "apulia",
+        "label": "Apulia",
+        "kind": "region"
+      },
+      {
+        "id": "basilicata",
+        "label": "Basilicata",
+        "kind": "region"
+      },
+      {
+        "id": "calabria",
+        "label": "Calabria",
+        "kind": "region"
+      },
+      {
+        "id": "campania",
+        "label": "Campania",
+        "kind": "region"
+      },
+      {
+        "id": "emilia-romagna",
+        "label": "Emilia-Romagna",
+        "kind": "region"
+      },
+      {
+        "id": "friuli-venezia-giulia",
+        "label": "Friuli-Venezia Giulia",
+        "kind": "region"
+      },
+      {
+        "id": "lazio",
+        "label": "Lazio",
+        "kind": "region"
+      },
+      {
+        "id": "liguria",
+        "label": "Liguria",
+        "kind": "region"
+      },
+      {
+        "id": "lombardy",
+        "label": "Lombardy",
+        "kind": "region"
+      },
+      {
+        "id": "marche",
+        "label": "Marche",
+        "kind": "region"
+      },
+      {
+        "id": "molise",
+        "label": "Molise",
+        "kind": "region"
+      },
+      {
+        "id": "piedmont",
+        "label": "Piedmont",
+        "kind": "region"
+      },
+      {
+        "id": "sardinia",
+        "label": "Sardinia",
+        "kind": "region"
+      },
+      {
+        "id": "sicily",
+        "label": "Sicily",
+        "kind": "region"
+      },
+      {
+        "id": "trentino-alto-adige-s-dtirol",
+        "label": "Trentino-Alto Adige/Südtirol",
+        "kind": "region"
+      },
+      {
+        "id": "tuscany",
+        "label": "Tuscany",
+        "kind": "region"
+      },
+      {
+        "id": "umbria",
+        "label": "Umbria",
+        "kind": "region"
+      },
+      {
+        "id": "veneto",
+        "label": "Veneto",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "japan",
     "name": "Japan",
     "total": 123294123,
-    "hexagons": 229211
+    "hexagons": 229211,
+    "views": [
+      {
+        "id": "tokyo-city",
+        "label": "Tokyo city",
+        "kind": "city"
+      },
+      {
+        "id": "aichi-prefecture",
+        "label": "Aichi Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "akita-prefecture",
+        "label": "Akita Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "aomori-prefecture",
+        "label": "Aomori Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "chiba-prefecture",
+        "label": "Chiba Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "ehime-prefecture",
+        "label": "Ehime Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "fukui-prefecture",
+        "label": "Fukui Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "fukuoka-prefecture",
+        "label": "Fukuoka Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "fukushima-prefecture",
+        "label": "Fukushima Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "gifu-prefecture",
+        "label": "Gifu Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "gunma-prefecture",
+        "label": "Gunma Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "hiroshima-prefecture",
+        "label": "Hiroshima Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "hokkaido-prefecture",
+        "label": "Hokkaido Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "hyogo-prefecture",
+        "label": "Hyogo Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "ibaraki-prefecture",
+        "label": "Ibaraki Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "ishikawa-prefecture",
+        "label": "Ishikawa Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "iwate-prefecture",
+        "label": "Iwate Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kagawa-prefecture",
+        "label": "Kagawa Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kagoshima-prefecture",
+        "label": "Kagoshima Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kanagawa-prefecture",
+        "label": "Kanagawa Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kochi-prefecture",
+        "label": "Kochi Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kumamoto-prefecture",
+        "label": "Kumamoto Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "kyoto-prefecture",
+        "label": "Kyoto Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "mie-prefecture",
+        "label": "Mie Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "miyagi-prefecture",
+        "label": "Miyagi Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "miyazaki-prefecture",
+        "label": "Miyazaki Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "nagano-prefecture",
+        "label": "Nagano Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "nagasaki-prefecture",
+        "label": "Nagasaki Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "nara-prefecture",
+        "label": "Nara Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "niigata-prefecture",
+        "label": "Niigata Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "oita-prefecture",
+        "label": "Oita Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "okayama-prefecture",
+        "label": "Okayama Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "okinawa-prefecture",
+        "label": "Okinawa Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "osaka-prefecture",
+        "label": "Osaka Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "saga-prefecture",
+        "label": "Saga Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "saitama-prefecture",
+        "label": "Saitama Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "shiga-prefecture",
+        "label": "Shiga Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "shimane-prefecture",
+        "label": "Shimane Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "shizuoka-prefecture",
+        "label": "Shizuoka Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "tochigi-prefecture",
+        "label": "Tochigi Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "tokushima-prefecture",
+        "label": "Tokushima Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "tokyo",
+        "label": "Tokyo",
+        "kind": "region"
+      },
+      {
+        "id": "tottori-prefecture",
+        "label": "Tottori Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "toyama-prefecture",
+        "label": "Toyama Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "wakayama-prefecture",
+        "label": "Wakayama Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "yamagata-prefecture",
+        "label": "Yamagata Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "yamaguchi-prefecture",
+        "label": "Yamaguchi Prefecture",
+        "kind": "region"
+      },
+      {
+        "id": "yamanashi-prefecture",
+        "label": "Yamanashi Prefecture",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "maldives",
     "name": "Maldives",
     "total": 518768,
-    "hexagons": 1019
+    "hexagons": 1019,
+    "views": [
+      {
+        "id": "addu",
+        "label": "Addu",
+        "kind": "region"
+      },
+      {
+        "id": "ari-atholhu-dhekunuburi",
+        "label": "Ari Atholhu Dhekunuburi",
+        "kind": "region"
+      },
+      {
+        "id": "ari-atholhu-uthuruburi",
+        "label": "Ari Atholhu Uthuruburi",
+        "kind": "region"
+      },
+      {
+        "id": "faadhippolhu",
+        "label": "Faadhippolhu",
+        "kind": "region"
+      },
+      {
+        "id": "felidhoo-atoll",
+        "label": "Felidhoo Atoll",
+        "kind": "region"
+      },
+      {
+        "id": "fuvahmulah",
+        "label": "Fuvahmulah",
+        "kind": "region"
+      },
+      {
+        "id": "gaafu-alif",
+        "label": "Gaafu Alif",
+        "kind": "region"
+      },
+      {
+        "id": "gaafu-dhaalu",
+        "label": "Gaafu Dhaalu",
+        "kind": "region"
+      },
+      {
+        "id": "haa-alif",
+        "label": "Haa Alif",
+        "kind": "region"
+      },
+      {
+        "id": "haa-dhaalu",
+        "label": "Haa Dhaalu",
+        "kind": "region"
+      },
+      {
+        "id": "haddhunmathi",
+        "label": "Haddhunmathi",
+        "kind": "region"
+      },
+      {
+        "id": "kolhumadulu",
+        "label": "Kolhumadulu",
+        "kind": "region"
+      },
+      {
+        "id": "maalhosmadulu-dhekunuburi",
+        "label": "Maalhosmadulu Dhekunuburi",
+        "kind": "region"
+      },
+      {
+        "id": "maalhosmadulu-uthuruburi",
+        "label": "Maalhosmadulu Uthuruburi",
+        "kind": "region"
+      },
+      {
+        "id": "mal",
+        "label": "Malé",
+        "kind": "region"
+      },
+      {
+        "id": "mal-atoll",
+        "label": "Malé Atoll",
+        "kind": "region"
+      },
+      {
+        "id": "miladhunmadulu-dhekunuburi",
+        "label": "Miladhunmadulu Dhekunuburi",
+        "kind": "region"
+      },
+      {
+        "id": "miladhunmadulu-uthuruburi",
+        "label": "Miladhunmadulu Uthuruburi",
+        "kind": "region"
+      },
+      {
+        "id": "mulaku",
+        "label": "Mulaku",
+        "kind": "region"
+      },
+      {
+        "id": "nilandhe-atholhu-dhekunuburi",
+        "label": "Nilandhe Atholhu Dhekunuburi",
+        "kind": "region"
+      },
+      {
+        "id": "nilandhe-atholhu-uthuruburi",
+        "label": "Nilandhe Atholhu Uthuruburi",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "myanmar",
     "name": "Myanmar",
     "total": 54795072,
-    "hexagons": 212821
+    "hexagons": 212821,
+    "views": [
+      {
+        "id": "ayeyarwady",
+        "label": "Ayeyarwady",
+        "kind": "region"
+      },
+      {
+        "id": "bago-region",
+        "label": "Bago Region",
+        "kind": "region"
+      },
+      {
+        "id": "chin",
+        "label": "Chin",
+        "kind": "region"
+      },
+      {
+        "id": "kachin-state",
+        "label": "Kachin State",
+        "kind": "region"
+      },
+      {
+        "id": "kayah-state",
+        "label": "Kayah State",
+        "kind": "region"
+      },
+      {
+        "id": "kayin-state",
+        "label": "Kayin State",
+        "kind": "region"
+      },
+      {
+        "id": "magway",
+        "label": "Magway",
+        "kind": "region"
+      },
+      {
+        "id": "mandalay",
+        "label": "Mandalay",
+        "kind": "region"
+      },
+      {
+        "id": "mon-state",
+        "label": "Mon State",
+        "kind": "region"
+      },
+      {
+        "id": "naypyitaw-union-territory",
+        "label": "Naypyitaw Union Territory",
+        "kind": "region"
+      },
+      {
+        "id": "rakhine",
+        "label": "Rakhine",
+        "kind": "region"
+      },
+      {
+        "id": "sagaing-region",
+        "label": "Sagaing Region",
+        "kind": "region"
+      },
+      {
+        "id": "shan-state",
+        "label": "Shan State",
+        "kind": "region"
+      },
+      {
+        "id": "tanintharyi-region",
+        "label": "Tanintharyi Region",
+        "kind": "region"
+      },
+      {
+        "id": "yangon",
+        "label": "Yangon",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "nepal",
     "name": "Nepal",
     "total": 31353925,
-    "hexagons": 105556
+    "hexagons": 105556,
+    "views": [
+      {
+        "id": "bagmati-pradesh",
+        "label": "Bagmati Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "gandaki-pradesh",
+        "label": "Gandaki Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "karnali-pradesh",
+        "label": "Karnali Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "koshi-province",
+        "label": "Koshi Province",
+        "kind": "region"
+      },
+      {
+        "id": "lumbini-province",
+        "label": "Lumbini Province",
+        "kind": "region"
+      },
+      {
+        "id": "madhesh-province",
+        "label": "Madhesh Province",
+        "kind": "region"
+      },
+      {
+        "id": "sudurpashchim-pradesh",
+        "label": "Sudurpashchim Pradesh",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "netherlands",
     "name": "Netherlands",
     "total": 17476877,
-    "hexagons": 50287
+    "hexagons": 50287,
+    "views": [
+      {
+        "id": "drenthe",
+        "label": "Drenthe",
+        "kind": "region"
+      },
+      {
+        "id": "flevoland",
+        "label": "Flevoland",
+        "kind": "region"
+      },
+      {
+        "id": "frisia",
+        "label": "Frisia",
+        "kind": "region"
+      },
+      {
+        "id": "gelderland",
+        "label": "Gelderland",
+        "kind": "region"
+      },
+      {
+        "id": "groningen",
+        "label": "Groningen",
+        "kind": "region"
+      },
+      {
+        "id": "limburg",
+        "label": "Limburg",
+        "kind": "region"
+      },
+      {
+        "id": "north-brabant",
+        "label": "North Brabant",
+        "kind": "region"
+      },
+      {
+        "id": "north-holland",
+        "label": "North Holland",
+        "kind": "region"
+      },
+      {
+        "id": "overijssel",
+        "label": "Overijssel",
+        "kind": "region"
+      },
+      {
+        "id": "south-holland",
+        "label": "South Holland",
+        "kind": "region"
+      },
+      {
+        "id": "utrecht",
+        "label": "Utrecht",
+        "kind": "region"
+      },
+      {
+        "id": "zeeland",
+        "label": "Zeeland",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "nigeria",
     "name": "Nigeria",
     "total": 224135234,
-    "hexagons": 637762
+    "hexagons": 637762,
+    "views": [
+      {
+        "id": "lagos-city",
+        "label": "Lagos city",
+        "kind": "city"
+      },
+      {
+        "id": "abia-state",
+        "label": "Abia State",
+        "kind": "region"
+      },
+      {
+        "id": "adamawa-state",
+        "label": "Adamawa State",
+        "kind": "region"
+      },
+      {
+        "id": "akwa-ibom-state",
+        "label": "Akwa Ibom State",
+        "kind": "region"
+      },
+      {
+        "id": "anambra-state",
+        "label": "Anambra State",
+        "kind": "region"
+      },
+      {
+        "id": "bauchi-state",
+        "label": "Bauchi State",
+        "kind": "region"
+      },
+      {
+        "id": "bayelsa-state",
+        "label": "Bayelsa State",
+        "kind": "region"
+      },
+      {
+        "id": "benue-state",
+        "label": "Benue State",
+        "kind": "region"
+      },
+      {
+        "id": "borno-state",
+        "label": "Borno State",
+        "kind": "region"
+      },
+      {
+        "id": "cross-river-state",
+        "label": "Cross River State",
+        "kind": "region"
+      },
+      {
+        "id": "delta-state",
+        "label": "Delta State",
+        "kind": "region"
+      },
+      {
+        "id": "ebonyi-state",
+        "label": "Ebonyi State",
+        "kind": "region"
+      },
+      {
+        "id": "edo-state",
+        "label": "Edo State",
+        "kind": "region"
+      },
+      {
+        "id": "ekiti-state",
+        "label": "Ekiti State",
+        "kind": "region"
+      },
+      {
+        "id": "enugu-state",
+        "label": "Enugu State",
+        "kind": "region"
+      },
+      {
+        "id": "federal-capital-territory",
+        "label": "Federal Capital Territory",
+        "kind": "region"
+      },
+      {
+        "id": "gombe-state",
+        "label": "Gombe State",
+        "kind": "region"
+      },
+      {
+        "id": "imo-state",
+        "label": "Imo State",
+        "kind": "region"
+      },
+      {
+        "id": "jigawa-state",
+        "label": "Jigawa State",
+        "kind": "region"
+      },
+      {
+        "id": "kaduna-state",
+        "label": "Kaduna State",
+        "kind": "region"
+      },
+      {
+        "id": "kano-state",
+        "label": "Kano State",
+        "kind": "region"
+      },
+      {
+        "id": "katsina-state",
+        "label": "Katsina State",
+        "kind": "region"
+      },
+      {
+        "id": "kebbi-state",
+        "label": "Kebbi State",
+        "kind": "region"
+      },
+      {
+        "id": "kogi-state",
+        "label": "Kogi State",
+        "kind": "region"
+      },
+      {
+        "id": "kwara-state",
+        "label": "Kwara State",
+        "kind": "region"
+      },
+      {
+        "id": "lagos-state",
+        "label": "Lagos State",
+        "kind": "region"
+      },
+      {
+        "id": "nasarawa-state",
+        "label": "Nasarawa State",
+        "kind": "region"
+      },
+      {
+        "id": "niger-state",
+        "label": "Niger State",
+        "kind": "region"
+      },
+      {
+        "id": "ogun-state",
+        "label": "Ogun State",
+        "kind": "region"
+      },
+      {
+        "id": "ondo-state",
+        "label": "Ondo State",
+        "kind": "region"
+      },
+      {
+        "id": "osun-state",
+        "label": "Osun State",
+        "kind": "region"
+      },
+      {
+        "id": "oyo-state",
+        "label": "Oyo State",
+        "kind": "region"
+      },
+      {
+        "id": "plateau-state",
+        "label": "Plateau State",
+        "kind": "region"
+      },
+      {
+        "id": "rivers-state",
+        "label": "Rivers State",
+        "kind": "region"
+      },
+      {
+        "id": "sokoto-state",
+        "label": "Sokoto State",
+        "kind": "region"
+      },
+      {
+        "id": "taraba-state",
+        "label": "Taraba State",
+        "kind": "region"
+      },
+      {
+        "id": "yobe",
+        "label": "Yobe",
+        "kind": "region"
+      },
+      {
+        "id": "zamfara-state",
+        "label": "Zamfara State",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "norway",
     "name": "Norway",
     "total": 5472839,
-    "hexagons": 185959
+    "hexagons": 185959,
+    "views": [
+      {
+        "id": "agder",
+        "label": "Agder",
+        "kind": "region"
+      },
+      {
+        "id": "innlandet",
+        "label": "Innlandet",
+        "kind": "region"
+      },
+      {
+        "id": "m-re-og-romsdal",
+        "label": "Møre og Romsdal",
+        "kind": "region"
+      },
+      {
+        "id": "nordland",
+        "label": "Nordland",
+        "kind": "region"
+      },
+      {
+        "id": "oslo",
+        "label": "Oslo",
+        "kind": "region"
+      },
+      {
+        "id": "rogaland",
+        "label": "Rogaland",
+        "kind": "region"
+      },
+      {
+        "id": "troms-og-finnmark",
+        "label": "Troms og Finnmark",
+        "kind": "region"
+      },
+      {
+        "id": "tr-ndelag",
+        "label": "Trøndelag",
+        "kind": "region"
+      },
+      {
+        "id": "vestfold-og-telemark",
+        "label": "Vestfold og Telemark",
+        "kind": "region"
+      },
+      {
+        "id": "vestland",
+        "label": "Vestland",
+        "kind": "region"
+      },
+      {
+        "id": "viken",
+        "label": "Viken",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "pakistan",
     "name": "Pakistan",
     "total": 241582115,
-    "hexagons": 380718
+    "hexagons": 380718,
+    "views": [
+      {
+        "id": "karachi",
+        "label": "Karachi",
+        "kind": "city"
+      },
+      {
+        "id": "azad-kashmir",
+        "label": "Azad Kashmir",
+        "kind": "region"
+      },
+      {
+        "id": "balochistan",
+        "label": "Balochistan",
+        "kind": "region"
+      },
+      {
+        "id": "gilgit-baltistan",
+        "label": "Gilgit-Baltistan",
+        "kind": "region"
+      },
+      {
+        "id": "islamabad-capital-territory",
+        "label": "Islamabad Capital Territory",
+        "kind": "region"
+      },
+      {
+        "id": "khyber-pakhtunkhwa",
+        "label": "Khyber Pakhtunkhwa",
+        "kind": "region"
+      },
+      {
+        "id": "punjab",
+        "label": "Punjab",
+        "kind": "region"
+      },
+      {
+        "id": "sindh",
+        "label": "Sindh",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "palestine",
     "name": "Palestine",
     "total": 5550127,
-    "hexagons": 6018
+    "hexagons": 6018,
+    "views": []
   },
   {
     "key": "poland",
     "name": "Poland",
     "total": 41080699,
-    "hexagons": 320640
+    "hexagons": 320640,
+    "views": [
+      {
+        "id": "greater-poland-voivodeship",
+        "label": "Greater Poland Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "holy-cross-voivodeship",
+        "label": "Holy Cross Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "kuyavian-pomeranian-voivodeship",
+        "label": "Kuyavian-Pomeranian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "lesser-poland-voivodeship",
+        "label": "Lesser Poland Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "dzkie-voivodship",
+        "label": "Łódzkie Voivodship",
+        "kind": "region"
+      },
+      {
+        "id": "lower-silesian-voivodeship",
+        "label": "Lower Silesian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "lublin-voivodeship",
+        "label": "Lublin Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "lubusz-voivodeship",
+        "label": "Lubusz Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "masovian-voivodeship",
+        "label": "Masovian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "opole-voivodeship",
+        "label": "Opole Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "podlaskie-voivodeship",
+        "label": "Podlaskie Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "pomeranian-voivodeship",
+        "label": "Pomeranian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "silesian-voivodeship",
+        "label": "Silesian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "subcarpathian-voivodeship",
+        "label": "Subcarpathian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "warmian-masurian-voivodeship",
+        "label": "Warmian-Masurian Voivodeship",
+        "kind": "region"
+      },
+      {
+        "id": "west-pomeranian-voivodeship",
+        "label": "West Pomeranian Voivodeship",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "portugal",
     "name": "Portugal",
     "total": 10359135,
-    "hexagons": 88728
+    "hexagons": 88728,
+    "views": [
+      {
+        "id": "aveiro",
+        "label": "Aveiro",
+        "kind": "region"
+      },
+      {
+        "id": "azores",
+        "label": "Azores",
+        "kind": "region"
+      },
+      {
+        "id": "beja",
+        "label": "Beja",
+        "kind": "region"
+      },
+      {
+        "id": "braga",
+        "label": "Braga",
+        "kind": "region"
+      },
+      {
+        "id": "bragan-a",
+        "label": "Bragança",
+        "kind": "region"
+      },
+      {
+        "id": "castelo-branco",
+        "label": "Castelo Branco",
+        "kind": "region"
+      },
+      {
+        "id": "coimbra",
+        "label": "Coimbra",
+        "kind": "region"
+      },
+      {
+        "id": "vora",
+        "label": "Évora",
+        "kind": "region"
+      },
+      {
+        "id": "faro",
+        "label": "Faro",
+        "kind": "region"
+      },
+      {
+        "id": "guarda",
+        "label": "Guarda",
+        "kind": "region"
+      },
+      {
+        "id": "leiria",
+        "label": "Leiria",
+        "kind": "region"
+      },
+      {
+        "id": "lisbon",
+        "label": "Lisbon",
+        "kind": "region"
+      },
+      {
+        "id": "madeira",
+        "label": "Madeira",
+        "kind": "region"
+      },
+      {
+        "id": "portalegre",
+        "label": "Portalegre",
+        "kind": "region"
+      },
+      {
+        "id": "porto",
+        "label": "Porto",
+        "kind": "region"
+      },
+      {
+        "id": "santar-m",
+        "label": "Santarém",
+        "kind": "region"
+      },
+      {
+        "id": "set-bal",
+        "label": "Setúbal",
+        "kind": "region"
+      },
+      {
+        "id": "viana-do-castelo",
+        "label": "Viana do Castelo",
+        "kind": "region"
+      },
+      {
+        "id": "vila-real",
+        "label": "Vila Real",
+        "kind": "region"
+      },
+      {
+        "id": "viseu",
+        "label": "Viseu",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "romania",
     "name": "Romania",
     "total": 19961091,
-    "hexagons": 137471
+    "hexagons": 137471,
+    "views": [
+      {
+        "id": "alba",
+        "label": "Alba",
+        "kind": "region"
+      },
+      {
+        "id": "arad",
+        "label": "Arad",
+        "kind": "region"
+      },
+      {
+        "id": "arge",
+        "label": "Argeș",
+        "kind": "region"
+      },
+      {
+        "id": "bac-u",
+        "label": "Bacău",
+        "kind": "region"
+      },
+      {
+        "id": "bihor",
+        "label": "Bihor",
+        "kind": "region"
+      },
+      {
+        "id": "bistri-a-n-s-ud",
+        "label": "Bistrița-Năsăud",
+        "kind": "region"
+      },
+      {
+        "id": "boto-ani",
+        "label": "Botoșani",
+        "kind": "region"
+      },
+      {
+        "id": "br-ila",
+        "label": "Brăila",
+        "kind": "region"
+      },
+      {
+        "id": "bra-ov",
+        "label": "Brașov",
+        "kind": "region"
+      },
+      {
+        "id": "bucharest",
+        "label": "Bucharest",
+        "kind": "region"
+      },
+      {
+        "id": "buz-u",
+        "label": "Buzău",
+        "kind": "region"
+      },
+      {
+        "id": "c-l-ra-i",
+        "label": "Călărași",
+        "kind": "region"
+      },
+      {
+        "id": "cara-severin",
+        "label": "Caraș-Severin",
+        "kind": "region"
+      },
+      {
+        "id": "cluj",
+        "label": "Cluj",
+        "kind": "region"
+      },
+      {
+        "id": "constan-a",
+        "label": "Constanța",
+        "kind": "region"
+      },
+      {
+        "id": "covasna",
+        "label": "Covasna",
+        "kind": "region"
+      },
+      {
+        "id": "d-mbovi-a",
+        "label": "Dâmbovița",
+        "kind": "region"
+      },
+      {
+        "id": "dolj",
+        "label": "Dolj",
+        "kind": "region"
+      },
+      {
+        "id": "gala-i",
+        "label": "Galați",
+        "kind": "region"
+      },
+      {
+        "id": "giurgiu",
+        "label": "Giurgiu",
+        "kind": "region"
+      },
+      {
+        "id": "gorj",
+        "label": "Gorj",
+        "kind": "region"
+      },
+      {
+        "id": "harghita",
+        "label": "Harghita",
+        "kind": "region"
+      },
+      {
+        "id": "hunedoara",
+        "label": "Hunedoara",
+        "kind": "region"
+      },
+      {
+        "id": "ialomi-a",
+        "label": "Ialomița",
+        "kind": "region"
+      },
+      {
+        "id": "ia-i",
+        "label": "Iași",
+        "kind": "region"
+      },
+      {
+        "id": "ilfov",
+        "label": "Ilfov",
+        "kind": "region"
+      },
+      {
+        "id": "maramure",
+        "label": "Maramureș",
+        "kind": "region"
+      },
+      {
+        "id": "mehedin-i",
+        "label": "Mehedinți",
+        "kind": "region"
+      },
+      {
+        "id": "mure",
+        "label": "Mureș",
+        "kind": "region"
+      },
+      {
+        "id": "neam",
+        "label": "Neamț",
+        "kind": "region"
+      },
+      {
+        "id": "olt",
+        "label": "Olt",
+        "kind": "region"
+      },
+      {
+        "id": "prahova",
+        "label": "Prahova",
+        "kind": "region"
+      },
+      {
+        "id": "s-laj",
+        "label": "Sălaj",
+        "kind": "region"
+      },
+      {
+        "id": "satu-mare",
+        "label": "Satu Mare",
+        "kind": "region"
+      },
+      {
+        "id": "sibiu",
+        "label": "Sibiu",
+        "kind": "region"
+      },
+      {
+        "id": "suceava",
+        "label": "Suceava",
+        "kind": "region"
+      },
+      {
+        "id": "teleorman",
+        "label": "Teleorman",
+        "kind": "region"
+      },
+      {
+        "id": "timi",
+        "label": "Timiș",
+        "kind": "region"
+      },
+      {
+        "id": "tulcea",
+        "label": "Tulcea",
+        "kind": "region"
+      },
+      {
+        "id": "v-lcea",
+        "label": "Vâlcea",
+        "kind": "region"
+      },
+      {
+        "id": "vaslui",
+        "label": "Vaslui",
+        "kind": "region"
+      },
+      {
+        "id": "vrancea",
+        "label": "Vrancea",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "singapore",
     "name": "Singapore",
     "total": 5995474,
-    "hexagons": 1271
+    "hexagons": 1271,
+    "views": [
+      {
+        "id": "central",
+        "label": "Central",
+        "kind": "region"
+      },
+      {
+        "id": "northeast",
+        "label": "Northeast",
+        "kind": "region"
+      },
+      {
+        "id": "northwest",
+        "label": "Northwest",
+        "kind": "region"
+      },
+      {
+        "id": "southeast",
+        "label": "Southeast",
+        "kind": "region"
+      },
+      {
+        "id": "southwest",
+        "label": "Southwest",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "spain",
     "name": "Spain",
     "total": 47551642,
-    "hexagons": 286702
+    "hexagons": 286702,
+    "views": [
+      {
+        "id": "andalusia",
+        "label": "Andalusia",
+        "kind": "region"
+      },
+      {
+        "id": "aragon",
+        "label": "Aragon",
+        "kind": "region"
+      },
+      {
+        "id": "asturias",
+        "label": "Asturias",
+        "kind": "region"
+      },
+      {
+        "id": "autonomous-community-of-the-basque-country",
+        "label": "Autonomous Community of the Basque Country",
+        "kind": "region"
+      },
+      {
+        "id": "balearic-islands",
+        "label": "Balearic Islands",
+        "kind": "region"
+      },
+      {
+        "id": "canary-islands",
+        "label": "Canary Islands",
+        "kind": "region"
+      },
+      {
+        "id": "cantabria",
+        "label": "Cantabria",
+        "kind": "region"
+      },
+      {
+        "id": "castile-and-le-n",
+        "label": "Castile and León",
+        "kind": "region"
+      },
+      {
+        "id": "castile-la-mancha",
+        "label": "Castile-La Mancha",
+        "kind": "region"
+      },
+      {
+        "id": "catalonia",
+        "label": "Catalonia",
+        "kind": "region"
+      },
+      {
+        "id": "ceuta",
+        "label": "Ceuta",
+        "kind": "region"
+      },
+      {
+        "id": "community-of-madrid",
+        "label": "Community of Madrid",
+        "kind": "region"
+      },
+      {
+        "id": "extremadura",
+        "label": "Extremadura",
+        "kind": "region"
+      },
+      {
+        "id": "galicia",
+        "label": "Galicia",
+        "kind": "region"
+      },
+      {
+        "id": "melilla",
+        "label": "Melilla",
+        "kind": "region"
+      },
+      {
+        "id": "navarre",
+        "label": "Navarre",
+        "kind": "region"
+      },
+      {
+        "id": "plazas-de-soberan-a",
+        "label": "Plazas de Soberanía",
+        "kind": "region"
+      },
+      {
+        "id": "region-of-murcia",
+        "label": "Region of Murcia",
+        "kind": "region"
+      },
+      {
+        "id": "rioja",
+        "label": "Rioja",
+        "kind": "region"
+      },
+      {
+        "id": "valencian-community",
+        "label": "Valencian Community",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "sri_lanka",
     "name": "Sri Lanka",
     "total": 21894168,
-    "hexagons": 46713
+    "hexagons": 46713,
+    "views": [
+      {
+        "id": "central-province",
+        "label": "Central Province",
+        "kind": "region"
+      },
+      {
+        "id": "eastern-province",
+        "label": "Eastern Province",
+        "kind": "region"
+      },
+      {
+        "id": "north-central-province",
+        "label": "North Central Province",
+        "kind": "region"
+      },
+      {
+        "id": "north-western-province",
+        "label": "North Western Province",
+        "kind": "region"
+      },
+      {
+        "id": "northern-province",
+        "label": "Northern Province",
+        "kind": "region"
+      },
+      {
+        "id": "sabaragamuwa-province",
+        "label": "Sabaragamuwa Province",
+        "kind": "region"
+      },
+      {
+        "id": "southern-province",
+        "label": "Southern Province",
+        "kind": "region"
+      },
+      {
+        "id": "uva-province",
+        "label": "Uva Province",
+        "kind": "region"
+      },
+      {
+        "id": "western-province",
+        "label": "Western Province",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "sweden",
     "name": "Sweden",
     "total": 10617084,
-    "hexagons": 286945
+    "hexagons": 286945,
+    "views": [
+      {
+        "id": "blekinge-county",
+        "label": "Blekinge County",
+        "kind": "region"
+      },
+      {
+        "id": "dalarna-county",
+        "label": "Dalarna County",
+        "kind": "region"
+      },
+      {
+        "id": "g-vleborg-county",
+        "label": "Gävleborg County",
+        "kind": "region"
+      },
+      {
+        "id": "gotland-county",
+        "label": "Gotland County",
+        "kind": "region"
+      },
+      {
+        "id": "halland-county",
+        "label": "Halland County",
+        "kind": "region"
+      },
+      {
+        "id": "j-mtland-county",
+        "label": "Jämtland County",
+        "kind": "region"
+      },
+      {
+        "id": "j-nk-ping-county",
+        "label": "Jönköping County",
+        "kind": "region"
+      },
+      {
+        "id": "kalmar-county",
+        "label": "Kalmar County",
+        "kind": "region"
+      },
+      {
+        "id": "kronoberg-county",
+        "label": "Kronoberg County",
+        "kind": "region"
+      },
+      {
+        "id": "norrbotten-county",
+        "label": "Norrbotten County",
+        "kind": "region"
+      },
+      {
+        "id": "rebro-county",
+        "label": "Örebro County",
+        "kind": "region"
+      },
+      {
+        "id": "sterg-tland-county",
+        "label": "Östergötland County",
+        "kind": "region"
+      },
+      {
+        "id": "sk-ne-county",
+        "label": "Skåne County",
+        "kind": "region"
+      },
+      {
+        "id": "s-dermanland-county",
+        "label": "Södermanland County",
+        "kind": "region"
+      },
+      {
+        "id": "stockholm-county",
+        "label": "Stockholm County",
+        "kind": "region"
+      },
+      {
+        "id": "uppsala-county",
+        "label": "Uppsala County",
+        "kind": "region"
+      },
+      {
+        "id": "v-rmland-county",
+        "label": "Värmland County",
+        "kind": "region"
+      },
+      {
+        "id": "v-sterbotten-county",
+        "label": "Västerbotten County",
+        "kind": "region"
+      },
+      {
+        "id": "v-sternorrland-county",
+        "label": "Västernorrland County",
+        "kind": "region"
+      },
+      {
+        "id": "v-stmanland-county",
+        "label": "Västmanland County",
+        "kind": "region"
+      },
+      {
+        "id": "v-stra-g-taland-county",
+        "label": "Västra Götaland County",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "switzerland",
     "name": "Switzerland",
     "total": 8922173,
-    "hexagons": 41959
+    "hexagons": 41959,
+    "views": [
+      {
+        "id": "aargau",
+        "label": "Aargau",
+        "kind": "region"
+      },
+      {
+        "id": "appenzell-ausserrhoden",
+        "label": "Appenzell Ausserrhoden",
+        "kind": "region"
+      },
+      {
+        "id": "appenzell-innerrhoden",
+        "label": "Appenzell Innerrhoden",
+        "kind": "region"
+      },
+      {
+        "id": "basel-city",
+        "label": "Basel-City",
+        "kind": "region"
+      },
+      {
+        "id": "basel-landschaft",
+        "label": "Basel-Landschaft",
+        "kind": "region"
+      },
+      {
+        "id": "bern",
+        "label": "Bern",
+        "kind": "region"
+      },
+      {
+        "id": "fribourg",
+        "label": "Fribourg",
+        "kind": "region"
+      },
+      {
+        "id": "geneva",
+        "label": "Geneva",
+        "kind": "region"
+      },
+      {
+        "id": "glarus",
+        "label": "Glarus",
+        "kind": "region"
+      },
+      {
+        "id": "grisons",
+        "label": "Grisons",
+        "kind": "region"
+      },
+      {
+        "id": "jura",
+        "label": "Jura",
+        "kind": "region"
+      },
+      {
+        "id": "lucerne",
+        "label": "Lucerne",
+        "kind": "region"
+      },
+      {
+        "id": "neuch-tel",
+        "label": "Neuchâtel",
+        "kind": "region"
+      },
+      {
+        "id": "nidwalden",
+        "label": "Nidwalden",
+        "kind": "region"
+      },
+      {
+        "id": "obwalden",
+        "label": "Obwalden",
+        "kind": "region"
+      },
+      {
+        "id": "schaffhausen",
+        "label": "Schaffhausen",
+        "kind": "region"
+      },
+      {
+        "id": "schwyz",
+        "label": "Schwyz",
+        "kind": "region"
+      },
+      {
+        "id": "solothurn",
+        "label": "Solothurn",
+        "kind": "region"
+      },
+      {
+        "id": "st-gallen",
+        "label": "St. Gallen",
+        "kind": "region"
+      },
+      {
+        "id": "thurgau",
+        "label": "Thurgau",
+        "kind": "region"
+      },
+      {
+        "id": "ticino",
+        "label": "Ticino",
+        "kind": "region"
+      },
+      {
+        "id": "uri",
+        "label": "Uri",
+        "kind": "region"
+      },
+      {
+        "id": "vaud",
+        "label": "Vaud",
+        "kind": "region"
+      },
+      {
+        "id": "wallis",
+        "label": "Wallis",
+        "kind": "region"
+      },
+      {
+        "id": "zug",
+        "label": "Zug",
+        "kind": "region"
+      },
+      {
+        "id": "zurich",
+        "label": "Zurich",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "ukraine",
     "name": "Ukraine",
     "total": 37863034,
-    "hexagons": 297089
+    "hexagons": 297089,
+    "views": [
+      {
+        "id": "autonomous-republic-of-crimea",
+        "label": "Autonomous Republic of Crimea",
+        "kind": "region"
+      },
+      {
+        "id": "cherkasy-oblast",
+        "label": "Cherkasy Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "chernihiv-oblast",
+        "label": "Chernihiv Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "chernivtsi-oblast",
+        "label": "Chernivtsi Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "dnipropetrovsk-oblast",
+        "label": "Dnipropetrovsk Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "donetsk-oblast",
+        "label": "Donetsk Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "ivano-frankivsk-oblast",
+        "label": "Ivano-Frankivsk Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "kharkiv-oblast",
+        "label": "Kharkiv Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "kherson-oblast",
+        "label": "Kherson Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "khmelnytskyi-oblast",
+        "label": "Khmelnytskyi Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "kirovohrad-oblast",
+        "label": "Kirovohrad Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "kyiv",
+        "label": "Kyiv",
+        "kind": "region"
+      },
+      {
+        "id": "kyiv-oblast",
+        "label": "Kyiv Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "luhansk-oblast",
+        "label": "Luhansk Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "lviv-oblast",
+        "label": "Lviv Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "mykolaiv-oblast",
+        "label": "Mykolaiv Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "odesa-oblast",
+        "label": "Odesa Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "poltava-oblast",
+        "label": "Poltava Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "rivne-oblast",
+        "label": "Rivne Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "sevastopol",
+        "label": "Sevastopol",
+        "kind": "region"
+      },
+      {
+        "id": "sumy-oblast",
+        "label": "Sumy Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "ternopil-oblast",
+        "label": "Ternopil Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "vinnytsia-oblast",
+        "label": "Vinnytsia Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "volyn-oblast",
+        "label": "Volyn Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "zakarpattia-oblast",
+        "label": "Zakarpattia Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "zaporizhia-oblast",
+        "label": "Zaporizhia Oblast",
+        "kind": "region"
+      },
+      {
+        "id": "zhytomyr-oblast",
+        "label": "Zhytomyr Oblast",
+        "kind": "region"
+      }
+    ]
   },
   {
     "key": "united_kingdom",
     "name": "United Kingdom",
     "total": 67743873,
-    "hexagons": 224522
+    "hexagons": 224522,
+    "views": [
+      {
+        "id": "london",
+        "label": "London",
+        "kind": "city"
+      },
+      {
+        "id": "england",
+        "label": "England",
+        "kind": "region"
+      },
+      {
+        "id": "northern-ireland",
+        "label": "Northern Ireland",
+        "kind": "region"
+      },
+      {
+        "id": "scotland",
+        "label": "Scotland",
+        "kind": "region"
+      },
+      {
+        "id": "wales",
+        "label": "Wales",
+        "kind": "region"
+      }
+    ]
   }
 ]
