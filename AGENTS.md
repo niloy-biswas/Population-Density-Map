@@ -9,7 +9,7 @@ Quick reference for AI agents working in this repo. Read this before exploring; 
 | Output | Tech | Entry point | Result |
 |--------|------|-------------|--------|
 | Rendered maps | R + rayshader (ray-traced PNGs) | `run_country.R` | `output/plots/`, `output/annotated/` |
-| Web explorer | Static HTML/JS, deck.gl + MapLibre | `web/index.html` | Live at https://niloy.tech/Population-Density-Map/ |
+| Web explorer | Static HTML/JS, deck.gl + MapLibre | `web/index.html` (generated) | Live at https://niloy.tech/Population-Density-Map/ |
 
 Both read `scripts/countries.R`. Making a rendered map never touches `web/`; the explorer never needs rayshader.
 
@@ -26,7 +26,8 @@ scripts/
   plot_population_3d.R        # rayshader plot_3d + render_highquality
   annotate_population_map.R   # magick title/credits on the PNG
   check_boundary_plot.R       # (see Known issues: currently a no-op)
-  export_web_data.R           # Web data exporter (all web data comes from here)
+  export_web_data.R           # Web data + page generator (all of web/data and the pages)
+  templates/explorer.html     # Template for web/index.html and every country page
   download_kontur.R           # Fetch Kontur files by ISO code → data/kontur/
   setup_packages.R            # install.packages for everything
   legacy/                     # Old per-country scripts. Reference only, don't edit
@@ -34,14 +35,17 @@ data/                         # Kontur .gpkg inputs (~218 MB, committed). Lowerc
   kontur/                     # Downloaded by download_kontur.R. GITIGNORED (~3 GB)
 output/                       # Rendered images (README gallery). Committed
 web/
-  index.html, app.js, style.css, og.jpg, apple-touch-icon.png
-  data/countries.json         # GENERATED: search index (countries + view ids/labels)
+  app.js, style.css, og.jpg, apple-touch-icon.png
+  index.html                  # GENERATED: landing page ("population density map", shows Bangladesh)
+  <slug>/index.html           # GENERATED: one page per country (slug = key with hyphens: sri-lanka)
+  sitemap.xml                 # GENERATED: every page + the day its content last changed
+  data/countries.json         # GENERATED: search index + summary facts (countries, views, per km², top regions)
   data/<key>/hexes.json       # GENERATED: hexagons, palette, views, labels, places
   data/<key>/boundaries.geojson  # GENERATED: region/district outlines
 .github/workflows/pages.yml   # Deploys web/ only, on push to main touching web/**
 ```
 
-Never hand-edit `web/data/`. Regenerate it with the exporter.
+Never hand-edit `web/data/` or any `web/**/index.html`. Edit `scripts/templates/explorer.html` (or the page functions in the exporter) and regenerate with `--manifest`. The pages repeat the same markup on purpose (see Gotchas); don't try to deduplicate them.
 
 ## Commands
 
@@ -54,10 +58,10 @@ Rscript scripts/download_kontur.R GB DE
 
 # Web data for one or more countries (also rebuilds web/data/countries.json)
 Rscript scripts/export_web_data.R bangladesh nepal
-Rscript scripts/export_web_data.R --manifest   # only rebuild countries.json
+Rscript scripts/export_web_data.R --manifest   # only rebuild countries.json + pages (~7 s)
 
 # Preview the explorer
-python3 -m http.server 8000 -d web      # → http://localhost:8000/#bangladesh
+python3 -m http.server 8000 -d web      # → http://localhost:8000/bangladesh/
 
 # Quick checks (no test suite exists)
 node --check web/app.js
@@ -76,7 +80,8 @@ web = list(
   views   = list(list(id = "dhaka-city", label = "Dhaka city", bounds = c(w, s, e, n))),
   palette = c("#b5e3e6", ...),  # low → high; default is the shared teal ramp
   crop    = c(w, s, e, n),       # drop hexagons/areas outside (France, NL, Norway, UK)
-  bounds  = c(w, s, e, n)        # country view only; islands kept (Spain, Portugal, Japan)
+  bounds  = c(w, s, e, n),       # country view only; islands kept (Spain, Portugal, Japan)
+  land_km2 = 735                 # land area override for people per km² (Maldives, Singapore)
 )
 ```
 
@@ -92,7 +97,8 @@ web = list(
 - **Boot:** fetch `data/countries.json` → `buildSearchIndex()` → `initMap()` (once) → `loadCountry(key, viewId)`. A `loadToken` guards against out-of-order responses when switching quickly.
 - **UI (Google Maps style):** top-left column (`.panel`, used by `framePadding()`) holds the search combobox, a scrolling chip row of the country's views, and a summary card with the legend. The card's chevron hides chips + card (`.panel__details`) behind a "<Country> · N people" pill; open by default, remembered in `localStorage` (`pdm-panel-collapsed`). The hamburger opens an About popover. Bottom-right, `.view-ctrl` is added as a MapLibre control above zoom/compass: a layers popover (column height, tilt, rotate, reset) and a 3D/flat toggle. Defaults: height 1.5×, every view opens at `DEFAULT_PITCH` = 30°.
 - **Search** (`buildSearchIndex`, `searchPlaces`): matches countries + manifest views, accent-insensitive; ranks name-start, then word-start, then mid-word, then country > city > region, then shorter names. Until the visitor types, the box shows the current place and the list shows all countries (it doubles as the country dropdown). Picking a view of another country calls `loadCountry(key, viewId)`.
-- **URL hash:** `#<country>` or `#<country>/<viewId>`. The bare link and unknown hashes open `DEFAULT_COUNTRY` (Bangladesh, matching `og.jpg`; first country if it is ever removed) and get rewritten. Don't rely on manifest order: it is alphabetical, so Austria became the landing page by accident once.
+- **URLs:** `<slug>/` or `<slug>/#<viewId>`, one real page per country so search engines index each (they ignore hashes). `ROOT` (the folder of `app.js`) resolves `data/` and links from any page, so the same JS runs at `/` locally and `/Population-Density-Map/` live. The landing page shows `DEFAULT_COUNTRY` (Bangladesh, matching `og.jpg`; first country if it is ever removed) and keeps its URL and title until the visitor goes elsewhere; `syncUrl()` then `replaceState`s to the country page and sets its title and canonical. Old `#<key>` / `#<key>/<viewId>` links on the landing page redirect. Don't rely on manifest order: it is alphabetical, so Austria became the landing page by accident once.
+- **Country pages** share one template; the exporter fills in title, description, canonical, JSON-LD (`WebApplication`, plus a `BreadcrumbList` on country pages), the h1 (eyebrow + country name, so keep the eyebrow visible on phones: Google indexes the mobile layout) and stat, and a closed `<details>` "<Country> in numbers" summary (from `countries.json` facts). `renderSummary()` in `app.js` rebuilds that summary on country switch, so keep it in step with `summary_html()` in the exporter, and the page title with `pageTitle()`. The About menu's country list is plain `<a>` links (crawlable); `bindCountryLinks()` turns clicks into in-place switches and makes the hrefs absolute.
 - **Layers** (deck `MapboxOverlay`, `interleaved: true`):
   - `H3HexagonLayer` columns, inserted `beforeId` the basemap's first symbol layer so city names stay on top
   - `GeoJsonLayer` outlines, drawn with `depthCompare: 'always'` so they show over the columns, inserted `beforeId` our label layers
@@ -111,7 +117,10 @@ Per country: read hexagons + admin polygons (`read_admin()` loads only level 2 a
 2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (1 km raster, 1.5 km buffer, holes filled), in EPSG:3857.
 3. **`outlined_areas()`** gives the region + district polygons, tagged `kind = "region" | "district"`. Outlines and labels are clipped to the land mask.
 4. **`build_views()`** produces the country, then `web$views`, then regions alphabetically.
-5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search. To remove a country, delete its folder and re-run any export.
+5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search and `country_facts()` for the summary and stat line: people per km² of land, the densest hexagon's place, top 5 regions (districts if there are no named regions). Land area comes from `land_area_km2()`: Natural Earth 1:50m matched by **name** (Bangladesh's and Sri Lanka's file names carry no ISO code; "Israel & Palestine" sums both), cut to `web$crop`. It is within a few % of official figures except for microstates, where 1:50m drops most of the land; those set `web$land_km2`. Ukraine comes out ~6% under the official figure (Natural Earth likely leaves out Crimea), left as is. Check a new country's figure against its official land area.
+6. **`write_pages()`** fills `scripts/templates/explorer.html` into `web/index.html` and `web/<slug>/index.html`, writes `web/sitemap.xml`, and removes page folders of countries no longer exported. To remove a country, delete its `web/data/` folder and re-run any export.
+   - `write_page()` only rewrites a page whose content changed, and `write_sitemap()` keeps the previous `lastmod` for unchanged pages, so re-running the export doesn't redate everything. Don't switch it to "today" for all pages: search engines stop trusting a `lastmod` that always changes.
+   - The sitemap lives under the project path, so search engines only find it via Search Console or a `Sitemap:` line in niloy.tech's `robots.txt` (the user-site repo, not this one).
 
 The JS only knows `kind`, never admin-level numbers. Keep it that way.
 
@@ -127,7 +136,14 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 - **Popovers inside the search pill use `--glass-solid`, not blur.** A `backdrop-filter` nested in another one can't see the chips/card behind it, so a translucent list showed them through. `.search` also needs `z-index: 1`: each blurred piece is its own stacking context, and later siblings would paint over the results.
 - **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height.
 - **`map.cameraForBounds()` factors in the current pitch,** so presets framed inconsistently. `cameraFor()` replaces it; don't switch back.
-- **`web/index.html` names countries by hand** in the meta descriptions and the JSON-LD block (the exporter doesn't touch it). Update them when adding a country.
+- **The landing page's country count skips names with " & "** ("Israel & Palestine" is a combined map), and its description names a few countries by hand in `page_html()`.
+- **The 35 generated pages repeat the same search box, controls and country list on purpose.** The single source is `scripts/templates/explorer.html`; the copies are build output, committed like `web/data/`. Options weighed and rejected:
+  - Building the country list in JS: it is the crawlable link to every country page, so it has to be in the static HTML.
+  - Building the search box and controls in JS: no SEO gain, adds JS and an empty-UI flash on load.
+  - Server-side includes: GitHub Pages has none.
+  - Generating the pages in CI and gitignoring them: the deploy would need R, plus the page code split out of the exporter (which loads `sf`), to save only diff noise.
+
+  The cost is that one template edit shows up as ~35 changed files; commit those in the data batch.
 - **District labels** appear at the country's default zoom + 1.2 (a relative threshold, set per country with `map.setLayerZoomRange()`), not at a fixed zoom. Past that, collision decides which show.
 - **Button and label names drop admin suffixes** (`ADMIN_SUFFIX` in `app.js`: "Division", "Prefecture", "State", ...). A city preset named like a region then shows two identical buttons ("Lagos" vs "Lagos State"), so presets are called "<City> city".
 - **Case sensitivity:** the folder is `data/` (lowercase). It was once tracked as `Data/` and broke Linux/CI. Keep paths lowercase.
@@ -153,9 +169,9 @@ There's no test suite. What has worked:
 
 - **Web:** serve `web/` locally and drive headless Chrome over the DevTools protocol with WebGL enabled: `--headless=new --use-angle=swiftshader --enable-unsafe-swiftshader`. Set exact viewport size with `Emulation.setDeviceMetricsOverride`, because `--window-size` includes browser chrome. Node 22+ has a global `WebSocket`, so no puppeteer is needed. Check:
   - `.chips__chip` buttons render and `[data-status]` becomes hidden
-  - search: type "dhaka", Enter → `#bangladesh/dhaka-city`
+  - search: type "dhaka", Enter → `bangladesh/#dhaka-city`
   - the `.deck-tooltip` text on hover
-  - hash routing and country switching
+  - routing: landing keeps `/`, `#nepal` → `nepal/`, `#bangladesh/dhaka-city` → `bangladesh/#dhaka-city`, About-menu country links switch without a reload. Serve under a subfolder (symlink `web` to `/tmp/site/Population-Density-Map`) to match production paths
   - screenshots look right
 - **Exporter:** after exporting, validate that `countries.json` matches the folders, the per-hex array lengths are equal, `place` indexes are in range, and view ids are unique.
 - **R maps:** a throwaway-name, low-quality `run_country()` render (see the Gotchas section).

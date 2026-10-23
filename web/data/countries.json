@@ -4,6 +4,34 @@
     "name": "Austria",
     "total": 9009078,
     "hexagons": 86915,
+    "land_km2": 83900,
+    "per_km2": 107,
+    "max": 8546,
+    "max_per_km2": 12000,
+    "densest": "Vienna",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Vienna",
+        "people": 1898989
+      },
+      {
+        "name": "Lower Austria",
+        "people": 1721148
+      },
+      {
+        "name": "Upper Austria",
+        "people": 1469902
+      },
+      {
+        "name": "Styria",
+        "people": 1282037
+      },
+      {
+        "name": "Tyrol",
+        "people": 764007
+      }
+    ],
     "views": [
       {
         "id": "burgenland",
@@ -57,6 +85,34 @@
     "name": "Bangladesh",
     "total": 173889934,
     "hexagons": 148387,
+    "land_km2": 136000,
+    "per_km2": 1280,
+    "max": 37876,
+    "max_per_km2": 51000,
+    "densest": "Chattogram District, Chattogram Division",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Dhaka Division",
+        "people": 47005524
+      },
+      {
+        "name": "Chattogram Division",
+        "people": 34230417
+      },
+      {
+        "name": "Rajshahi Division",
+        "people": 21551541
+      },
+      {
+        "name": "Rangpur Division",
+        "people": 18543823
+      },
+      {
+        "name": "Khulna Division",
+        "people": 17514261
+      }
+    ],
     "views": [
       {
         "id": "dhaka-city",
@@ -110,6 +166,26 @@
     "name": "Belgium",
     "total": 11787187,
     "hexagons": 40991,
+    "land_km2": 30600,
+    "per_km2": 385,
+    "max": 21011,
+    "max_per_km2": 28000,
+    "densest": "Saint-Gilles - Sint-Gillis, Brussels-Capital",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Flanders",
+        "people": 6731811
+      },
+      {
+        "name": "Wallonia",
+        "people": 3712060
+      },
+      {
+        "name": "Brussels-Capital",
+        "people": 1241684
+      }
+    ],
     "views": [
       {
         "id": "brussels-capital",
@@ -133,6 +209,34 @@
     "name": "Bhutan",
     "total": 876550,
     "hexagons": 9077,
+    "land_km2": 39900,
+    "per_km2": 22,
+    "max": 17097,
+    "max_per_km2": 23000,
+    "densest": null,
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Thimphu District",
+        "people": 123812
+      },
+      {
+        "name": "Chukha",
+        "people": 102455
+      },
+      {
+        "name": "Samtse District",
+        "people": 73784
+      },
+      {
+        "name": "Trashigang District",
+        "people": 58017
+      },
+      {
+        "name": "Sarpang District",
+        "people": 49590
+      }
+    ],
     "views": [
       {
         "id": "bumthang-district",
@@ -241,6 +345,34 @@
     "name": "Czechia",
     "total": 10548451,
     "hexagons": 80168,
+    "land_km2": 78500,
+    "per_km2": 134,
+    "max": 8134,
+    "max_per_km2": 11000,
+    "densest": "okres Praha-východ",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Hlavní město Praha",
+        "people": 1310316
+      },
+      {
+        "name": "Jihomoravský kraj",
+        "people": 1162908
+      },
+      {
+        "name": "Ústecký kraj",
+        "people": 782014
+      },
+      {
+        "name": "Jihočeský kraj",
+        "people": 625581
+      },
+      {
+        "name": "Olomouc Region",
+        "people": 598260
+      }
+    ],
     "views": [
       {
         "id": "hlavn-m-sto-praha",
@@ -309,6 +441,34 @@
     "name": "Denmark",
     "total": 5912004,
     "hexagons": 67267,
+    "land_km2": 42400,
+    "per_km2": 139,
+    "max": 28072,
+    "max_per_km2": 38000,
+    "densest": "Tårnby Kommune, Capital Region of Denmark",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Capital Region of Denmark",
+        "people": 2063581
+      },
+      {
+        "name": "Central Denmark Region",
+        "people": 1236806
+      },
+      {
+        "name": "Region of Southern Denmark",
+        "people": 1083707
+      },
+      {
+        "name": "Region Zealand",
+        "people": 764478
+      },
+      {
+        "name": "North Denmark Region",
+        "people": 530545
+      }
+    ],
     "views": [
       {
         "id": "capital-region-of-denmark",
@@ -342,6 +502,34 @@
     "name": "Finland",
     "total": 5550413,
     "hexagons": 261427,
+    "land_km2": 330000,
+    "per_km2": 17,
+    "max": 6854,
+    "max_per_km2": 9300,
+    "densest": "Helsinki, Helsinki sub-region, Uusimaa",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Uusimaa",
+        "people": 1444757
+      },
+      {
+        "name": "Pirkanmaa",
+        "people": 501402
+      },
+      {
+        "name": "Southwest Finland",
+        "people": 467458
+      },
+      {
+        "name": "North Ostrobothnia",
+        "people": 449563
+      },
+      {
+        "name": "North Savo",
+        "people": 305309
+      }
+    ],
     "views": [
       {
         "id": "central-finland",
@@ -440,6 +628,34 @@
     "name": "France",
     "total": 64954611,
     "hexagons": 596104,
+    "land_km2": 546000,
+    "per_km2": 119,
+    "max": 30482,
+    "max_per_km2": 41000,
+    "densest": "Ile-de-France",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Ile-de-France",
+        "people": 12262513
+      },
+      {
+        "name": "Auvergne-Rhône-Alpes",
+        "people": 7790546
+      },
+      {
+        "name": "Occitania",
+        "people": 6056866
+      },
+      {
+        "name": "Nouvelle-Aquitaine",
+        "people": 6053791
+      },
+      {
+        "name": "Hauts-de-France",
+        "people": 6005245
+      }
+    ],
     "views": [
       {
         "id": "paris",
@@ -518,6 +734,34 @@
     "name": "Germany",
     "total": 83526777,
     "hexagons": 363550,
+    "land_km2": 356000,
+    "per_km2": 235,
+    "max": 19256,
+    "max_per_km2": 26000,
+    "densest": "Grevenbroich, Rhein-Kreis Neuss, North Rhine-Westphalia",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "North Rhine-Westphalia",
+        "people": 18055436
+      },
+      {
+        "name": "Bavaria",
+        "people": 13235955
+      },
+      {
+        "name": "Baden-Württemberg",
+        "people": 10996325
+      },
+      {
+        "name": "Lower Saxony",
+        "people": 8028142
+      },
+      {
+        "name": "Hesse",
+        "people": 6255699
+      }
+    ],
     "views": [
       {
         "id": "baden-w-rttemberg",
@@ -606,6 +850,34 @@
     "name": "Greece",
     "total": 10347613,
     "hexagons": 108125,
+    "land_km2": 130000,
+    "per_km2": 80,
+    "max": 25236,
+    "max_per_km2": 34000,
+    "densest": "Municipality of Zografos, Regional Unit of Central Athens, Attica",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Attica",
+        "people": 3591348
+      },
+      {
+        "name": "Central Macedonia",
+        "people": 1802414
+      },
+      {
+        "name": "Thessaly",
+        "people": 699990
+      },
+      {
+        "name": "Region of Crete",
+        "people": 628006
+      },
+      {
+        "name": "Western Greece",
+        "people": 624907
+      }
+    ],
     "views": [
       {
         "id": "attica",
@@ -679,6 +951,34 @@
     "name": "Hungary",
     "total": 9631859,
     "hexagons": 60772,
+    "land_km2": 93000,
+    "per_km2": 104,
+    "max": 18745,
+    "max_per_km2": 25000,
+    "densest": "Budapest",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Budapest",
+        "people": 1832993
+      },
+      {
+        "name": "Pest",
+        "people": 1158055
+      },
+      {
+        "name": "Borsod-Abaúj-Zemplén",
+        "people": 646443
+      },
+      {
+        "name": "Hajdú-Bihar",
+        "people": 614924
+      },
+      {
+        "name": "Szabolcs-Szatmár-Bereg",
+        "people": 564334
+      }
+    ],
     "views": [
       {
         "id": "b-cs-kiskun",
@@ -787,6 +1087,34 @@
     "name": "Ireland",
     "total": 5068093,
     "hexagons": 70410,
+    "land_km2": 68700,
+    "per_km2": 74,
+    "max": 9592,
+    "max_per_km2": 13000,
+    "densest": "Rotunda A ED, County Dublin",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "County Dublin",
+        "people": 1402858
+      },
+      {
+        "name": "County Cork",
+        "people": 549673
+      },
+      {
+        "name": "County Galway",
+        "people": 267416
+      },
+      {
+        "name": "County Kildare",
+        "people": 240555
+      },
+      {
+        "name": "County Meath",
+        "people": 219181
+      }
+    ],
     "views": [
       {
         "id": "county-carlow",
@@ -925,6 +1253,13 @@
     "name": "Israel",
     "total": 9380044,
     "hexagons": 12133,
+    "land_km2": 22100,
+    "per_km2": 425,
+    "max": 31642,
+    "max_per_km2": 43000,
+    "densest": null,
+    "top_kind": null,
+    "top": [],
     "views": []
   },
   {
@@ -932,6 +1267,13 @@
     "name": "Israel & Palestine",
     "total": 14930171,
     "hexagons": 18151,
+    "land_km2": 28400,
+    "per_km2": 526,
+    "max": 31642,
+    "max_per_km2": 43000,
+    "densest": null,
+    "top_kind": null,
+    "top": [],
     "views": []
   },
   {
@@ -939,6 +1281,34 @@
     "name": "Italy",
     "total": 58913879,
     "hexagons": 312901,
+    "land_km2": 300000,
+    "per_km2": 196,
+    "max": 25410,
+    "max_per_km2": 34000,
+    "densest": "Rome, Roma Capitale, Lazio",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Lombardy",
+        "people": 9724356
+      },
+      {
+        "name": "Lazio",
+        "people": 5524256
+      },
+      {
+        "name": "Campania",
+        "people": 5436182
+      },
+      {
+        "name": "Veneto",
+        "people": 4874000
+      },
+      {
+        "name": "Sicily",
+        "people": 4811546
+      }
+    ],
     "views": [
       {
         "id": "abruzzo",
@@ -1047,6 +1417,34 @@
     "name": "Japan",
     "total": 123294123,
     "hexagons": 229211,
+    "land_km2": 370000,
+    "per_km2": 333,
+    "max": 18582,
+    "max_per_km2": 25000,
+    "densest": "Toshima, Tokyo",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Tokyo",
+        "people": 13698467
+      },
+      {
+        "name": "Kanagawa Prefecture",
+        "people": 9163471
+      },
+      {
+        "name": "Osaka Prefecture",
+        "people": 8553019
+      },
+      {
+        "name": "Aichi Prefecture",
+        "people": 7391183
+      },
+      {
+        "name": "Saitama Prefecture",
+        "people": 7199898
+      }
+    ],
     "views": [
       {
         "id": "tokyo-city",
@@ -1295,6 +1693,34 @@
     "name": "Maldives",
     "total": 518768,
     "hexagons": 1019,
+    "land_km2": 298,
+    "per_km2": 1740,
+    "max": 31794,
+    "max_per_km2": 43000,
+    "densest": "Henveiru, Malé",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Malé Atoll",
+        "people": 177967
+      },
+      {
+        "name": "Malé",
+        "people": 80746
+      },
+      {
+        "name": "Maalhosmadulu Uthuruburi",
+        "people": 34711
+      },
+      {
+        "name": "Addu",
+        "people": 23319
+      },
+      {
+        "name": "Haa Dhaalu",
+        "people": 20122
+      }
+    ],
     "views": [
       {
         "id": "addu",
@@ -1408,6 +1834,34 @@
     "name": "Myanmar",
     "total": 54795072,
     "hexagons": 212821,
+    "land_km2": 663000,
+    "per_km2": 83,
+    "max": 40200,
+    "max_per_km2": 55000,
+    "densest": "Labutta, Ayeyarwady",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Yangon",
+        "people": 8437685
+      },
+      {
+        "name": "Shan State",
+        "people": 6918038
+      },
+      {
+        "name": "Mandalay",
+        "people": 6525977
+      },
+      {
+        "name": "Ayeyarwady",
+        "people": 6400033
+      },
+      {
+        "name": "Sagaing Region",
+        "people": 5810102
+      }
+    ],
     "views": [
       {
         "id": "ayeyarwady",
@@ -1491,6 +1945,34 @@
     "name": "Nepal",
     "total": 31353925,
     "hexagons": 105556,
+    "land_km2": 147000,
+    "per_km2": 213,
+    "max": 34892,
+    "max_per_km2": 47000,
+    "densest": "Duhabi, Sunsari, Koshi Province",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Bagmati Pradesh",
+        "people": 6929699
+      },
+      {
+        "name": "Madhesh Province",
+        "people": 6416968
+      },
+      {
+        "name": "Koshi Province",
+        "people": 5572757
+      },
+      {
+        "name": "Lumbini Province",
+        "people": 4859290
+      },
+      {
+        "name": "Sudurpashchim Pradesh",
+        "people": 3632693
+      }
+    ],
     "views": [
       {
         "id": "bagmati-pradesh",
@@ -1534,6 +2016,34 @@
     "name": "Netherlands",
     "total": 17476877,
     "hexagons": 50287,
+    "land_km2": 36900,
+    "per_km2": 474,
+    "max": 11282,
+    "max_per_km2": 15000,
+    "densest": "The Hague, South Holland",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "South Holland",
+        "people": 3644108
+      },
+      {
+        "name": "North Holland",
+        "people": 2853595
+      },
+      {
+        "name": "North Brabant",
+        "people": 2540198
+      },
+      {
+        "name": "Gelderland",
+        "people": 2081783
+      },
+      {
+        "name": "Utrecht",
+        "people": 1368540
+      }
+    ],
     "views": [
       {
         "id": "drenthe",
@@ -1602,6 +2112,34 @@
     "name": "Nigeria",
     "total": 224135234,
     "hexagons": 637762,
+    "land_km2": 912000,
+    "per_km2": 246,
+    "max": 34023,
+    "max_per_km2": 46000,
+    "densest": "Kumshe, Bama, Borno State",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Kano State",
+        "people": 15191617
+      },
+      {
+        "name": "Lagos State",
+        "people": 13478124
+      },
+      {
+        "name": "Kaduna State",
+        "people": 9627179
+      },
+      {
+        "name": "Katsina State",
+        "people": 9056606
+      },
+      {
+        "name": "Oyo State",
+        "people": 9026309
+      }
+    ],
     "views": [
       {
         "id": "lagos-city",
@@ -1800,6 +2338,34 @@
     "name": "Norway",
     "total": 5472839,
     "hexagons": 185959,
+    "land_km2": 322000,
+    "per_km2": 17,
+    "max": 4457,
+    "max_per_km2": 6000,
+    "densest": "Oslo",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Viken",
+        "people": 1174343
+      },
+      {
+        "name": "Vestland",
+        "people": 677742
+      },
+      {
+        "name": "Oslo",
+        "people": 599256
+      },
+      {
+        "name": "Trøndelag",
+        "people": 523294
+      },
+      {
+        "name": "Rogaland",
+        "people": 473866
+      }
+    ],
     "views": [
       {
         "id": "agder",
@@ -1863,6 +2429,34 @@
     "name": "Pakistan",
     "total": 241582115,
     "hexagons": 380718,
+    "land_km2": 874000,
+    "per_km2": 276,
+    "max": 33518,
+    "max_per_km2": 45000,
+    "densest": "Sindh",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Punjab",
+        "people": 133133376
+      },
+      {
+        "name": "Sindh",
+        "people": 52923821
+      },
+      {
+        "name": "Khyber Pakhtunkhwa",
+        "people": 39181596
+      },
+      {
+        "name": "Balochistan",
+        "people": 8804014
+      },
+      {
+        "name": "Azad Kashmir",
+        "people": 4044581
+      }
+    ],
     "views": [
       {
         "id": "karachi",
@@ -1911,6 +2505,13 @@
     "name": "Palestine",
     "total": 5550127,
     "hexagons": 6018,
+    "land_km2": 6330,
+    "per_km2": 876,
+    "max": 29534,
+    "max_per_km2": 40000,
+    "densest": null,
+    "top_kind": null,
+    "top": [],
     "views": []
   },
   {
@@ -1918,6 +2519,34 @@
     "name": "Poland",
     "total": 41080699,
     "hexagons": 320640,
+    "land_km2": 313000,
+    "per_km2": 131,
+    "max": 8664,
+    "max_per_km2": 12000,
+    "densest": "Masovian Voivodeship",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Masovian Voivodeship",
+        "people": 5690816
+      },
+      {
+        "name": "Silesian Voivodeship",
+        "people": 4756715
+      },
+      {
+        "name": "Greater Poland Voivodeship",
+        "people": 3769021
+      },
+      {
+        "name": "Lesser Poland Voivodeship",
+        "people": 3633053
+      },
+      {
+        "name": "Lower Silesian Voivodeship",
+        "people": 3085727
+      }
+    ],
     "views": [
       {
         "id": "greater-poland-voivodeship",
@@ -2006,6 +2635,34 @@
     "name": "Portugal",
     "total": 10359135,
     "hexagons": 88728,
+    "land_km2": 90800,
+    "per_km2": 114,
+    "max": 16669,
+    "max_per_km2": 23000,
+    "densest": "Arroios, Lisbon",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Lisbon",
+        "people": 2196405
+      },
+      {
+        "name": "Porto",
+        "people": 1717603
+      },
+      {
+        "name": "Setúbal",
+        "people": 875663
+      },
+      {
+        "name": "Braga",
+        "people": 799146
+      },
+      {
+        "name": "Aveiro",
+        "people": 662134
+      }
+    ],
     "views": [
       {
         "id": "aveiro",
@@ -2114,6 +2771,34 @@
     "name": "Romania",
     "total": 19961091,
     "hexagons": 137471,
+    "land_km2": 236000,
+    "per_km2": 85,
+    "max": 13376,
+    "max_per_km2": 18000,
+    "densest": "Bucharest",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Bucharest",
+        "people": 1917999
+      },
+      {
+        "name": "Iași",
+        "people": 773672
+      },
+      {
+        "name": "Prahova",
+        "people": 740991
+      },
+      {
+        "name": "Timiș",
+        "people": 728916
+      },
+      {
+        "name": "Cluj",
+        "people": 721863
+      }
+    ],
     "views": [
       {
         "id": "alba",
@@ -2332,6 +3017,34 @@
     "name": "Singapore",
     "total": 5995474,
     "hexagons": 1271,
+    "land_km2": 735,
+    "per_km2": 8160,
+    "max": 38556,
+    "max_per_km2": 52000,
+    "densest": "Northwest",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Southwest",
+        "people": 1389222
+      },
+      {
+        "name": "Central",
+        "people": 1209157
+      },
+      {
+        "name": "Northeast",
+        "people": 1158118
+      },
+      {
+        "name": "Northwest",
+        "people": 1139525
+      },
+      {
+        "name": "Southeast",
+        "people": 1090828
+      }
+    ],
     "views": [
       {
         "id": "central",
@@ -2365,6 +3078,34 @@
     "name": "Spain",
     "total": 47551642,
     "hexagons": 286702,
+    "land_km2": 506000,
+    "per_km2": 94,
+    "max": 23246,
+    "max_per_km2": 32000,
+    "densest": "Barcelona, Catalonia",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Andalusia",
+        "people": 8253405
+      },
+      {
+        "name": "Catalonia",
+        "people": 7716458
+      },
+      {
+        "name": "Community of Madrid",
+        "people": 6627749
+      },
+      {
+        "name": "Valencian Community",
+        "people": 5190525
+      },
+      {
+        "name": "Galicia",
+        "people": 2703083
+      }
+    ],
     "views": [
       {
         "id": "andalusia",
@@ -2473,6 +3214,34 @@
     "name": "Sri Lanka",
     "total": 21894168,
     "hexagons": 46713,
+    "land_km2": 66000,
+    "per_km2": 332,
+    "max": 25651,
+    "max_per_km2": 35000,
+    "densest": "Colombo District, Western Province",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Western Province",
+        "people": 6364187
+      },
+      {
+        "name": "Central Province",
+        "people": 2706658
+      },
+      {
+        "name": "Southern Province",
+        "people": 2676076
+      },
+      {
+        "name": "North Western Province",
+        "people": 2605079
+      },
+      {
+        "name": "Sabaragamuwa Province",
+        "people": 2040330
+      }
+    ],
     "views": [
       {
         "id": "central-province",
@@ -2526,6 +3295,34 @@
     "name": "Sweden",
     "total": 10617084,
     "hexagons": 286945,
+    "land_km2": 443000,
+    "per_km2": 24,
+    "max": 14616,
+    "max_per_km2": 20000,
+    "densest": "Stockholms kommun, Stockholm County",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Stockholm County",
+        "people": 2269085
+      },
+      {
+        "name": "Västra Götaland County",
+        "people": 1705331
+      },
+      {
+        "name": "Skåne County",
+        "people": 1366079
+      },
+      {
+        "name": "Östergötland County",
+        "people": 486007
+      },
+      {
+        "name": "Jönköping County",
+        "people": 379599
+      }
+    ],
     "views": [
       {
         "id": "blekinge-county",
@@ -2639,6 +3436,34 @@
     "name": "Switzerland",
     "total": 8922173,
     "hexagons": 41959,
+    "land_km2": 41200,
+    "per_km2": 217,
+    "max": 14438,
+    "max_per_km2": 20000,
+    "densest": "Geneva",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Zurich",
+        "people": 1583098
+      },
+      {
+        "name": "Bern",
+        "people": 1037027
+      },
+      {
+        "name": "Vaud",
+        "people": 845765
+      },
+      {
+        "name": "Aargau",
+        "people": 679846
+      },
+      {
+        "name": "Geneva",
+        "people": 522396
+      }
+    ],
     "views": [
       {
         "id": "aargau",
@@ -2777,6 +3602,34 @@
     "name": "Ukraine",
     "total": 37863034,
     "hexagons": 297089,
+    "land_km2": 570000,
+    "per_km2": 66,
+    "max": 24769,
+    "max_per_km2": 34000,
+    "densest": "Олександрійська міська громада, Oleksandriia Raion, Kirovohrad Oblast",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Donetsk Oblast",
+        "people": 3509777
+      },
+      {
+        "name": "Dnipropetrovsk Oblast",
+        "people": 2749065
+      },
+      {
+        "name": "Kyiv",
+        "people": 2297477
+      },
+      {
+        "name": "Kharkiv Oblast",
+        "people": 2247547
+      },
+      {
+        "name": "Lviv Oblast",
+        "people": 2053655
+      }
+    ],
     "views": [
       {
         "id": "autonomous-republic-of-crimea",
@@ -2920,6 +3773,30 @@
     "name": "United Kingdom",
     "total": 67743873,
     "hexagons": 224522,
+    "land_km2": 240000,
+    "per_km2": 283,
+    "max": 17273,
+    "max_per_km2": 23000,
+    "densest": "City of Westminster, England",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "England",
+        "people": 57010806
+      },
+      {
+        "name": "Scotland",
+        "people": 5529451
+      },
+      {
+        "name": "Wales",
+        "people": 3226214
+      },
+      {
+        "name": "Northern Ireland",
+        "people": 1970275
+      }
+    ],
     "views": [
       {
         "id": "london",

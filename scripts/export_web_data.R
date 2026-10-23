@@ -20,14 +20,17 @@
 #     Region and district outlines (property "kind"), simplified and clipped
 #     to land.
 #
-# Then rebuilds web/data/countries.json, the index behind the search box
-# (countries plus their city and region views), from every exported country
-# folder.
+# Then rebuilds, from every exported country folder:
+#   web/data/countries.json  the index behind the search box (countries, their
+#                            city and region views, summary facts)
+#   web/index.html           landing page  } from scripts/templates/
+#   web/{slug}/index.html    country pages } explorer.html
+#   web/sitemap.xml          every page, with the date its content changed
 #
 # Usage (from repo root):
 #   Rscript scripts/export_web_data.R bangladesh
 #   Rscript scripts/export_web_data.R bangladesh nepal
-#   Rscript scripts/export_web_data.R --manifest   # countries.json only
+#   Rscript scripts/export_web_data.R --manifest   # countries.json + pages
 
 library(sf)
 library(jsonlite)
@@ -38,6 +41,8 @@ web_data_dir <- "web/data"
 simplify_metres <- 150
 # Decimal places in boundaries.geojson (4 ≈ 11 m).
 coordinate_precision <- 4
+# Average H3 resolution 8 cell area, for "people per km²" in summaries.
+hex_area_km2 <- 0.7373276
 
 # Defaults for each country's `web` list in countries.R.
 # levels: Kontur admin_level per tier (subdistrict levels are tried in order,
@@ -58,7 +63,8 @@ web_settings <- function(cfg) {
     views   = web$views,
     palette = if (is.null(web$palette)) web_defaults$palette else web$palette,
     crop    = web$crop,
-    bounds  = web$bounds
+    bounds  = web$bounds,
+    land_km2 = web$land_km2
   )
 }
 
@@ -277,12 +283,73 @@ write_boundaries <- function(areas, land, out_file) {
            ))
 }
 
-# Index of exported countries for the search box, rebuilt from the folders so
-# a deleted folder drops out on the next export. Each country lists its views
-# (minus the country itself) so search can reach a city or region without
-# fetching every hexes.json; presets from countries.R are tagged "city".
+# Land area for the "people per km²" figure: web$land_km2 if set, else the
+# country's Natural Earth 1:50m polygons (both, for "Israel & Palestine"), cut
+# to web$crop like the hexagons. Matched by name: some Kontur file names carry
+# no ISO code. NA, with a warning, if nothing matches.
+land_area_km2 <- function(cfg, ne) {
+  web <- web_settings(cfg)
+  if (!is.null(web$land_km2)) return(web$land_km2)
+  parts <- strsplit(cfg$name, " & ", fixed = TRUE)[[1]]
+  hit <- ne$admin %in% parts | ne$name_long %in% parts | ne$name %in% parts
+  geom <- st_geometry(ne[hit, ])
+  if (!length(geom)) {
+    warning(cfg$name, ": no Natural Earth match, so no people per km²")
+    return(NA)
+  }
+  if (!is.null(web$crop)) {
+    # Planar crop, as in crop_country(); s2 back on for the area itself.
+    old <- suppressMessages(sf_use_s2(FALSE))
+    geom <- suppressWarnings(suppressMessages(
+      st_crop(st_make_valid(geom), st_bbox(bounds_box(web$crop, 4326)))
+    ))
+    suppressMessages(sf_use_s2(old))
+  }
+  sum(as.numeric(st_area(geom))) / 1e6
+}
+
+# Facts for the summary card on each country's page: people per km² of land,
+# where the densest hexagon is, and the most populous regions (districts if a
+# country's file has no named regions). `d` is a hexes.json read with
+# simplifyVector = FALSE, so a missing place name is NULL.
+country_facts <- function(d, land_km2) {
+  pop <- unlist(d$population)
+  idx <- unlist(d$place) + 1L
+  idx[idx == 0] <- NA # -1: outside every area
+  tier <- function(i) {
+    vapply(d$places, function(p) if (is.null(p[[i]])) NA_character_ else p[[i]],
+           "")[idx]
+  }
+  densest <- idx[which.max(pop)]
+  if (!is.na(densest)) {
+    # unique(): city districts often share the city's name ("Labutta, Labutta").
+    densest <- paste(unique(unlist(d$places[[densest]])), collapse = ", ")
+  }
+  named <- Filter(function(a) any(!is.na(a)),
+                  list(region = tier(3), district = tier(2)))
+  top <- if (length(named)) {
+    people <- sort(tapply(pop, named[[1]], sum), decreasing = TRUE)
+    lapply(head(names(people), 5), function(n) {
+      list(name = n, people = unname(people[[n]]))
+    })
+  } else {
+    list()
+  }
+  list(land_km2 = signif(land_km2, 3),
+       per_km2 = round(signif(d$total / land_km2, 3)),
+       max = d$max, max_per_km2 = signif(d$max / hex_area_km2, 2),
+       densest = densest, top_kind = if (length(named)) names(named)[1] else NA,
+       top = top)
+}
+
+# Index of exported countries for the search box and the country pages,
+# rebuilt from the folders so a deleted folder drops out on the next export.
+# Each country lists its views (minus the country itself) so search can reach
+# a city or region without fetching every hexes.json; presets from
+# countries.R are tagged "city".
 write_manifest <- function(data_dir = web_data_dir) {
   files <- Sys.glob(file.path(data_dir, "*", "hexes.json"))
+  ne <- rnaturalearth::ne_countries(scale = 50, returnclass = "sf")
   entries <- lapply(files, function(f) {
     d <- fromJSON(f, simplifyVector = FALSE)
     presets <- vapply(countries[[d$key]]$web$views, `[[`, "", "id")
@@ -290,14 +357,309 @@ write_manifest <- function(data_dir = web_data_dir) {
       list(id = v$id, label = v$label,
            kind = if (v$id %in% presets) "city" else "region")
     })
-    list(key = d$key, name = d$name, total = d$total,
-         hexagons = length(d$h3), views = views)
+    c(list(key = d$key, name = d$name, total = d$total,
+           hexagons = length(d$h3)),
+      country_facts(d, land_area_km2(countries[[d$key]], ne)),
+      list(views = views))
   })
   entries <- entries[order(vapply(entries, `[[`, "", "name"))]
   write_json(entries, file.path(data_dir, "countries.json"),
-             auto_unbox = TRUE, pretty = TRUE)
+             auto_unbox = TRUE, pretty = TRUE, na = "null")
   message("countries.json: ", paste(vapply(entries, `[[`, "", "name"),
                                     collapse = ", "))
+  invisible(entries)
+}
+
+# ---- Pages ----
+# The explorer is one app, but search engines ignore URL hashes, so every
+# country also gets its own page (web/{slug}/index.html) with its own title,
+# description and summary. The landing page (web/index.html) targets
+# "population density map" and shows the default country. All of them come
+# from one template; web/app.js renders the same summary and stat line when
+# the visitor switches country, so keep summary_html() and stat_line() in
+# step with renderSummary() and setCountry().
+
+site_url <- "https://niloy.tech/Population-Density-Map/"
+page_template <- "scripts/templates/explorer.html"
+# Shown by the landing page; must match DEFAULT_COUNTRY in web/app.js.
+default_country <- "bangladesh"
+# Page folder for a country key: hyphens, since search engines read "_" as
+# part of a word ("sri_lanka").
+page_slug <- function(key) gsub("_", "-", key)
+
+html_escape <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  gsub("\"", "&quot;", x, fixed = TRUE)
+}
+
+fmt_int <- function(x) {
+  format(round(x), big.mark = ",", scientific = FALSE, trim = TRUE)
+}
+
+# Like Intl.NumberFormat('en', { notation: 'compact' }) in app.js: 173.9M.
+fmt_short <- function(x) {
+  units <- c(B = 1e9, M = 1e6, K = 1e3)
+  unit <- units[x >= units][1]
+  if (is.na(unit)) return(fmt_int(x))
+  number <- formatC(x / unit, format = "f", digits = 1)
+  paste0(sub("\\.0$", "", number), names(unit))
+}
+
+fmt_words <- function(x) {
+  if (x < 1e6) return(fmt_int(x))
+  paste(formatC(x / 1e6, format = "f", digits = 1), "million")
+}
+
+# "A", "A and B", "A, B and C"
+join_and <- function(x) {
+  if (length(x) < 2) return(x)
+  paste(paste(head(x, -1), collapse = ", "), "and", tail(x, 1))
+}
+
+# Under the country name; same as setCountry() in app.js.
+stat_line <- function(e) {
+  sprintf("%s people · %s", fmt_short(e$total), if (is.na(e$per_km2)) {
+    paste(fmt_short(e$hexagons), "hexagons")
+  } else {
+    paste(fmt_int(e$per_km2), "per km²")
+  })
+}
+
+# Inside <details data-summary>; same markup as renderSummary() in app.js.
+summary_html <- function(e) {
+  density <- if (is.na(e$per_km2)) {
+    ""
+  } else {
+    sprintf(" on about %s km² of land, roughly %s per km²",
+            fmt_int(e$land_km2), fmt_int(e$per_km2))
+  }
+  densest <- if (is.na(e$densest)) "" else paste0(", in ", e$densest, ",")
+  text <- sprintf(paste0(
+    "%s has %s people%s. They live in %s populated hexagons; the densest%s ",
+    "holds %s people, about %s per km²."
+  ), e$name, fmt_int(e$total), density, fmt_int(e$hexagons), densest,
+  fmt_int(e$max), fmt_int(e$max_per_km2))
+  out <- c(
+    sprintf('<summary class="summary__toggle">%s in numbers</summary>',
+            html_escape(e$name)),
+    sprintf('<p class="summary__text">%s</p>', html_escape(text))
+  )
+  if (length(e$top)) {
+    items <- vapply(e$top, function(a) {
+      share <- round(100 * a$people / e$total)
+      sprintf(paste0('<li><span class="summary__name">%s</span>',
+                     '<span class="summary__value">%s · %s</span></li>'),
+              html_escape(a$name), fmt_short(a$people),
+              if (share < 1) "&lt;1%" else paste0(share, "%"))
+    }, "")
+    out <- c(out,
+             sprintf('<p class="summary__title">Most populous %ss</p>',
+                     e$top_kind),
+             '<ol class="summary__list">', items, "</ol>")
+  }
+  paste0("                        ", out, collapse = "\n")
+}
+
+# Plain links so crawlers can reach every country page; app.js makes them
+# switch country without a reload.
+country_links <- function(entries, root) {
+  vapply(entries, function(e) {
+    sprintf('%s<li><a href="%s%s/" data-country="%s">%s</a></li>',
+            strrep(" ", 28), root, page_slug(e$key), e$key,
+            html_escape(e$name))
+  }, "") |> paste(collapse = "\n")
+}
+
+json_ld <- function(name, url, description, extra = list()) {
+  c(list(
+    "@context" = "https://schema.org",
+    "@type" = "WebApplication",
+    name = name,
+    url = url,
+    description = description,
+    image = paste0(site_url, "og.jpg"),
+    applicationCategory = "ReferenceApplication",
+    operatingSystem = "Any",
+    browserRequirements = "Requires JavaScript and WebGL",
+    isAccessibleForFree = TRUE,
+    offers = list("@type" = "Offer", price = "0", priceCurrency = "USD")
+  ), extra, list(
+    creator = list("@type" = "Person", name = "Niloy Biswas",
+                   url = "https://niloy.tech/"),
+    isBasedOn = list(
+      "@type" = "Dataset",
+      name = "Kontur Population Dataset (2023)",
+      url = "https://data.humdata.org/organization/kontur",
+      creator = list("@type" = "Organization", name = "Kontur"),
+      license = "https://creativecommons.org/licenses/by/4.0/"
+    ),
+    sameAs = "https://github.com/niloy-biswas/Population-Density-Map"
+  ))
+}
+
+# niloy.tech › Population Density Map › <Country>, shown by Google in place
+# of the raw URL.
+breadcrumbs <- function(name, url) {
+  crumbs <- list(c("niloy.tech", "https://niloy.tech/"),
+                 c("Population Density Map", site_url), c(name, url))
+  list(
+    "@context" = "https://schema.org",
+    "@type" = "BreadcrumbList",
+    itemListElement = lapply(seq_along(crumbs), function(i) {
+      list("@type" = "ListItem", position = i, name = crumbs[[i]][1],
+           item = crumbs[[i]][2])
+    })
+  )
+}
+
+# One object, or an array of them, for the <script type="application/ld+json">.
+ld_script <- function(...) {
+  objects <- list(...)
+  json <- toJSON(if (length(objects) == 1) objects[[1]] else objects,
+                 auto_unbox = TRUE, pretty = 4)
+  # "</" would end the <script> block early.
+  gsub("</", "<\\/", json, fixed = TRUE)
+}
+
+fill_template <- function(template, values) {
+  for (field in names(values)) {
+    template <- gsub(paste0("{{", field, "}}"), values[[field]], template,
+                     fixed = TRUE)
+  }
+  if (grepl("{{", template, fixed = TRUE)) {
+    stop(page_template, " has a placeholder with no value")
+  }
+  template
+}
+
+page_html <- function(template, entries, e, landing) {
+  root <- if (landing) "" else "../"
+  country_names <- vapply(entries, `[[`, "", "name")
+  # "Israel & Palestine" is a combined map, not another country.
+  n_countries <- sum(!grepl(" & ", country_names, fixed = TRUE))
+  if (landing) {
+    title <- sprintf(
+      "Population Density Map: Interactive 3D Map of %d Countries",
+      n_countries
+    )
+    url <- site_url
+    description <- sprintf(paste0(
+      "Population density map of %d countries in interactive 3D: ",
+      "Bangladesh, Pakistan, Japan, the UK, Germany, France and more. ",
+      "Hover any ~0.74 km² hexagon for its population."
+    ), n_countries)
+    ld <- ld_script(json_ld("3D Population Density Map", url, paste0(
+      "Interactive 3D population density maps built from Kontur H3 ",
+      "hexagons (resolution 8, about 0.74 km² each). Covers ",
+      join_and(country_names), "."
+    ), list(keywords = paste(c(
+      "population density map", "3D population map", "H3 hexagons",
+      "Kontur", country_names
+    ), collapse = ", "))))
+  } else {
+    title <- sprintf("%s Population Density Map (Interactive 3D)", e$name)
+    url <- paste0(site_url, page_slug(e$key), "/")
+    areas <- vapply(head(e$top, 3), `[[`, "", "name")
+    density <- if (is.na(e$per_km2)) {
+      sprintf(" in %s hexagons of ~0.74 km²", fmt_int(e$hexagons))
+    } else {
+      sprintf(", about %s per km²", fmt_int(e$per_km2))
+    }
+    description <- paste0(
+      sprintf("Interactive 3D population density map of %s: %s people%s ",
+              e$name, fmt_words(e$total), density),
+      "(Kontur 2023).",
+      if (length(areas)) {
+        sprintf(" Explore %s and more.", paste(areas, collapse = ", "))
+      }
+    )
+    ld <- ld_script(
+      json_ld(paste(e$name, "Population Density Map"), url, description,
+              list(spatialCoverage = list("@type" = "Place", name = e$name))),
+      breadcrumbs(e$name, url)
+    )
+  }
+  fill_template(template, list(
+    title = html_escape(title),
+    description = html_escape(description),
+    url = url,
+    root = root,
+    json_ld = ld,
+    country_links = country_links(entries, root),
+    map_label = html_escape(paste(
+      "Interactive 3D population density map of", e$name
+    )),
+    name = html_escape(e$name),
+    stat = stat_line(e),
+    summary = summary_html(e),
+    expand_label = html_escape(sprintf("%s · %s people", e$name,
+                                       fmt_short(e$total)))
+  ))
+}
+
+# Writes `file` only if its content changes; TRUE if it did (for lastmod).
+write_page <- function(html, file) {
+  dir.create(dirname(file), showWarnings = FALSE, recursive = TRUE)
+  tmp <- tempfile(tmpdir = dirname(file))
+  con <- file(tmp, "wb")
+  writeLines(enc2utf8(html), con, useBytes = TRUE)
+  close(con)
+  if (file.exists(file) && tools::md5sum(tmp) == tools::md5sum(file)) {
+    unlink(tmp)
+    return(FALSE)
+  }
+  file.rename(tmp, file)
+}
+
+# lastmod is the day a page's content last changed. Unchanged pages keep the
+# date from the previous sitemap, so a re-run doesn't redate every page and
+# search engines can keep trusting it.
+write_sitemap <- function(urls, changed, file) {
+  old <- if (file.exists(file)) readLines(file) else character(0)
+  old <- regmatches(old, regexec("<loc>(.+)</loc><lastmod>(.+)</lastmod>",
+                                 old))
+  old <- Filter(length, old)
+  previous <- setNames(vapply(old, `[`, "", 3), vapply(old, `[`, "", 2))
+  lastmod <- unname(ifelse(changed | is.na(previous[urls]),
+                           format(Sys.Date()), previous[urls]))
+  writeLines(c(
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    sprintf("  <url><loc>%s</loc><lastmod>%s</lastmod></url>", urls, lastmod),
+    "</urlset>"
+  ), file)
+}
+
+# The landing page plus one page per country, and the sitemap listing them.
+# Folders of countries no longer exported are removed, but only if they hold
+# nothing besides index.html.
+write_pages <- function(entries, site_dir = dirname(web_data_dir)) {
+  template <- paste(readLines(page_template, encoding = "UTF-8"),
+                    collapse = "\n")
+  keys <- vapply(entries, `[[`, "", "key")
+  landing <- entries[[match(default_country, keys, nomatch = 1)]]
+  changed <- c(
+    write_page(page_html(template, entries, landing, TRUE),
+               file.path(site_dir, "index.html")),
+    vapply(entries, function(e) {
+      write_page(page_html(template, entries, e, FALSE),
+                 file.path(site_dir, page_slug(e$key), "index.html"))
+    }, TRUE)
+  )
+  write_sitemap(c(site_url, paste0(site_url, page_slug(keys), "/")), changed,
+                file.path(site_dir, "sitemap.xml"))
+  for (dir in list.dirs(site_dir, recursive = FALSE)) {
+    if (basename(dir) %in% c(page_slug(keys), basename(web_data_dir))) next
+    if (identical(list.files(dir, all.files = TRUE, no.. = TRUE),
+                  "index.html")) {
+      unlink(dir, recursive = TRUE)
+      message("Removed stale page ", dir)
+    }
+  }
+  message("Pages: index.html + ", length(entries), " countries (",
+          sum(changed), " changed) + sitemap.xml")
 }
 
 export_web_data <- function(country_key, data_dir = web_data_dir) {
@@ -356,6 +718,7 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
 
 keys <- commandArgs(trailingOnly = TRUE)
 if (length(keys) == 0) keys <- "bangladesh"
-# --manifest: only rebuild countries.json from the existing folders.
+# --manifest: only rebuild countries.json and the pages from the existing
+# folders.
 for (k in setdiff(keys, "--manifest")) export_web_data(k)
-write_manifest()
+write_pages(write_manifest())

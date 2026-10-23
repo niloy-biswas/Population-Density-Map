@@ -65,6 +65,9 @@
 #     bounds    → c(west, south, east, north) for the country view only, when
 #                 far-off islands that stay in the map (Canaries, Azores,
 #                 Okinawa) would shrink the mainland in the first view.
+#     land_km2  → Land area for the "people per km²" figure, where Natural
+#                 Earth 1:50m (the default) is far off: it simplifies away
+#                 most of the Maldives' atolls and a third of Singapore.
 #
 # Entries with only name/hex_file/admin_file/web are web-explorer only; their
 # files come from `Rscript scripts/download_kontur.R <ISO>` into data/kontur/.
@@ -167,7 +170,8 @@ countries <- list(
     width = 1500, height = 1080,
     solid = TRUE, shadow_depth = 0.2,
     web = list(levels = list(region = "4", district = character(0),
-                             subdistrict = "9"))
+                             subdistrict = "9"),
+               land_km2 = 298)
   ),
   sri_lanka = list(
     name = "Sri Lanka",
@@ -391,7 +395,8 @@ countries <- list(
     admin_file = "data/kontur/kontur_boundaries_SG_20230628.gpkg",
     web = list(
       levels = list(region = "7", district = character(0),
-                    subdistrict = character(0))
+                    subdistrict = character(0)),
+      land_km2 = 735
     )
   ),
   spain = list(
