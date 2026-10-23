@@ -47,6 +47,17 @@
 #
 #   samples     → Ray tracing quality. 100=fast preview, 500=final.
 #                 Omit to use default (500).
+#
+#   web         → Optional settings for the web explorer (web/), used only by
+#                 scripts/export_web_data.R. Every field has a default there.
+#     levels    → Kontur admin_level for each tier. Countries differ:
+#                 Bangladesh 4/6/8, Nepal 3/7/8, Finland 6/7/8.
+#                 list(region = "4", district = "6", subdistrict = c("8", "10"))
+#     views     → Extra camera presets on top of the country and its regions
+#                 (both added automatically).
+#                 list(list(id = "dhaka-city", label = "Dhaka city",
+#                           bounds = c(west, south, east, north)))
+#     palette   → Column colours, low → high. Default: the shared teal ramp.
 
 countries <- list(
   bangladesh = list(
@@ -60,7 +71,13 @@ countries <- list(
     camera = list(theta = 0, phi = 70, zoom = 0.55, fov = 100),
     light_dir = 55,
     width = 1400, height = 1580,
-    solid = FALSE, shadow_depth = 0
+    solid = FALSE, shadow_depth = 0,
+    web = list(
+      views = list(
+        list(id = "dhaka-city", label = "Dhaka city",
+             bounds = c(90.2, 23.55, 90.6, 24.0))
+      )
+    )
   ),
   bhutan = list(
     name = "Bhutan",
