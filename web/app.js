@@ -17,8 +17,11 @@
   const INK = [15, 23, 42];
   // Tallest column = this share of the view's diagonal, so city views get shorter columns than the country.
   const HEIGHT_PER_DIAGONAL = 0.07;
-  // Region labels always show; district labels only once zoomed in past this.
-  const DISTRICT_LABEL_ZOOM = 7.6;
+  // Region labels always show; district labels once zoomed this far past the country's default view
+  // (relative, because a fixed zoom shows every Bhutan gewog at once yet none of Finland's sub-regions).
+  const DISTRICT_LABEL_ZOOM_STEP = 1.2;
+  // Admin suffixes dropped from labels and buttons ("Dhaka Division" → "Dhaka").
+  const ADMIN_SUFFIX = / (Hill )?District$| Division$| Province$| Pradesh$| Region$| Union Territory$| Gewog$| sub-region$/;
   // Draw on top of the columns regardless of depth, so outlines and names stay readable.
   const ALWAYS_ON_TOP = { depthCompare: 'always', depthWriteEnabled: false };
   const PANEL_STATE_KEY = 'pdm-panel-collapsed';
@@ -57,6 +60,7 @@
   let view;
   let columns; // current H3HexagonLayer
   let showDistricts = false;
+  let districtLabelZoom = Infinity;
   let loadToken = 0;
 
   initPanelToggle();
@@ -126,6 +130,9 @@
       return { h3: id, p, place: data.place[i], color: colorAt(palette, p / data.max) };
     });
 
+    showDistricts = false;
+    districtLabelZoom = cameraFor(data.views[0]).zoom + DISTRICT_LABEL_ZOOM_STEP;
+
     el.name.textContent = data.name;
     el.stat.textContent = `${fmtShort.format(data.total)} people · ${fmtShort.format(hexes.length)} hexagons`;
     el.country.value = data.key;
@@ -182,7 +189,7 @@
     el.reset.addEventListener('click', () => view && goTo(view));
     map.on('move', syncCameraControls);
     map.on('zoom', () => {
-      const show = map.getZoom() >= DISTRICT_LABEL_ZOOM;
+      const show = map.getZoom() >= districtLabelZoom;
       if (show !== showDistricts && country) {
         showDistricts = show;
         renderOverlays();
@@ -427,8 +434,7 @@
     return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
   }
 
-  // Drop admin suffixes for compact labels and buttons ("Dhaka Division" → "Dhaka").
   function shortName(name) {
-    return name.replace(/ (Hill )?District$| Division$| Province$| Pradesh$| Region$/, '');
+    return name.replace(ADMIN_SUFFIX, '');
   }
 })();
