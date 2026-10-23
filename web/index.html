@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Population Density in 3D | Niloy Biswas</title>
+    <script defer src="/assets/js/analytics-init.js"></script>
+    <meta name="description" content="Interactive 3D population density maps built from Kontur H3 hexagons. Fly between regions, tilt the view and hover any column for people per km².">
+    <link rel="canonical" href="https://niloy.tech/Population-Density-Map/">
+    <meta property="og:title" content="Population Density in 3D">
+    <meta property="og:description" content="Interactive 3D population density maps built from Kontur H3 hexagons. Fly between regions, tilt the view and hover any column for people per km².">
+    <meta property="og:url" content="https://niloy.tech/Population-Density-Map/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://niloy.tech/Population-Density-Map/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://niloy.tech/Population-Density-Map/og.jpg">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="theme-color" content="#030712">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" integrity="sha384-uTttxo/aOKbdE5RlD/SPzSDoDmNvGlUYPjONi2MN/b7c9HPSvW07OIuyP7uL6jxK" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="explorer">
+        <div class="explorer__map" id="map" role="region" aria-label="Interactive 3D population density map"></div>
+        <p class="explorer__status" role="status" data-status>Loading map data&hellip;</p>
+
+        <aside class="panel" aria-label="Map controls" data-panel>
+            <div class="panel__header">
+                <div>
+                    <p class="panel__eyebrow">Population density &middot; 3D</p>
+                    <h1 class="panel__title" data-name>Population density</h1>
+                    <p class="panel__stat" data-stat></p>
+                </div>
+                <button type="button" class="panel__toggle" aria-expanded="true" aria-controls="panel-body" aria-label="Collapse controls" data-panel-toggle>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+
+            <div class="panel__body" id="panel-body">
+                <label class="panel__country">
+                    <span>Country</span>
+                    <select data-country disabled></select>
+                </label>
+
+                <div class="panel__views" role="toolbar" aria-label="Map views" data-views></div>
+
+                <div class="panel__legend" data-legend hidden></div>
+
+                <div class="panel__sliders">
+                    <label class="panel__slider">
+                        <span>Column height</span>
+                        <input type="range" min="0.25" max="3" step="0.25" value="1" data-height disabled>
+                    </label>
+                    <label class="panel__slider">
+                        <span>Tilt <output data-pitch-value></output></span>
+                        <input type="range" min="0" max="70" step="1" value="40" data-pitch disabled>
+                    </label>
+                    <label class="panel__slider panel__slider--rotate">
+                        <span>Rotate <output data-bearing-value></output></span>
+                        <input type="range" min="-180" max="180" step="1" value="0" data-bearing disabled>
+                    </label>
+                    <button type="button" class="panel__reset" data-reset disabled>Reset view</button>
+                </div>
+
+                <p class="panel__hint panel__hint--pointer">Drag to pan, scroll to zoom. Tilt and rotate with the sliders, or Ctrl-drag the map. Hover a column to see where it is and how many people live there.</p>
+                <p class="panel__hint panel__hint--touch">Drag to pan, pinch to zoom, two-finger drag up or down to tilt, twist to rotate. Tap a column for its details.</p>
+
+                <p class="panel__links">
+                    <a href="https://github.com/niloy-biswas/Population-Density-Map">Code on GitHub</a>
+                    <a href="https://medium.com/@niloy.swe/how-to-create-a-3d-population-density-map-in-r-33dfaf7a71d7">How the R maps are made</a>
+                    <a href="/">niloy.tech</a>
+                </p>
+            </div>
+        </aside>
+
+        <noscript><p class="explorer__status">This map needs JavaScript. The rendered maps are on <a href="https://github.com/niloy-biswas/Population-Density-Map">GitHub</a>.</p></noscript>
+    </main>
+
+    <!-- Pinned with SRI. deck.gl's H3HexagonLayer reads the global `h3`, so h3-js loads first. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js" integrity="sha384-5+cfbwT0iiub6VsQAdn6yz16nr6sDiQoHx6tm4O8OVYXHYOxcffFmCJBL0dgdvGp" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/h3-js@4.5.0/dist/h3-js.umd.js" integrity="sha384-btAksX4N/Qw1lEPyJQdtZC59TR3dvM7HgYngL8bCs7Dtysie9D3TiJ0GGFZBbXAy" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/deck.gl@9.4.0/dist.min.js" integrity="sha384-NrpHmp6N6IhXZ+gSV+uRLo+Hqprkw4BfdGzmxgWXhjakjkAabyfQxokSmn/aK0VB" crossorigin="anonymous"></script>
+    <script defer src="app.js"></script>
+</body>
+
+</html>
