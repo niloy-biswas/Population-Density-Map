@@ -63,12 +63,15 @@ bbox_vec <- function(geom) {
   round(unname(c(b["xmin"], b["ymin"], b["xmax"], b["ymax"])), 3)
 }
 
-# English name where Kontur has one (Israel/Palestine files only have `name`).
+# English name where Kontur has one, else the local name. Some files (the
+# Israel/Palestine "topology" boundaries) carry no names at all: every area
+# is then NA and the country exports without regions, labels or places.
 area_names <- function(admin) {
+  local <- if ("name" %in% names(admin)) admin$name else NA_character_
   if ("name_en" %in% names(admin)) {
-    ifelse(is.na(admin$name_en), admin$name, admin$name_en)
+    ifelse(is.na(admin$name_en), local, admin$name_en)
   } else {
-    admin$name
+    rep_len(local, nrow(admin))
   }
 }
 
@@ -107,16 +110,31 @@ build_views <- function(cfg, web, admin) {
   c(country, extra, region_views)
 }
 
-# Kontur admin polygons include maritime zones. Build a land mask (EPSG:3857)
-# from the populated hexagons themselves: rasterise at 1 km, polygonise,
-# pad slightly and fill holes so inland lines through lakes/forests survive.
+# Kontur admin polygons include maritime zones, so outlines and labels are
+# clipped to a land mask (EPSG:3857) made of two parts:
+# - Natural Earth 1:50m land: covers unpopulated land (Bhutan's mountains,
+#   Lapland) that the hexagons alone would leave out;
+# - the populated hexagons (rasterised at 1 km, padded, holes filled): follow
+#   the coast more closely than 1:50m where people live.
 build_land_mask <- function(hex) {
-  grid <- stars::st_rasterize(hex["population"], dx = 1000, dy = 1000)
+  # Kontur files are EPSG:3857, but derived ones may not be (merged Israel &
+  # Palestine is 3106), so project to match outlined_areas().
+  hex <- st_transform(hex["population"], 3857)
+  grid <- stars::st_rasterize(hex, dx = 1000, dy = 1000)
   grid[[1]][!is.na(grid[[1]])] <- 1
-  land <- st_union(st_as_sf(grid, merge = TRUE))
-  land <- st_cast(st_buffer(land, 1500), "POLYGON")
-  outer <- lapply(land, function(p) st_polygon(p[1]))
-  st_union(st_sfc(outer, crs = st_crs(land)))
+  populated <- st_union(st_as_sf(grid, merge = TRUE))
+  populated <- st_cast(st_buffer(populated, 1500), "POLYGON")
+  outer <- lapply(populated, function(p) st_polygon(p[1]))
+  populated <- st_union(st_sfc(outer, crs = st_crs(populated)))
+
+  # Crop in lon/lat before projecting: polar shapes break in Web Mercator.
+  area <- st_bbox(st_transform(st_buffer(populated, 50000), 4326))
+  land <- rnaturalearth::ne_countries(scale = 50, returnclass = "sf")
+  land <- suppressWarnings(suppressMessages(
+    st_crop(st_make_valid(st_geometry(land)), area)
+  ))
+  land <- st_union(st_transform(land, 3857))
+  st_union(c(land, populated))
 }
 
 # Map labels for regions and districts, placed inside each polygon's land part.

@@ -53,6 +53,7 @@
 #     levels    → Kontur admin_level for each tier. Countries differ:
 #                 Bangladesh 4/6/8, Nepal 3/7/8, Finland 6/7/8.
 #                 list(region = "4", district = "6", subdistrict = c("8", "10"))
+#                 Use character(0) for a tier the country's file lacks.
 #     views     → Extra camera presets on top of the country and its regions
 #                 (both added automatically).
 #                 list(list(id = "dhaka-city", label = "Dhaka city",
@@ -90,7 +91,9 @@ countries <- list(
     camera = list(theta = 0, phi = 45, zoom = 0.50, fov = 100),
     light_dir = 40,
     width = 1800, height = 1300,
-    solid = FALSE, shadow_depth = 0.8
+    solid = FALSE, shadow_depth = 0.8,
+    web = list(levels = list(region = "4", district = "6",
+                             subdistrict = character(0)))
   ),
   nepal = list(
     name = "Nepal",
@@ -106,7 +109,8 @@ countries <- list(
     camera = list(theta = 0, phi = 45, zoom = 0.50, fov = 100),
     light_dir = 50,
     width = 1500, height = 1280,
-    solid = FALSE, shadow_depth = 0.8
+    solid = FALSE, shadow_depth = 0.8,
+    web = list(levels = list(region = "3", district = "7", subdistrict = "8"))
   ),
   india = list(
     name = "India",
@@ -135,7 +139,8 @@ countries <- list(
     camera = list(theta = -40, phi = 45, zoom = 0.50, fov = 100),
     light_dir = 80,
     width = 2600, height = 2000,
-    solid = FALSE, shadow_depth = 0.8
+    solid = FALSE, shadow_depth = 0.8,
+    web = list(levels = list(region = "3", district = "7", subdistrict = "9"))
   ),
   maldives = list(
     name = "Maldives",
@@ -151,7 +156,9 @@ countries <- list(
     camera = list(theta = 95, phi = 45, zoom = 0.60, fov = 100),
     light_dir = 230,
     width = 1500, height = 1080,
-    solid = TRUE, shadow_depth = 0.2
+    solid = TRUE, shadow_depth = 0.2,
+    web = list(levels = list(region = "4", district = character(0),
+                             subdistrict = "9"))
   ),
   sri_lanka = list(
     name = "Sri Lanka",
@@ -164,7 +171,8 @@ countries <- list(
     camera = list(theta = 150, phi = 32, zoom = 0.85, fov = 100),
     light_dir = 130,
     width = 1500, height = 1580,
-    solid = FALSE, shadow_depth = 0
+    solid = FALSE, shadow_depth = 0,
+    web = list(levels = list(region = "4", district = "6", subdistrict = "7"))
   ),
   israel = list(
     name = "Israel",
@@ -219,6 +227,7 @@ countries <- list(
     width = 1400, height = 1900,
     solid = TRUE, solidcolor = "#6588b0", shadow_depth = -50,
     show_border = FALSE,
-    samples = 500
+    samples = 500,
+    web = list(levels = list(region = "6", district = "7", subdistrict = "8"))
   )
 )

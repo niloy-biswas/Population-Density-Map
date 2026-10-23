@@ -4,7 +4,8 @@
 packages <- c(
   "sf", "tmap", "mapview", "stars", "rayshader", "MetBrewer",
   "rayrender", "magick", "tidyverse", "ggplot2", "colorspace",
-  "showtext", "RColorBrewer", "crayon", "glue", "png", "raster"
+  "showtext", "RColorBrewer", "crayon", "glue", "png", "raster",
+  "jsonlite", "rnaturalearth", "rnaturalearthdata" # web export only
 )
 
 for (pkg in packages) {
