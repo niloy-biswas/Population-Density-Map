@@ -2,8 +2,13 @@
    data/countries.json lists the exported countries; each has data/{key}/hexes.json (hexagons,
    palette, labels, camera presets) and data/{key}/boundaries.geojson, all written by
    scripts/export_web_data.R. countries.json also lists each country's city and region views, so the
-   search box can reach any of them before that country loads. URL hash: #{country} or #{country}/{view}. */
+   search box can reach any of them before that country loads. The exporter also writes one page per
+   country from the same template, so search engines see each country: URL {slug}/ or {slug}/#{view},
+   where slug is the key with hyphens. The landing page shows DEFAULT_COUNTRY; its old #{key}/{view}
+   links still work. */
 (() => {
+  // Folder holding app.js, data/ and the country pages, whichever page loaded this script.
+  const ROOT = new URL('.', document.currentScript.src);
   const BASEMAP = 'https://tiles.openfreemap.org/styles/bright';
   // English names only (the style default prints Latin + native script on two lines).
   const ENGLISH_NAME = ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']];
@@ -70,7 +75,6 @@
   // Opened by the bare link and unknown hashes. Explicit, because countries.json is alphabetical and a
   // new country (Austria) once quietly took over the landing page. Matches og.jpg.
   const DEFAULT_COUNTRY = 'bangladesh';
-  const SITE_TITLE = 'Niloy Biswas';
   const FALLBACK = 'The rendered maps are on <a href="https://github.com/niloy-biswas/Population-Density-Map">GitHub</a>.';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -94,6 +98,9 @@
     name: document.querySelector('[data-name]'),
     stat: document.querySelector('[data-stat]'),
     legend: document.querySelector('[data-legend]'),
+    summary: document.querySelector('[data-summary]'),
+    countryLinks: document.querySelectorAll('[data-country]'),
+    canonical: document.querySelector('link[rel="canonical"]'),
     viewCtrl: document.querySelector('[data-view-ctrl]'),
     layersToggle: document.querySelector('[data-layers-toggle]'),
     layers: document.querySelector('[data-layers]'),
@@ -147,7 +154,8 @@
 
   // ---- Loading ----
 
-  function getJson(url) {
+  function getJson(path) {
+    const url = new URL(path, ROOT);
     return fetch(url).then((r) => {
       if (!r.ok) throw new Error(`${url} request failed (${r.status})`);
       return r.json();
@@ -164,11 +172,38 @@
     el.status.hidden = !html;
   }
 
-  function parseHash() {
-    const [key, viewId] = decodeURIComponent(location.hash.slice(1)).split('/');
-    const known = (k) => countries.some((c) => c.key === k);
-    const fallback = known(DEFAULT_COUNTRY) ? DEFAULT_COUNTRY : countries[0].key;
-    return { key: known(key) ? key : fallback, viewId };
+  // ---- URL ----
+
+  const slug = (key) => key.replace(/_/g, '-');
+  const isCountry = (key) => countries.some((c) => c.key === key);
+  const landingKey = () => (isCountry(DEFAULT_COUNTRY) ? DEFAULT_COUNTRY : countries[0].key);
+  const pageTitle = (name) => `${name} Population Density Map (Interactive 3D)`;
+
+  // Key of the country page we're on, undefined on the landing page.
+  function pageKey() {
+    const folder = location.pathname.slice(ROOT.pathname.length).split('/')[0];
+    return countries.find((c) => slug(c.key) === folder)?.key;
+  }
+
+  function parseLocation() {
+    const hash = decodeURIComponent(location.hash.slice(1));
+    const key = pageKey();
+    if (key) return { key, viewId: hash };
+    // Landing page: #{key} and #{key}/{view} are links from before the country pages.
+    const [hashKey, viewId] = hash.split('/');
+    return isCountry(hashKey) ? { key: hashKey, viewId } : { key: landingKey() };
+  }
+
+  // The landing page keeps its URL while it shows the default country whole; anything else moves to
+  // that country's page, with the view in the hash. replaceState, so Back still leaves the map.
+  function syncUrl() {
+    const whole = view === country.views[0];
+    const landing = !pageKey() && country.key === landingKey() && whole;
+    const path = landing ? ROOT.pathname : `${ROOT.pathname}${slug(country.key)}/`;
+    const url = whole ? path : `${path}#${view.id}`;
+    if (location.pathname + location.hash !== url) history.replaceState(null, '', url);
+    el.canonical.href = new URL(path, ROOT).href;
+    if (!landing) document.title = pageTitle(country.name); // the landing page keeps its own
   }
 
   // Swap in another country's data, labels and presets; the map itself stays.
@@ -199,7 +234,11 @@
     el.stat.textContent = `${fmtShort.format(data.total)} people · ${fmtShort.format(hexes.length)} hexagons`;
     el.expandLabel.textContent = `${data.name} · ${fmtShort.format(data.total)} people`;
     el.map.setAttribute('aria-label', `Interactive 3D population density map of ${data.name}`);
-    document.title = `${data.name} 3D Population Density Map | ${SITE_TITLE}`;
+    for (const a of el.countryLinks) {
+      if (a.dataset.country === data.key) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+    renderSummary(countries.find((c) => c.key === data.key));
     renderViews();
     renderPalettes();
   }
@@ -231,7 +270,7 @@
       map.addControl(overlay);
 
       bindControls();
-      const { key, viewId } = parseHash();
+      const { key, viewId } = parseLocation();
       loadCountry(key, viewId);
     });
   }
@@ -314,19 +353,31 @@
     el.views.addEventListener('wheel', scrollChips, { passive: false });
     map.on('move', syncCameraControls);
     window.addEventListener('hashchange', () => {
-      const { key, viewId } = parseHash();
+      const { key, viewId } = parseLocation();
       if (key !== country?.key) loadCountry(key, viewId);
       else {
         const v = country.views.find((x) => x.id === viewId) || country.views[0];
         if (v !== view) goTo(v);
-        else syncHash(); // unknown hash on the current view: put the canonical one back
+        else syncUrl(); // unknown hash on the current view: put the canonical one back
       }
     });
+    bindCountryLinks();
   }
 
-  function syncHash() {
-    const hash = view === country.views[0] ? country.key : `${country.key}/${view.id}`;
-    if (location.hash.slice(1) !== hash) history.replaceState(null, '', `#${hash}`);
+  // The About menu's country list: real links for crawlers and new tabs, an in-place switch on click.
+  // Absolute hrefs, because syncUrl() can move the landing page's URL into a country folder.
+  function bindCountryLinks() {
+    for (const a of el.countryLinks) {
+      const key = a.dataset.country;
+      a.href = new URL(`${slug(key)}/`, ROOT).href;
+      a.addEventListener('click', (e) => {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !isCountry(key)) return;
+        e.preventDefault();
+        setMenuOpen(false);
+        if (key !== country?.key) loadCountry(key);
+        else goTo(country.views[0]);
+      });
+    }
   }
 
   function syncCameraControls() {
@@ -351,7 +402,7 @@
       if (active) centerChip(btn);
     }
     if (document.activeElement !== el.search) showCurrentPlace();
-    syncHash();
+    syncUrl();
     const cam = cameraFor(v);
     if (reduceMotion) map.jumpTo(cam);
     else map.flyTo({ ...cam, duration: 2200, essential: false });
@@ -520,6 +571,21 @@
       return btn;
     }));
     el.views.scrollLeft = 0;
+  }
+
+  // Same markup as summary_html() in scripts/export_web_data.R, which fills it in on each country's page.
+  function renderSummary(c) {
+    const densest = c.densest ? `, in ${c.densest},` : '';
+    const text = `${c.name} has ${fmt.format(c.total)} people across ${fmt.format(c.hexagons)} populated hexagons. `
+      + `The densest hexagon${densest} holds ${fmt.format(c.max)} people, about ${fmt.format(c.max_per_km2)} per km².`;
+    const items = c.top.map((a) => {
+      const share = Math.round((100 * a.people) / c.total);
+      return `<li><span class="summary__name">${escapeHtml(a.name)}</span>`
+        + `<span class="summary__value">${fmtShort.format(a.people)} · ${share < 1 ? '&lt;1' : share}%</span></li>`;
+    }).join('');
+    el.summary.innerHTML = `<summary class="summary__toggle">${escapeHtml(c.name)} in numbers</summary>
+      <p class="summary__text">${escapeHtml(text)}</p>
+      ${items ? `<p class="summary__title">Most populous ${c.top_kind}s</p><ol class="summary__list">${items}</ol>` : ''}`;
   }
 
   function centerChip(btn) {

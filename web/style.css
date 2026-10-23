@@ -292,6 +292,8 @@ a {
 .about {
   display: grid;
   gap: 10px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
   padding: 16px 18px;
 }
 
@@ -323,6 +325,17 @@ a {
   }
 }
 
+.about__countries ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--glass-border);
+  list-style: none;
+  font-size: 0.78rem;
+}
+
 .about__links {
   display: flex;
   flex-wrap: wrap;
@@ -332,13 +345,16 @@ a {
   font-size: 0.8rem;
 }
 
-.about__links a {
+.about__links a,
+.about__countries a {
   color: var(--text-secondary);
   text-decoration: none;
   transition: color var(--transition);
 }
 
-.about__links a:hover {
+.about__links a:hover,
+.about__countries a:hover,
+.about__countries a[aria-current="page"] {
   color: var(--accent);
 }
 
@@ -397,6 +413,17 @@ a {
   gap: 12px;
 }
 
+/* One h1 for search engines ("3D population density map Bangladesh"), styled as eyebrow + title. */
+.card__heading {
+  margin: 0;
+  font: inherit;
+}
+
+.card__eyebrow,
+.card__title {
+  display: block;
+}
+
 .card__eyebrow {
   font-size: 0.7rem;
   font-weight: 600;
@@ -444,12 +471,17 @@ a {
   margin-top: 14px;
 }
 
-.legend__title {
-  margin-bottom: 6px;
+.legend__title,
+.summary__toggle,
+.summary__title {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.legend__title {
+  margin-bottom: 6px;
 }
 
 .legend__bar {
@@ -470,6 +502,78 @@ a {
   margin-top: 4px;
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+/* "<Country> in numbers": closed by default so the card looks as before; still indexed when closed. */
+.summary {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--glass-border);
+  font-size: 0.8rem;
+}
+
+.summary__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.summary__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.summary__toggle::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 4px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--transition);
+}
+
+.summary[open] .summary__toggle::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.summary__toggle:hover {
+  color: var(--text-primary);
+}
+
+.summary__text {
+  margin-top: 8px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.summary__title {
+  margin-top: 10px;
+}
+
+.summary__list {
+  display: grid;
+  gap: 3px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.summary__value {
+  flex: none;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---- View control: layers popover + 3D toggle, above MapLibre's zoom and compass ---- */
