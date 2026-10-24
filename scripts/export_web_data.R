@@ -488,10 +488,19 @@ json_ld <- function(name, url, description, extra = list()) {
   ), extra, list(
     creator = list("@type" = "Person", name = "Niloy Biswas",
                    url = "https://niloy.tech/"),
+    # Google lists this as a Dataset item of its own, so it needs the
+    # Dataset required fields (description: 50 to 5000 characters).
     isBasedOn = list(
       "@type" = "Dataset",
       name = "Kontur Population Dataset (2023)",
-      url = "https://data.humdata.org/organization/kontur",
+      description = paste(
+        "Global population counts on H3 hexagons at resolution 8",
+        "(about 400 m across, 0.74 km² each), built by Kontur from GHSL,",
+        "Meta HRSL, Microsoft building footprints, Copernicus land cover",
+        "and OpenStreetMap. Released on the Humanitarian Data Exchange",
+        "with per-country subsets."
+      ),
+      url = "https://data.humdata.org/dataset/kontur-population-dataset",
       creator = list("@type" = "Organization", name = "Kontur"),
       license = "https://creativecommons.org/licenses/by/4.0/"
     ),
