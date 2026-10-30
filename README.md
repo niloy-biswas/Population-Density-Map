@@ -139,6 +139,8 @@ Each run rebuilds `countries.json` and the pages (`web/index.html`, `web/<countr
    | Bangladesh     | 4      | 6        | 8, 10       |
    | Belgium        | 4      | 7        | 9           |
    | Bhutan         | 4      | 6        | none        |
+   | Canada         | 4      | 8        | 10          |
+   | China          | 3      | 4        | 6           |
    | Czechia        | 7      | 8        | 9           |
    | Denmark        | 4      | 8        | none        |
    | Finland        | 6      | 7        | 8           |
@@ -146,6 +148,7 @@ Each run rebuilds `countries.json` and the pages (`web/index.html`, `web/<countr
    | Germany        | 4      | 7        | 10          |
    | Greece         | 5      | 6        | 9           |
    | Hungary        | 6      | 7        | 9           |
+   | India          | 4      | 5        | 7           |
    | Ireland        | 6      | 10       | 11          |
    | Italy          | 4      | 7        | 9           |
    | Japan          | 5      | 9        | 10          |
@@ -166,6 +169,7 @@ Each run rebuilds `countries.json` and the pages (`web/index.html`, `web/<countr
    | Switzerland    | 4      | 8        | 11          |
    | Ukraine        | 4      | 6        | 7           |
    | United Kingdom | 4      | 7        | 10          |
+   | United States  | 4      | 6        | 8           |
 
    Use `character(0)` for a tier the file lacks. The Israel and Palestine boundary files carry no area names, so those maps show the columns and the country view without region buttons, outlines or place names.
 
@@ -178,7 +182,7 @@ Each run rebuilds `countries.json` and the pages (`web/index.html`, `web/<countr
    )
    ```
 
-   `web` also takes `views` (extra camera presets, like Bangladesh's "Dhaka city"), `palette` (the country's default column colours; visitors can also switch to the Bangladesh, India or Nepal render palettes from the map's layers button) and `crop` (a lon/lat box; hexagons and areas outside it are dropped). France, the Netherlands, Norway and the UK use `crop` to leave out overseas territories, Svalbard and Rockall, which would otherwise stretch the country view across oceans. `bounds` sets only the first (country) view and keeps everything else: Spain, Portugal and Japan use it so the Canaries, Azores, Madeira and Okinawa stay on the map (with their own region buttons) without shrinking the mainland. See the comment at the top of `countries.R`.
+   `web` also takes `views` (extra camera presets, like Bangladesh's "Dhaka city"), `palette` (the country's default column colours; visitors can also switch to the Bangladesh, India or Nepal render palettes from the map's layers button) and `crop` (a lon/lat box; hexagons and areas outside it are dropped). France, the Netherlands, Norway and the UK use `crop` to leave out overseas territories, Svalbard and Rockall, which would otherwise stretch the country view across oceans. `bounds` sets only the first (country) view and keeps everything else: Spain, Portugal and Japan use it so the Canaries, Azores, Madeira and Okinawa stay on the map (with their own region buttons) without shrinking the mainland; the US uses it for the lower 48 (Alaska and Hawaii are region buttons), Canada to keep the Arctic islands from pushing the south off screen. For very large countries, `mask_km` coarsens the land mask (Canada, the US, China, India), `simplify_m` simplifies thousands of district outlines, and `tiles = TRUE` exports a tile pyramid (below). See the comment at the top of `countries.R`.
 
 3. Export it, preview, and push:
 
@@ -188,7 +192,17 @@ Each run rebuilds `countries.json` and the pages (`web/index.html`, `web/<countr
 
 To remove a country, delete its `web/data/<country>/` folder and run the export for any remaining country to rebuild the index.
 
-Countries range from under 50 KB of JSON (Maldives, Singapore) to about 18 MB (France, Nigeria, each around 600k hexagons); GitHub Pages compresses the largest to about 3.3 MB as served. Continent-sized countries (USA, China, India, Brazil, Russia) have 1 to 4 million hexagons at this size, too many for a browser, so they need coarser hexagons before they can be added.
+Countries range from under 50 KB of JSON (Maldives, Singapore) to about 18 MB (France, Nigeria, Canada, each around 600k hexagons); GitHub Pages compresses the largest to about 3.3 MB as served.
+
+**Tiled countries.** The US (4.2M hexagons), China (3.1M) and India (2.1M) are too big for one file, so they set `tiles = TRUE`. The export then sums the hexagons into coarser H3 cells and cuts every level into map tiles under `web/data/<country>/tiles/`:
+
+| Map zoom | Hexagons | Area each | US cells |
+|----------|----------|-----------|----------|
+| up to 5  | resolution 6 | ~36 km² | 190k |
+| 6–7      | resolution 7 | ~5 km² | 990k |
+| 8 and up | resolution 8 | ~0.74 km² | 4.2M |
+
+The browser fetches only the tiles on screen: the whole US as about 190k coarse cells, a city as a few full-resolution tiles (each under 400 KB, ~70 KB as served). The legend follows the level in view. This needs the `h3jsr` package. A tiled export takes 10 to 30 minutes and several GB of memory.
 
 ## Maps
 
