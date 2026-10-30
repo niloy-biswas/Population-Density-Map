@@ -5,7 +5,8 @@
    search box can reach any of them before that country loads. The exporter also writes one page per
    country from the same template, so search engines see each country: URL {slug}/ or {slug}/#{view},
    where slug is the key with hyphens. The landing page shows DEFAULT_COUNTRY; its old #{key}/{view}
-   links still work. */
+   links still work. Countries with millions of hexagons (the US) come as a tile pyramid instead of one
+   hexes.json array: see ---- Tiles ----. */
 (() => {
   // Folder holding app.js, data/ and the country pages, whichever page loaded this script.
   const ROOT = new URL('.', document.currentScript.src);
@@ -120,7 +121,10 @@
   let firstSymbolId;
   let countries = [];
   let country; // current data/{key}/hexes.json
-  let hexes = [];
+  let hexes = []; // empty for a tiled country
+  let tileIndex = new Set(); // tile files that exist, for a tiled country
+  let tileRes = 8; // H3 resolution of the tiles in view, for the legend
+  let palette = []; // chosen palette as RGB, low → high
   let boundaries;
   let view;
   let loadToken = 0;
@@ -154,9 +158,9 @@
 
   // ---- Loading ----
 
-  function getJson(path) {
+  function getJson(path, signal) {
     const url = new URL(path, ROOT);
-    return fetch(url).then((r) => {
+    return fetch(url, { signal }).then((r) => {
       if (!r.ok) throw new Error(`${url} request failed (${r.status})`);
       return r.json();
     });
@@ -223,7 +227,9 @@
   function setCountry(data, outlines) {
     country = data;
     boundaries = outlines;
-    hexes = data.h3.map((id, i) => ({ h3: id, p: data.population[i], place: data.place[i] }));
+    hexes = data.tiles ? [] : data.h3.map((id, i) => ({ h3: id, p: data.population[i], place: data.place[i] }));
+    tileIndex = new Set(data.tiles?.index);
+    if (data.tiles) tileRes = tileLevel(Math.round(cameraFor(data.views[0]).zoom)).res;
     applyPalette();
 
     map.getSource(LABEL_SOURCE).setData(labelFeatures());
@@ -316,9 +322,13 @@
   }
 
   // Label points ranked by the people living in each area (lower rank is placed first),
-  // so where names collide the bigger region or district keeps its label.
+  // so where names collide the bigger region or district keeps its label. A tiled country's labels
+  // carry their population, since the browser never holds all its hexagons.
   function labelFeatures() {
     const people = { region: new Map(), district: new Map() };
+    if (country.tiles) {
+      for (const l of country.labels) people[l.kind].set(l.name, l.people);
+    }
     hexes.forEach(({ p, place }) => {
       const [, district, region] = country.places[place] || [];
       if (region) people.region.set(region, (people.region.get(region) || 0) + p);
@@ -457,28 +467,30 @@
     return Math.hypot(dx, dy);
   }
 
-  function elevationScale() {
+  // `max` is the largest cell's population: the country's, or the tile level's for a tiled country.
+  function elevationScale(max) {
     const tallest = diagonalMetres(view.bounds) * HEIGHT_PER_DIAGONAL;
-    return (tallest / country.max) * Number(el.height.value);
+    return (tallest / max) * Number(el.height.value);
   }
 
   // Rebuild the columns (new country, view or height) and the outlines over them.
   function renderLayers(animate) {
-    overlay.setProps({ layers: [hexLayer(animate), boundaryLayer()] });
+    const columns = country.tiles ? tileLayer(animate) : hexLayer(animate);
+    overlay.setProps({ layers: [columns, boundaryLayer()] });
   }
 
-  function hexLayer(animate) {
+  function hexLayer(animate, id = 'population', data = hexes, max = country.max) {
     return new deck.H3HexagonLayer({
-      id: 'population',
+      id,
       beforeId: firstSymbolId,
-      data: hexes,
+      data,
       getHexagon: (d) => d.h3,
       getElevation: (d) => d.p,
-      getFillColor: (d) => d.color,
+      getFillColor: (d) => colorAt(palette, d.p / max),
       updateTriggers: { getFillColor: paletteId }, // same data array, new colours
       extruded: true,
       coverage: 1,
-      elevationScale: elevationScale(),
+      elevationScale: elevationScale(max),
       pickable: true,
       autoHighlight: true,
       highlightColor: [...ACCENT, 255],
@@ -486,6 +498,73 @@
       transitions: animate && !reduceMotion
         ? { elevationScale: { duration: 1200, easing: (t) => 1 - (1 - t) ** 3 } }
         : {},
+    });
+  }
+
+  // ---- Tiles ----
+  // A tiled country's hexagons are cut into XYZ tiles at several H3 resolutions (written by
+  // write_tiles() in the exporter): coarse cells when zoomed out, full resolution only for the tiles
+  // on screen. deck's TileLayer fetches what the viewport needs and keeps the coarser tiles up while
+  // finer ones load. A level's files are cut at its highest zoom; lower zooms fetch the child tiles.
+
+  // Pyramid level used at tile zoom z: the last one starting at or below it.
+  function tileLevel(z) {
+    const { levels } = country.tiles;
+    return levels.filter((l) => l.from <= z).pop() || levels[0];
+  }
+
+  function fetchTile({ index: { x, y, z }, signal }) {
+    const { res, zoom } = tileLevel(z);
+    const scale = 2 ** (zoom - z);
+    const files = [];
+    for (let dx = 0; dx < scale; dx++) {
+      for (let dy = 0; dy < scale; dy++) {
+        const file = `${zoom}/${x * scale + dx}/${y * scale + dy}`;
+        if (tileIndex.has(file)) files.push(file);
+      }
+    }
+    if (!files.length) return null; // sea, or outside the country
+    const key = country.key;
+    // One retry on a network error: TileLayer leaves a failed tile blank until it leaves the cache.
+    const get = (f) => getJson(`data/${key}/tiles/${f}.json`, signal)
+      .catch((err) => (err.name === 'TypeError' ? getJson(`data/${key}/tiles/${f}.json`, signal) : Promise.reject(err)));
+    return Promise.all(files.map(get)).then((parts) => {
+      // Ids are stored without what every id at this resolution shares (see the exporter).
+      const head = `8${res.toString(16)}`;
+      const tail = 'f'.repeat(Math.floor((3 * (15 - res)) / 4));
+      const cells = [];
+      for (const t of parts) {
+        t.h3.forEach((id, i) => cells.push({ h3: head + id + tail, p: t.population[i], place: t.place[i] }));
+      }
+      if (parts.length > 1) cells.sort((a, b) => a.p - b.p); // tallest last, as within a file
+      return { res, cells };
+    });
+  }
+
+  function tileLayer(animate) {
+    const { tiles } = country;
+    return new deck.TileLayer({
+      id: 'population',
+      beforeId: firstSymbolId,
+      data: `data/${country.key}/tiles`, // a new country reloads every tile
+      getTileData: fetchTile,
+      minZoom: tiles.minZoom,
+      maxZoom: tiles.maxZoom,
+      extent: tiles.extent, // and below minZoom, keep showing minZoom tiles
+      refinementStrategy: 'best-available',
+      renderSubLayers: ({ id, data }) => data && hexLayer(animate, id, data.cells, tiles.max[data.res]),
+      updateTriggers: { renderSubLayers: [paletteId, el.height.value, view.id, animate] },
+      // A tilted view loads distant tiles a zoom lower; the legend follows the nearest, finest ones.
+      onViewportLoad: (loaded) => {
+        const res = Math.max(0, ...loaded.map((t) => t.content?.res || 0));
+        if (res && res !== tileRes) {
+          tileRes = res;
+          renderLegend();
+        }
+      },
+      onTileError: (err) => {
+        if (err.name !== 'AbortError') console.error(err);
+      },
     });
   }
 
@@ -502,7 +581,7 @@
   }
 
   function getTooltip({ object, layer }) {
-    if (!object || layer?.id !== 'population') return null;
+    if (!object || !layer?.id.startsWith('population')) return null;
     const density = object.p / h3.cellArea(object.h3, h3.UNITS.km2);
     // places[i] = [subdistrict, district, region]; any part can be null.
     const [title, ...rest] = (country.places[object.place] || []).filter(Boolean);
@@ -583,7 +662,8 @@
       ? ` on about ${fmt.format(c.land_km2)} km² of land, roughly ${fmt.format(c.per_km2)} per km²`
       : '';
     const densest = c.densest ? `, in ${c.densest},` : '';
-    const text = `${c.name} has ${fmt.format(c.total)} people${density}. They live in ${fmt.format(c.hexagons)} `
+    const subject = c.prose_name[0].toUpperCase() + c.prose_name.slice(1); // "The United States"
+    const text = `${subject} has ${fmt.format(c.total)} people${density}. They live in ${fmt.format(c.hexagons)} `
       + `populated hexagons; the densest${densest} holds ${fmt.format(c.max)} people, about ${fmt.format(c.max_per_km2)} per km².`;
     const items = c.top.map((a) => {
       const share = Math.round((100 * a.people) / c.total);
@@ -790,12 +870,10 @@
     return PALETTES.find((p) => p.id === id).colors || country.palette;
   }
 
-  // Colour every hexagon with the chosen palette and match the legend.
+  // Colour the hexagons with the chosen palette (on the next renderLayers) and match the legend.
   function applyPalette() {
-    const colors = paletteColors(paletteId);
-    const palette = colors.map(hexToRgb);
-    for (const d of hexes) d.color = colorAt(palette, d.p / country.max);
-    renderLegend(colors);
+    palette = paletteColors(paletteId).map(hexToRgb);
+    renderLegend();
   }
 
   // Swatch radios; rebuilt per country because "default" shows that country's own palette.
@@ -813,14 +891,18 @@
     }));
   }
 
-  function renderLegend(palette) {
+  // A tiled country's legend follows the tile level in view: coarser cells hold more people.
+  function renderLegend() {
+    const res = country.tiles ? tileRes : 8;
+    const max = country.tiles ? country.tiles.max[res] : country.max;
+    const area = h3.getHexagonAreaAvg(res, h3.UNITS.km2);
     // Ticks sit where sqrt(p / max) = 0, 0.25, 0.5, 0.75, 1, matching the colour scale.
     const ticks = [0, 0.25, 0.5, 0.75, 1]
-      .map((t) => `<span>${fmtShort.format(Math.round(t * t * country.max))}</span>`)
+      .map((t) => `<span>${fmtShort.format(Math.round(t * t * max))}</span>`)
       .join('');
     el.legend.innerHTML = `
-      <p class="legend__title">People per hexagon (~0.74 km²)</p>
-      <div class="legend__bar" style="background: ${gradientCss(palette)}"></div>
+      <p class="legend__title">People per hexagon (~${area < 1 ? area.toFixed(2) : fmt.format(Math.round(area))} km²)</p>
+      <div class="legend__bar" style="background: ${gradientCss(paletteColors(paletteId))}"></div>
       <div class="legend__ticks">${ticks}</div>
       <p class="legend__source">Data: Kontur Population 2023</p>`;
     el.legend.hidden = false;
