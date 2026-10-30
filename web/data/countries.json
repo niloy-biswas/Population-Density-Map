@@ -2,6 +2,7 @@
   {
     "key": "austria",
     "name": "Austria",
+    "prose_name": "Austria",
     "total": 9009078,
     "hexagons": 86915,
     "land_km2": 83900,
@@ -83,6 +84,7 @@
   {
     "key": "bangladesh",
     "name": "Bangladesh",
+    "prose_name": "Bangladesh",
     "total": 173889934,
     "hexagons": 148387,
     "land_km2": 136000,
@@ -164,6 +166,7 @@
   {
     "key": "belgium",
     "name": "Belgium",
+    "prose_name": "Belgium",
     "total": 11787187,
     "hexagons": 40991,
     "land_km2": 30600,
@@ -207,6 +210,7 @@
   {
     "key": "bhutan",
     "name": "Bhutan",
+    "prose_name": "Bhutan",
     "total": 876550,
     "hexagons": 9077,
     "land_km2": 39900,
@@ -341,8 +345,333 @@
     ]
   },
   {
+    "key": "canada",
+    "name": "Canada",
+    "prose_name": "Canada",
+    "total": 38810039,
+    "hexagons": 597268,
+    "land_km2": 8790000,
+    "per_km2": 4,
+    "max": 27874,
+    "max_per_km2": 38000,
+    "densest": "Old Toronto, Toronto, Ontario",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Ontario",
+        "people": 14593307
+      },
+      {
+        "name": "Quebec",
+        "people": 8847194
+      },
+      {
+        "name": "British Columbia",
+        "people": 5130068
+      },
+      {
+        "name": "Alberta",
+        "people": 4769229
+      },
+      {
+        "name": "Manitoba",
+        "people": 1441381
+      }
+    ],
+    "views": [
+      {
+        "id": "toronto-city",
+        "label": "Toronto city",
+        "kind": "city"
+      },
+      {
+        "id": "montreal-city",
+        "label": "Montreal city",
+        "kind": "city"
+      },
+      {
+        "id": "vancouver-city",
+        "label": "Vancouver city",
+        "kind": "city"
+      },
+      {
+        "id": "alberta",
+        "label": "Alberta",
+        "kind": "region"
+      },
+      {
+        "id": "british-columbia",
+        "label": "British Columbia",
+        "kind": "region"
+      },
+      {
+        "id": "manitoba",
+        "label": "Manitoba",
+        "kind": "region"
+      },
+      {
+        "id": "new-brunswick",
+        "label": "New Brunswick",
+        "kind": "region"
+      },
+      {
+        "id": "newfoundland-and-labrador",
+        "label": "Newfoundland and Labrador",
+        "kind": "region"
+      },
+      {
+        "id": "northwest-territories",
+        "label": "Northwest Territories",
+        "kind": "region"
+      },
+      {
+        "id": "nova-scotia",
+        "label": "Nova Scotia",
+        "kind": "region"
+      },
+      {
+        "id": "nunavut",
+        "label": "Nunavut",
+        "kind": "region"
+      },
+      {
+        "id": "ontario",
+        "label": "Ontario",
+        "kind": "region"
+      },
+      {
+        "id": "prince-edward-island",
+        "label": "Prince Edward Island",
+        "kind": "region"
+      },
+      {
+        "id": "quebec",
+        "label": "Quebec",
+        "kind": "region"
+      },
+      {
+        "id": "saskatchewan",
+        "label": "Saskatchewan",
+        "kind": "region"
+      },
+      {
+        "id": "yukon",
+        "label": "Yukon",
+        "kind": "region"
+      }
+    ]
+  },
+  {
+    "key": "china",
+    "name": "China",
+    "prose_name": "China",
+    "total": 1426002565,
+    "hexagons": 3077868,
+    "land_km2": 9370000,
+    "per_km2": 152,
+    "max": 40268,
+    "max_per_km2": 55000,
+    "densest": "Ulugqat County, Kizilsu Kirghiz Autonomous Prefecture, Xinjiang",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Guangdong Province",
+        "people": 118065407
+      },
+      {
+        "name": "Shandong",
+        "people": 99215006
+      },
+      {
+        "name": "Henan",
+        "people": 97863970
+      },
+      {
+        "name": "Jiangsu",
+        "people": 89049089
+      },
+      {
+        "name": "Sichuan",
+        "people": 77705390
+      }
+    ],
+    "views": [
+      {
+        "id": "shanghai-city",
+        "label": "Shanghai city",
+        "kind": "city"
+      },
+      {
+        "id": "beijing-city",
+        "label": "Beijing city",
+        "kind": "city"
+      },
+      {
+        "id": "pearl-river-delta",
+        "label": "Pearl River Delta",
+        "kind": "city"
+      },
+      {
+        "id": "anhui",
+        "label": "Anhui",
+        "kind": "region"
+      },
+      {
+        "id": "beijing",
+        "label": "Beijing",
+        "kind": "region"
+      },
+      {
+        "id": "chongqing",
+        "label": "Chongqing",
+        "kind": "region"
+      },
+      {
+        "id": "fujian",
+        "label": "Fujian",
+        "kind": "region"
+      },
+      {
+        "id": "gansu",
+        "label": "Gansu",
+        "kind": "region"
+      },
+      {
+        "id": "guangdong-province",
+        "label": "Guangdong Province",
+        "kind": "region"
+      },
+      {
+        "id": "guangxi",
+        "label": "Guangxi",
+        "kind": "region"
+      },
+      {
+        "id": "guizhou",
+        "label": "Guizhou",
+        "kind": "region"
+      },
+      {
+        "id": "hainan-province",
+        "label": "Hainan Province",
+        "kind": "region"
+      },
+      {
+        "id": "hebei",
+        "label": "Hebei",
+        "kind": "region"
+      },
+      {
+        "id": "heilongjiang",
+        "label": "Heilongjiang",
+        "kind": "region"
+      },
+      {
+        "id": "henan",
+        "label": "Henan",
+        "kind": "region"
+      },
+      {
+        "id": "hubei",
+        "label": "Hubei",
+        "kind": "region"
+      },
+      {
+        "id": "hunan",
+        "label": "Hunan",
+        "kind": "region"
+      },
+      {
+        "id": "inner-mongolia",
+        "label": "Inner Mongolia",
+        "kind": "region"
+      },
+      {
+        "id": "jiangsu",
+        "label": "Jiangsu",
+        "kind": "region"
+      },
+      {
+        "id": "jiangxi",
+        "label": "Jiangxi",
+        "kind": "region"
+      },
+      {
+        "id": "jilin",
+        "label": "Jilin",
+        "kind": "region"
+      },
+      {
+        "id": "liaoning",
+        "label": "Liaoning",
+        "kind": "region"
+      },
+      {
+        "id": "ningxia",
+        "label": "Ningxia",
+        "kind": "region"
+      },
+      {
+        "id": "qinghai",
+        "label": "Qinghai",
+        "kind": "region"
+      },
+      {
+        "id": "shaanxi",
+        "label": "Shaanxi",
+        "kind": "region"
+      },
+      {
+        "id": "shandong",
+        "label": "Shandong",
+        "kind": "region"
+      },
+      {
+        "id": "shanghai",
+        "label": "Shanghai",
+        "kind": "region"
+      },
+      {
+        "id": "shanxi",
+        "label": "Shanxi",
+        "kind": "region"
+      },
+      {
+        "id": "sichuan",
+        "label": "Sichuan",
+        "kind": "region"
+      },
+      {
+        "id": "tianjin",
+        "label": "Tianjin",
+        "kind": "region"
+      },
+      {
+        "id": "tibet",
+        "label": "Tibet",
+        "kind": "region"
+      },
+      {
+        "id": "xinjiang",
+        "label": "Xinjiang",
+        "kind": "region"
+      },
+      {
+        "id": "yunnan",
+        "label": "Yunnan",
+        "kind": "region"
+      },
+      {
+        "id": "zhejiang",
+        "label": "Zhejiang",
+        "kind": "region"
+      }
+    ]
+  },
+  {
     "key": "czechia",
     "name": "Czechia",
+    "prose_name": "Czechia",
     "total": 10548451,
     "hexagons": 80168,
     "land_km2": 78500,
@@ -439,6 +768,7 @@
   {
     "key": "denmark",
     "name": "Denmark",
+    "prose_name": "Denmark",
     "total": 5912004,
     "hexagons": 67267,
     "land_km2": 42400,
@@ -500,6 +830,7 @@
   {
     "key": "finland",
     "name": "Finland",
+    "prose_name": "Finland",
     "total": 5550413,
     "hexagons": 261427,
     "land_km2": 330000,
@@ -626,6 +957,7 @@
   {
     "key": "france",
     "name": "France",
+    "prose_name": "France",
     "total": 64954611,
     "hexagons": 596104,
     "land_km2": 546000,
@@ -732,6 +1064,7 @@
   {
     "key": "germany",
     "name": "Germany",
+    "prose_name": "Germany",
     "total": 83526777,
     "hexagons": 363550,
     "land_km2": 356000,
@@ -848,6 +1181,7 @@
   {
     "key": "greece",
     "name": "Greece",
+    "prose_name": "Greece",
     "total": 10347613,
     "hexagons": 108125,
     "land_km2": 130000,
@@ -949,6 +1283,7 @@
   {
     "key": "hungary",
     "name": "Hungary",
+    "prose_name": "Hungary",
     "total": 9631859,
     "hexagons": 60772,
     "land_km2": 93000,
@@ -1083,8 +1418,241 @@
     ]
   },
   {
+    "key": "india",
+    "name": "India",
+    "prose_name": "India",
+    "total": 1430218341,
+    "hexagons": 2086471,
+    "land_km2": 3160000,
+    "per_km2": 453,
+    "max": 37151,
+    "max_per_km2": 50000,
+    "densest": "Sonarpur, South 24 Parganas, West Bengal",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "Uttar Pradesh",
+        "people": 239742265
+      },
+      {
+        "name": "Maharashtra",
+        "people": 130499313
+      },
+      {
+        "name": "Bihar",
+        "people": 129883608
+      },
+      {
+        "name": "West Bengal",
+        "people": 103474163
+      },
+      {
+        "name": "Madhya Pradesh",
+        "people": 87116425
+      }
+    ],
+    "views": [
+      {
+        "id": "delhi-city",
+        "label": "Delhi city",
+        "kind": "city"
+      },
+      {
+        "id": "mumbai-city",
+        "label": "Mumbai city",
+        "kind": "city"
+      },
+      {
+        "id": "kolkata-city",
+        "label": "Kolkata city",
+        "kind": "city"
+      },
+      {
+        "id": "andaman-and-nicobar-islands",
+        "label": "Andaman and Nicobar Islands",
+        "kind": "region"
+      },
+      {
+        "id": "andhra-pradesh",
+        "label": "Andhra Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "arunachal-pradesh",
+        "label": "Arunachal Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "assam",
+        "label": "Assam",
+        "kind": "region"
+      },
+      {
+        "id": "bihar",
+        "label": "Bihar",
+        "kind": "region"
+      },
+      {
+        "id": "chandigarh",
+        "label": "Chandigarh",
+        "kind": "region"
+      },
+      {
+        "id": "chhattisgarh",
+        "label": "Chhattisgarh",
+        "kind": "region"
+      },
+      {
+        "id": "dadra-and-nagar-haveli-and-daman-and-diu",
+        "label": "Dadra and Nagar Haveli and Daman and Diu",
+        "kind": "region"
+      },
+      {
+        "id": "delhi",
+        "label": "Delhi",
+        "kind": "region"
+      },
+      {
+        "id": "goa",
+        "label": "Goa",
+        "kind": "region"
+      },
+      {
+        "id": "gujarat",
+        "label": "Gujarat",
+        "kind": "region"
+      },
+      {
+        "id": "haryana",
+        "label": "Haryana",
+        "kind": "region"
+      },
+      {
+        "id": "himachal-pradesh",
+        "label": "Himachal Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "jammu-and-kashmir",
+        "label": "Jammu and Kashmir",
+        "kind": "region"
+      },
+      {
+        "id": "jharkhand",
+        "label": "Jharkhand",
+        "kind": "region"
+      },
+      {
+        "id": "karnataka",
+        "label": "Karnataka",
+        "kind": "region"
+      },
+      {
+        "id": "kerala",
+        "label": "Kerala",
+        "kind": "region"
+      },
+      {
+        "id": "ladakh",
+        "label": "Ladakh",
+        "kind": "region"
+      },
+      {
+        "id": "lakshadweep",
+        "label": "Lakshadweep",
+        "kind": "region"
+      },
+      {
+        "id": "madhya-pradesh",
+        "label": "Madhya Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "maharashtra",
+        "label": "Maharashtra",
+        "kind": "region"
+      },
+      {
+        "id": "manipur",
+        "label": "Manipur",
+        "kind": "region"
+      },
+      {
+        "id": "meghalaya",
+        "label": "Meghalaya",
+        "kind": "region"
+      },
+      {
+        "id": "mizoram",
+        "label": "Mizoram",
+        "kind": "region"
+      },
+      {
+        "id": "nagaland",
+        "label": "Nagaland",
+        "kind": "region"
+      },
+      {
+        "id": "odisha",
+        "label": "Odisha",
+        "kind": "region"
+      },
+      {
+        "id": "puducherry",
+        "label": "Puducherry",
+        "kind": "region"
+      },
+      {
+        "id": "punjab",
+        "label": "Punjab",
+        "kind": "region"
+      },
+      {
+        "id": "rajasthan",
+        "label": "Rajasthan",
+        "kind": "region"
+      },
+      {
+        "id": "sikkim",
+        "label": "Sikkim",
+        "kind": "region"
+      },
+      {
+        "id": "tamil-nadu",
+        "label": "Tamil Nadu",
+        "kind": "region"
+      },
+      {
+        "id": "telangana",
+        "label": "Telangana",
+        "kind": "region"
+      },
+      {
+        "id": "tripura",
+        "label": "Tripura",
+        "kind": "region"
+      },
+      {
+        "id": "uttar-pradesh",
+        "label": "Uttar Pradesh",
+        "kind": "region"
+      },
+      {
+        "id": "uttarakhand",
+        "label": "Uttarakhand",
+        "kind": "region"
+      },
+      {
+        "id": "west-bengal",
+        "label": "West Bengal",
+        "kind": "region"
+      }
+    ]
+  },
+  {
     "key": "ireland",
     "name": "Ireland",
+    "prose_name": "Ireland",
     "total": 5068093,
     "hexagons": 70410,
     "land_km2": 68700,
@@ -1251,6 +1819,7 @@
   {
     "key": "israel",
     "name": "Israel",
+    "prose_name": "Israel",
     "total": 9380044,
     "hexagons": 12133,
     "land_km2": 22100,
@@ -1265,6 +1834,7 @@
   {
     "key": "israel_palestine",
     "name": "Israel & Palestine",
+    "prose_name": "Israel & Palestine",
     "total": 14930171,
     "hexagons": 18151,
     "land_km2": 28400,
@@ -1279,6 +1849,7 @@
   {
     "key": "italy",
     "name": "Italy",
+    "prose_name": "Italy",
     "total": 58913879,
     "hexagons": 312901,
     "land_km2": 300000,
@@ -1415,6 +1986,7 @@
   {
     "key": "japan",
     "name": "Japan",
+    "prose_name": "Japan",
     "total": 123294123,
     "hexagons": 229211,
     "land_km2": 370000,
@@ -1691,6 +2263,7 @@
   {
     "key": "maldives",
     "name": "Maldives",
+    "prose_name": "the Maldives",
     "total": 518768,
     "hexagons": 1019,
     "land_km2": 298,
@@ -1832,6 +2405,7 @@
   {
     "key": "myanmar",
     "name": "Myanmar",
+    "prose_name": "Myanmar",
     "total": 54795072,
     "hexagons": 212821,
     "land_km2": 663000,
@@ -1943,6 +2517,7 @@
   {
     "key": "nepal",
     "name": "Nepal",
+    "prose_name": "Nepal",
     "total": 31353925,
     "hexagons": 105556,
     "land_km2": 147000,
@@ -2014,6 +2589,7 @@
   {
     "key": "netherlands",
     "name": "Netherlands",
+    "prose_name": "the Netherlands",
     "total": 17476877,
     "hexagons": 50287,
     "land_km2": 36900,
@@ -2110,6 +2686,7 @@
   {
     "key": "nigeria",
     "name": "Nigeria",
+    "prose_name": "Nigeria",
     "total": 224135234,
     "hexagons": 637762,
     "land_km2": 912000,
@@ -2336,6 +2913,7 @@
   {
     "key": "norway",
     "name": "Norway",
+    "prose_name": "Norway",
     "total": 5472839,
     "hexagons": 185959,
     "land_km2": 322000,
@@ -2427,6 +3005,7 @@
   {
     "key": "pakistan",
     "name": "Pakistan",
+    "prose_name": "Pakistan",
     "total": 241582115,
     "hexagons": 380718,
     "land_km2": 874000,
@@ -2503,6 +3082,7 @@
   {
     "key": "palestine",
     "name": "Palestine",
+    "prose_name": "Palestine",
     "total": 5550127,
     "hexagons": 6018,
     "land_km2": 6330,
@@ -2517,6 +3097,7 @@
   {
     "key": "poland",
     "name": "Poland",
+    "prose_name": "Poland",
     "total": 41080699,
     "hexagons": 320640,
     "land_km2": 313000,
@@ -2633,6 +3214,7 @@
   {
     "key": "portugal",
     "name": "Portugal",
+    "prose_name": "Portugal",
     "total": 10359135,
     "hexagons": 88728,
     "land_km2": 90800,
@@ -2769,6 +3351,7 @@
   {
     "key": "romania",
     "name": "Romania",
+    "prose_name": "Romania",
     "total": 19961091,
     "hexagons": 137471,
     "land_km2": 236000,
@@ -3015,6 +3598,7 @@
   {
     "key": "singapore",
     "name": "Singapore",
+    "prose_name": "Singapore",
     "total": 5995474,
     "hexagons": 1271,
     "land_km2": 735,
@@ -3076,6 +3660,7 @@
   {
     "key": "spain",
     "name": "Spain",
+    "prose_name": "Spain",
     "total": 47551642,
     "hexagons": 286702,
     "land_km2": 506000,
@@ -3212,6 +3797,7 @@
   {
     "key": "sri_lanka",
     "name": "Sri Lanka",
+    "prose_name": "Sri Lanka",
     "total": 21894168,
     "hexagons": 46713,
     "land_km2": 66000,
@@ -3293,6 +3879,7 @@
   {
     "key": "sweden",
     "name": "Sweden",
+    "prose_name": "Sweden",
     "total": 10617084,
     "hexagons": 286945,
     "land_km2": 443000,
@@ -3434,6 +4021,7 @@
   {
     "key": "switzerland",
     "name": "Switzerland",
+    "prose_name": "Switzerland",
     "total": 8922173,
     "hexagons": 41959,
     "land_km2": 41200,
@@ -3600,6 +4188,7 @@
   {
     "key": "ukraine",
     "name": "Ukraine",
+    "prose_name": "Ukraine",
     "total": 37863034,
     "hexagons": 297089,
     "land_km2": 570000,
@@ -3771,6 +4360,7 @@
   {
     "key": "united_kingdom",
     "name": "United Kingdom",
+    "prose_name": "the United Kingdom",
     "total": 67743873,
     "hexagons": 224522,
     "land_km2": 240000,
@@ -3821,6 +4411,323 @@
       {
         "id": "wales",
         "label": "Wales",
+        "kind": "region"
+      }
+    ]
+  },
+  {
+    "key": "united_states",
+    "name": "United States",
+    "prose_name": "the United States",
+    "total": 340020282,
+    "hexagons": 4216529,
+    "land_km2": 9440000,
+    "per_km2": 36,
+    "max": 34353,
+    "max_per_km2": 47000,
+    "densest": "New York County, New York",
+    "top_kind": "region",
+    "top": [
+      {
+        "name": "California",
+        "people": 40405756
+      },
+      {
+        "name": "Texas",
+        "people": 29963447
+      },
+      {
+        "name": "Florida",
+        "people": 21900367
+      },
+      {
+        "name": "New York",
+        "people": 19389240
+      },
+      {
+        "name": "Illinois",
+        "people": 13485454
+      }
+    ],
+    "views": [
+      {
+        "id": "new-york-city",
+        "label": "New York City",
+        "kind": "city"
+      },
+      {
+        "id": "los-angeles-city",
+        "label": "Los Angeles city",
+        "kind": "city"
+      },
+      {
+        "id": "chicago-city",
+        "label": "Chicago city",
+        "kind": "city"
+      },
+      {
+        "id": "alabama",
+        "label": "Alabama",
+        "kind": "region"
+      },
+      {
+        "id": "alaska",
+        "label": "Alaska",
+        "kind": "region"
+      },
+      {
+        "id": "arizona",
+        "label": "Arizona",
+        "kind": "region"
+      },
+      {
+        "id": "arkansas",
+        "label": "Arkansas",
+        "kind": "region"
+      },
+      {
+        "id": "california",
+        "label": "California",
+        "kind": "region"
+      },
+      {
+        "id": "colorado",
+        "label": "Colorado",
+        "kind": "region"
+      },
+      {
+        "id": "connecticut",
+        "label": "Connecticut",
+        "kind": "region"
+      },
+      {
+        "id": "delaware",
+        "label": "Delaware",
+        "kind": "region"
+      },
+      {
+        "id": "district-of-columbia",
+        "label": "District of Columbia",
+        "kind": "region"
+      },
+      {
+        "id": "florida",
+        "label": "Florida",
+        "kind": "region"
+      },
+      {
+        "id": "georgia",
+        "label": "Georgia",
+        "kind": "region"
+      },
+      {
+        "id": "hawaii",
+        "label": "Hawaii",
+        "kind": "region"
+      },
+      {
+        "id": "idaho",
+        "label": "Idaho",
+        "kind": "region"
+      },
+      {
+        "id": "illinois",
+        "label": "Illinois",
+        "kind": "region"
+      },
+      {
+        "id": "indiana",
+        "label": "Indiana",
+        "kind": "region"
+      },
+      {
+        "id": "iowa",
+        "label": "Iowa",
+        "kind": "region"
+      },
+      {
+        "id": "kansas",
+        "label": "Kansas",
+        "kind": "region"
+      },
+      {
+        "id": "kentucky",
+        "label": "Kentucky",
+        "kind": "region"
+      },
+      {
+        "id": "louisiana",
+        "label": "Louisiana",
+        "kind": "region"
+      },
+      {
+        "id": "maine",
+        "label": "Maine",
+        "kind": "region"
+      },
+      {
+        "id": "maryland",
+        "label": "Maryland",
+        "kind": "region"
+      },
+      {
+        "id": "massachusetts",
+        "label": "Massachusetts",
+        "kind": "region"
+      },
+      {
+        "id": "michigan",
+        "label": "Michigan",
+        "kind": "region"
+      },
+      {
+        "id": "minnesota",
+        "label": "Minnesota",
+        "kind": "region"
+      },
+      {
+        "id": "mississippi",
+        "label": "Mississippi",
+        "kind": "region"
+      },
+      {
+        "id": "missouri",
+        "label": "Missouri",
+        "kind": "region"
+      },
+      {
+        "id": "montana",
+        "label": "Montana",
+        "kind": "region"
+      },
+      {
+        "id": "nebraska",
+        "label": "Nebraska",
+        "kind": "region"
+      },
+      {
+        "id": "nevada",
+        "label": "Nevada",
+        "kind": "region"
+      },
+      {
+        "id": "new-hampshire",
+        "label": "New Hampshire",
+        "kind": "region"
+      },
+      {
+        "id": "new-jersey",
+        "label": "New Jersey",
+        "kind": "region"
+      },
+      {
+        "id": "new-mexico",
+        "label": "New Mexico",
+        "kind": "region"
+      },
+      {
+        "id": "new-york",
+        "label": "New York",
+        "kind": "region"
+      },
+      {
+        "id": "north-carolina",
+        "label": "North Carolina",
+        "kind": "region"
+      },
+      {
+        "id": "north-dakota",
+        "label": "North Dakota",
+        "kind": "region"
+      },
+      {
+        "id": "ohio",
+        "label": "Ohio",
+        "kind": "region"
+      },
+      {
+        "id": "oklahoma",
+        "label": "Oklahoma",
+        "kind": "region"
+      },
+      {
+        "id": "oregon",
+        "label": "Oregon",
+        "kind": "region"
+      },
+      {
+        "id": "pennsylvania",
+        "label": "Pennsylvania",
+        "kind": "region"
+      },
+      {
+        "id": "puerto-rico",
+        "label": "Puerto Rico",
+        "kind": "region"
+      },
+      {
+        "id": "rhode-island",
+        "label": "Rhode Island",
+        "kind": "region"
+      },
+      {
+        "id": "south-carolina",
+        "label": "South Carolina",
+        "kind": "region"
+      },
+      {
+        "id": "south-dakota",
+        "label": "South Dakota",
+        "kind": "region"
+      },
+      {
+        "id": "tennessee",
+        "label": "Tennessee",
+        "kind": "region"
+      },
+      {
+        "id": "texas",
+        "label": "Texas",
+        "kind": "region"
+      },
+      {
+        "id": "united-states-virgin-islands",
+        "label": "United States Virgin Islands",
+        "kind": "region"
+      },
+      {
+        "id": "utah",
+        "label": "Utah",
+        "kind": "region"
+      },
+      {
+        "id": "vermont",
+        "label": "Vermont",
+        "kind": "region"
+      },
+      {
+        "id": "virginia",
+        "label": "Virginia",
+        "kind": "region"
+      },
+      {
+        "id": "washington",
+        "label": "Washington",
+        "kind": "region"
+      },
+      {
+        "id": "west-virginia",
+        "label": "West Virginia",
+        "kind": "region"
+      },
+      {
+        "id": "wisconsin",
+        "label": "Wisconsin",
+        "kind": "region"
+      },
+      {
+        "id": "wyoming",
+        "label": "Wyoming",
         "kind": "region"
       }
     ]
