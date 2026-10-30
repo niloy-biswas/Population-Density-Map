@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://niloy.tech/Population-Density-Map/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/austria/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/bangladesh/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/belgium/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/bhutan/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/canada/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/china/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/czechia/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/denmark/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/finland/</loc><lastmod>2026-10-25</lastmod></url>
@@ -12,15 +14,16 @@
   <url><loc>https://niloy.tech/Population-Density-Map/germany/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/greece/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/hungary/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/india/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/ireland/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/israel/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/israel-palestine/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/italy/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/japan/</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://niloy.tech/Population-Density-Map/maldives/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/maldives/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/myanmar/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/nepal/</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://niloy.tech/Population-Density-Map/netherlands/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/netherlands/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/nigeria/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/norway/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/pakistan/</loc><lastmod>2026-10-25</lastmod></url>
@@ -34,5 +37,6 @@
   <url><loc>https://niloy.tech/Population-Density-Map/sweden/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/switzerland/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://niloy.tech/Population-Density-Map/ukraine/</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://niloy.tech/Population-Density-Map/united-kingdom/</loc><lastmod>2026-10-25</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/united-kingdom/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://niloy.tech/Population-Density-Map/united-states/</loc><lastmod>2026-10-30</lastmod></url>
 </urlset>

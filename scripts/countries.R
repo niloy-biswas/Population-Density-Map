@@ -68,6 +68,14 @@
 #     land_km2  → Land area for the "people per km²" figure, where Natural
 #                 Earth 1:50m (the default) is far off: it simplifies away
 #                 most of the Maldives' atolls and a third of Singapore.
+#     mask_km   → Land-mask raster cell in km (default 1). Raise it (3-4) for
+#                 countries reaching the Arctic, where the Web Mercator grid
+#                 would otherwise run to 100M+ cells.
+#     simplify_m → Outline simplification tolerance in metres (default 150).
+#                 Raise it for countries with thousands of districts.
+#     tiles     → TRUE for countries with millions of hexagons (US, China,
+#                 India): exported as a tile pyramid that the browser loads
+#                 a screen at a time, coarse when zoomed out. Needs h3jsr.
 #
 # Entries with only name/hex_file/admin_file/web are web-explorer only; their
 # files come from `Rscript scripts/download_kontur.R <ISO>` into data/kontur/.
@@ -126,8 +134,8 @@ countries <- list(
   ),
   india = list(
     name = "India",
-    hex_file = "data/kontur_population_IN_20231101.gpkg",
-    admin_file = "data/kontur_boundaries_IN_20230628.gpkg.zip",
+    hex_file = "data/kontur/kontur_population_IN_20231101.gpkg",
+    admin_file = "data/kontur/kontur_boundaries_IN_20230628.gpkg",
     crs = 3106,
     size = 2500,
     palette = list(source = "metbrewer", name = "OKeeffe1", direction = -1),
@@ -135,7 +143,21 @@ countries <- list(
     camera = list(theta = 0, phi = 75, zoom = 0.50, fov = 100),
     light_dir = 60,
     width = 2600, height = 2000,
-    solid = FALSE, shadow_depth = 0.8
+    solid = FALSE, shadow_depth = 0.8,
+    web = list(
+      levels = list(region = "4", district = "5", subdistrict = "7"),
+      views = list(
+        list(id = "delhi-city", label = "Delhi city",
+             bounds = c(76.84, 28.4, 77.35, 28.88)),
+        list(id = "mumbai-city", label = "Mumbai city",
+             bounds = c(72.77, 18.89, 73.05, 19.27)),
+        list(id = "kolkata-city", label = "Kolkata city",
+             bounds = c(88.2, 22.45, 88.5, 22.7))
+      ),
+      mask_km = 2,
+      simplify_m = 300,
+      tiles = TRUE  # 2.1M hexagons
+    )
   ),
   myanmar = list(
     name = "Myanmar",
@@ -254,6 +276,51 @@ countries <- list(
     hex_file = "data/kontur/kontur_population_BE_20231101.gpkg",
     admin_file = "data/kontur/kontur_boundaries_BE_20230628.gpkg",
     web = list(levels = list(region = "4", district = "7", subdistrict = "9"))
+  ),
+  canada = list(
+    name = "Canada",
+    hex_file = "data/kontur/kontur_population_CA_20231101.gpkg",
+    admin_file = "data/kontur/kontur_boundaries_CA_20230628.gpkg",
+    web = list(
+      # Level 8 mixes regional municipalities and big cities (York Region,
+      # Toronto); 5 and 6 cover only parts of the country.
+      levels = list(region = "4", district = "8", subdistrict = "10"),
+      views = list(
+        list(id = "toronto-city", label = "Toronto city",
+             bounds = c(-79.65, 43.55, -79.1, 43.86)),
+        list(id = "montreal-city", label = "Montreal city",
+             bounds = c(-73.98, 45.4, -73.47, 45.71)),
+        list(id = "vancouver-city", label = "Vancouver city",
+             bounds = c(-123.3, 49.0, -122.5, 49.35))
+      ),
+      # Web Mercator stretches the Arctic islands until they push the south,
+      # where almost everyone lives, off the first view.
+      bounds = c(-139, 41.7, -52.6, 64),
+      # Natural Earth counts the lakes (9.87M km²); Statistics Canada 2021.
+      land_km2 = 8788702,
+      mask_km = 3
+    )
+  ),
+  china = list(
+    name = "China",
+    hex_file = "data/kontur/kontur_population_CN_20231101.gpkg",
+    admin_file = "data/kontur/kontur_boundaries_CN_20230628.gpkg",
+    web = list(
+      levels = list(region = "3", district = "4", subdistrict = "6"),
+      views = list(
+        list(id = "shanghai-city", label = "Shanghai city",
+             bounds = c(121.2, 30.95, 121.8, 31.45)),
+        list(id = "beijing-city", label = "Beijing city",
+             bounds = c(116.1, 39.7, 116.7, 40.15)),
+        list(id = "pearl-river-delta", label = "Pearl River Delta",
+             bounds = c(113.0, 22.45, 114.4, 23.35))
+      ),
+      # The South China Sea islands reach 9°N; the first view stops at Hainan.
+      bounds = c(73.5, 18, 134.8, 53.6),
+      mask_km = 2,
+      simplify_m = 300,
+      tiles = TRUE  # 3.1M hexagons
+    )
   ),
   czechia = list(
     name = "Czechia",
@@ -439,6 +506,29 @@ countries <- list(
         list(id = "london", label = "London",
              bounds = c(-0.55, 51.28, 0.3, 51.7))
       )
+    )
+  ),
+  united_states = list(
+    name = "United States",
+    hex_file = "data/kontur/kontur_population_US_20231101.gpkg",
+    admin_file = "data/kontur/kontur_boundaries_US_20230628.gpkg",
+    web = list(
+      levels = list(region = "4", district = "6", subdistrict = "8"),
+      views = list(
+        list(id = "new-york-city", label = "New York City",
+             bounds = c(-74.26, 40.49, -73.7, 40.92)),
+        list(id = "los-angeles-city", label = "Los Angeles city",
+             bounds = c(-118.67, 33.7, -117.9, 34.34)),
+        list(id = "chicago-city", label = "Chicago city",
+             bounds = c(-87.94, 41.64, -87.52, 42.03))
+      ),
+      # West of 180° (Guam, the Northern Marianas, the far Aleutians) would
+      # wrap the map round the globe; American Samoa is south of the box.
+      crop = c(-180, 17, -64, 72),
+      bounds = c(-125, 24.4, -66.9, 49.4),  # lower 48; Alaska is a region
+      mask_km = 2,
+      simplify_m = 400,
+      tiles = TRUE  # 4.2M hexagons
     )
   )
 )

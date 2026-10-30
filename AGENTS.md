@@ -41,6 +41,7 @@ web/
   sitemap.xml                 # GENERATED: every page + the day its content last changed
   data/countries.json         # GENERATED: search index + summary facts (countries, views, per km², top regions)
   data/<key>/hexes.json       # GENERATED: hexagons, palette, views, labels, places
+  data/<key>/tiles/z/x/y.json # GENERATED, tiled countries only (US, China, India): the hexagons
   data/<key>/boundaries.geojson  # GENERATED: region/district outlines
 .github/workflows/pages.yml   # Deploys web/ only, on push to main touching web/**
 ```
@@ -81,12 +82,16 @@ web = list(
   palette = c("#b5e3e6", ...),  # low → high; default is the shared teal ramp
   crop    = c(w, s, e, n),       # drop hexagons/areas outside (France, NL, Norway, UK)
   bounds  = c(w, s, e, n),       # country view only; islands kept (Spain, Portugal, Japan)
-  land_km2 = 735                 # land area override for people per km² (Maldives, Singapore)
+  land_km2 = 735,                # land area override for people per km² (Maldives, Singapore, Canada)
+  mask_km  = 2,                  # land-mask raster cell, default 1 (Canada 3; US, China, India 2)
+  simplify_m = 300,              # outline simplification, default 150 m (US 400; China, India 300)
+  tiles    = TRUE                # tile pyramid instead of one hexes.json array (US, China, India)
 )
 ```
 
 - The 24 countries added in the second batch (Europe, Japan, Pakistan, Nigeria, Singapore, ...) are **web-only**: just `name`/`hex_file`/`admin_file`/`web`, with files in `data/kontur/`. `run_country()` stops with a clear error for them until rayshader fields are added.
 
+- Canada, China and the US are web-only too. India has both: its rayshader entry now points at `data/kontur/`.
 - Defaults (`web_defaults` in `export_web_data.R`) are Bangladesh's levels and the teal palette.
 - `character(0)` means "this tier doesn't exist in the file".
 - Admin levels **differ per country**. Check before adding one: `table(sf::st_read(admin_file)$admin_level)`. Current values are in the README table and in each entry.
@@ -102,9 +107,10 @@ web = list(
 - **Layers** (deck `MapboxOverlay`, `interleaved: true`):
   - `H3HexagonLayer` columns, inserted `beforeId` the basemap's first symbol layer so city names stay on top
   - `GeoJsonLayer` outlines, drawn with `depthCompare: 'always'` so they show over the columns, inserted `beforeId` our label layers
-- **Labels are MapLibre symbol layers** (`pdm-labels-region` above `pdm-labels-district`, one GeoJSON source), added on load and refilled per country by `labelFeatures()`. MapLibre's collision detection thins them like the basemap's own names; `symbol-sort-key` ranks each label by the people in its area (summed from the hexes), so bigger areas win. The region layer sits above, so regions are placed before districts. They are styled like the basemap's own place names (Noto Sans Regular, black, 1 px blurred white halo, normal case); regions are just 2 px larger.
+- **Labels are MapLibre symbol layers** (`pdm-labels-region` above `pdm-labels-district`, one GeoJSON source), added on load and refilled per country by `labelFeatures()`. MapLibre's collision detection thins them like the basemap's own names; `symbol-sort-key` ranks each label by the people in its area (summed from the hexes; a tiled country's labels carry `people` from the exporter), so bigger areas win. The region layer sits above, so regions are placed before districts. They are styled like the basemap's own place names (Noto Sans Regular, black, 1 px blurred white halo, normal case); regions are just 2 px larger.
 - **`renderLayers(animate)`** rebuilds the columns and outlines. Nothing rebuilds on zoom.
-- **Column height** = `diagonal(view.bounds) × 0.07 / country.max × slider`, so city views get shorter columns. **Colour** = palette at `sqrt(pop / max)`, because the data is heavily skewed. The palette is the visitor's pick from `PALETTES` in `app.js` (Colours in the layers popover, remembered as `pdm-palette`): "Teal" is the country's own `hexes.json` palette, the other three copy the Bangladesh, India and Nepal renders (`create_palette()` output for their `countries.R` palettes). `applyPalette()` recolours in place, so the hex layer needs `updateTriggers.getFillColor`.
+- **Tiled countries** (`country.tiles`, see `---- Tiles ----`): `tileLayer()` is a deck `TileLayer` whose `getTileData` (`fetchTile`) loads `data/<key>/tiles/z/x/y.json` and whose sub-layers are `hexLayer()`s. Levels: res 6 from map zoom 3, res 7 from 6, res 8 from 8; a level's files are cut at its top zoom, so lower zooms fetch child tiles (`tiles.index` lists the files that exist, so the sea is never requested). `refinementStrategy: 'best-available'` keeps coarse tiles up while finer ones load; `extent` keeps showing zoom-3 tiles when zoomed further out. `TileLayer` loads tiles on viewport change by itself, which is not the rebuild the zoom gotcha warns about. Sub-layers re-render through `updateTriggers.renderSubLayers` (palette, height, view). h3 ids are stored without the shared "8"+res prefix and trailing "f"s; `fetchTile` restores them.
+- **Column height** = `diagonal(view.bounds) × 0.07 / max × slider`, so city views get shorter columns; `max` is `country.max`, or the tile level's `tiles.max[res]`, so the tallest column keeps its height across levels. **Colour** = palette at `sqrt(pop / max)`, because the data is heavily skewed. The legend (`renderLegend()`) follows the tile level in view (`tileRes`, set by `onViewportLoad`): "People per hexagon (~36 km²)" at res 6. The palette is the visitor's pick from `PALETTES` in `app.js` (Colours in the layers popover, remembered as `pdm-palette`): "Teal" is the country's own `hexes.json` palette, the other three copy the Bangladesh, India and Nepal renders (`create_palette()` output for their `countries.R` palettes). `applyPalette()` sets `palette` (RGB) for the `getFillColor` accessor, so the hex layer needs `updateTriggers.getFillColor`.
 - **Camera framing** (`cameraFor`) uses its own Web Mercator maths plus panel-aware `padding`.
 - **Basemap:** OpenFreeMap `bright`. On load, label `text-field`s are forced to English, and `label_state`, road shields and POI layers are hidden.
 - `style.css` holds design tokens mirroring niloy.tech (Inter/Fraunces, teal accent `#0bceaf`, dark glass panel).
@@ -113,13 +119,16 @@ web = list(
 
 Per country: read hexagons + admin polygons (`read_admin()` loads only level 2 and the configured tiers via an SQL query; the full files reach 500 MB), apply `web$crop` if set (`crop_country()`), then:
 
-1. **`build_places()`** tags each hexagon centroid with subdistrict/district/region. Distinct combinations are stored once in `places`; the per-hex `place` column is an index (-1 = none).
-2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (1 km raster, 1.5 km buffer, holes filled), in EPSG:3857.
+1. **`build_places()`** tags each hexagon centroid with subdistrict/district/region (`locate()`: `st_intersects(polygons, points)`, ~30× faster than `st_join(points, polygons)`). Distinct combinations are stored once in `places`; the per-hex `place` column is an index (-1 = none).
+2. **`build_land_mask()`** builds Natural Earth 1:50m land (via `rnaturalearth`) ∪ the populated hexagons (`web$mask_km` raster, default 1 km, 1.5 cells buffer, holes filled), in EPSG:3857.
 3. **`outlined_areas()`** gives the region + district polygons, tagged `kind = "region" | "district"`. Outlines and labels are clipped to the land mask.
 4. **`build_views()`** produces the country, then `web$views`, then regions alphabetically.
-5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search and `country_facts()` for the summary and stat line: people per km² of land, the densest hexagon's place, top 5 regions (districts if there are no named regions). Land area comes from `land_area_km2()`: Natural Earth 1:50m matched by **name** (Bangladesh's and Sri Lanka's file names carry no ISO code; "Israel & Palestine" sums both), cut to `web$crop`. It is within a few % of official figures except for microstates, where 1:50m drops most of the land; those set `web$land_km2`. Ukraine comes out ~6% under the official figure (Natural Earth likely leaves out Crimea), left as is. Check a new country's figure against its official land area.
+   - **Tiled countries** (`web$tiles`): `read_hex_points()` reads only `h3` + `population` and makes centre points with `h3jsr` (polygons would exhaust memory: Canada's 600k peaked at 3.4 GB). `write_tiles()` sums cells into parents per `tile_levels` (`aggregate_cells()`; a parent takes its most populous child's place), cuts each level into XYZ tiles by cell centre and returns the `tiles` manifest. `hexes.json` then has no hex arrays; it carries `facts` (from `hex_facts()`) and labels with `people` (`area_people()`). The US takes ~30 min and writes ~1,300 tiles (~95 MB).
+5. **`write_manifest()`** rescans `web/data/*/hexes.json` to rebuild `countries.json`, including each country's views (`id`, `label`, `kind` = `"city"` for `web$views` presets, else `"region"`) for search and `country_facts()` for the summary and stat line (from the hex arrays via `hex_facts()`, or a tiled country's stored `facts`): people per km² of land, the densest hexagon's place, top 5 regions (districts if there are no named regions). Land area comes from `land_area_km2()`: Natural Earth 1:50m matched by **name** (Bangladesh's and Sri Lanka's file names carry no ISO code; "Israel & Palestine" sums both), cut to `web$crop`. It is within a few % of official figures except for microstates, where 1:50m drops most of the land, and Canada, where it counts the lakes (9.87M vs 8.79M km²); those set `web$land_km2`. Ukraine comes out ~6% under the official figure (Natural Earth likely leaves out Crimea), left as is. Check a new country's figure against its official land area.
 6. **`write_pages()`** fills `scripts/templates/explorer.html` into `web/index.html` and `web/<slug>/index.html`, writes `web/sitemap.xml`, and removes page folders of countries no longer exported. To remove a country, delete its `web/data/` folder and re-run any export.
    - `write_page()` only rewrites a page whose content changed, and `write_sitemap()` keeps the previous `lastmod` for unchanged pages, so re-running the export doesn't redate everything. Don't switch it to "today" for all pages: search engines stop trusting a `lastmod` that always changes.
+   - A page whose only change is the About-menu country list (every page, whenever a country is added) keeps its `lastmod` too: `write_page()` compares pages without their `data-country` lines (`own_content()`).
+   - Prose uses `prose_name` from `countries.json` ("the United States"; the list is `names_with_the` in the exporter), in page descriptions, `summary_html()` and `renderSummary()`. Populations of a billion or more read "1.43 billion" (`fmt_words()`).
    - The sitemap lives under the project path, so search engines only find it via Search Console or a `Sitemap:` line in niloy.tech's `robots.txt` (the user-site repo, not this one).
 
 The JS only knows `kind`, never admin-level numbers. Keep it that way.
@@ -137,22 +146,25 @@ The JS only knows `kind`, never admin-level numbers. Keep it that way.
 - **Don't rebuild the column layer on zoom events.** Rebuilding mid-`flyTo` cancels the elevation transition and leaves columns at the previous view's height.
 - **`map.cameraForBounds()` factors in the current pitch,** so presets framed inconsistently. `cameraFor()` replaces it; don't switch back.
 - **The landing page's country count skips names with " & "** ("Israel & Palestine" is a combined map), and its description names a few countries by hand in `page_html()`.
-- **The 35 generated pages repeat the same search box, controls and country list on purpose.** The single source is `scripts/templates/explorer.html`; the copies are build output, committed like `web/data/`. Options weighed and rejected:
+- **The ~40 generated pages repeat the same search box, controls and country list on purpose.** The single source is `scripts/templates/explorer.html`; the copies are build output, committed like `web/data/`. Options weighed and rejected:
   - Building the country list in JS: it is the crawlable link to every country page, so it has to be in the static HTML.
   - Building the search box and controls in JS: no SEO gain, adds JS and an empty-UI flash on load.
   - Server-side includes: GitHub Pages has none.
   - Generating the pages in CI and gitignoring them: the deploy would need R, plus the page code split out of the exporter (which loads `sf`), to save only diff noise.
 
-  The cost is that one template edit shows up as ~35 changed files; commit those in the data batch.
+  The cost is that one template edit shows up as ~40 changed files; commit those in the data batch.
 - **District labels** appear at the country's default zoom + 1.2 (a relative threshold, set per country with `map.setLayerZoomRange()`), not at a fixed zoom. Past that, collision decides which show.
 - **Button and label names drop admin suffixes** (`ADMIN_SUFFIX` in `app.js`: "Division", "Prefecture", "State", ...). A city preset named like a region then shows two identical buttons ("Lagos" vs "Lagos State"), so presets are called "<City> city".
 - **Case sensitivity:** the folder is `data/` (lowercase). It was once tracked as `Data/` and broke Linux/CI. Keep paths lowercase.
 - **`data/kontur/` is gitignored.** A fresh clone has none of the newer countries' inputs; re-run `download_kontur.R` with the ISO codes from the `hex_file` paths before exporting them. Don't commit those files: France's boundaries are 500 MB.
-- **Overseas territories wreck the country view and the land mask.** France's hexagon file spans lon -178 to 168; the 1 km land-mask raster over that extent would exhaust memory. Check a new country's hexagon extent; if it reaches far beyond the mainland, set `web$crop`. Spain (Canaries), Portugal (Azores) and Japan are wide but kept whole on purpose.
+- **Overseas territories wreck the country view and the land mask.** France's hexagon file spans lon -178 to 168; the 1 km land-mask raster over that extent would exhaust memory. Check a new country's hexagon extent; if it reaches far beyond the mainland, set `web$crop`. Spain (Canaries), Portugal (Azores) and Japan are wide but kept whole on purpose. The US file also spans the globe (Guam, the far Aleutians west of 180°); its crop keeps lon -180 to -64, north of 17°N.
+- **High latitudes blow up the Web Mercator land mask and the first view.** Canada reaches 83°N: a 1 km grid there runs to 100M+ cells (hence `mask_km = 3`), and framing the Arctic islands pushes the south, where almost everyone lives, off screen (hence `bounds`).
 - **GDAL turns tiny outline pieces into GeometryCollections.** With `COORDINATE_PRECISION=4` (~11 m), a short clipped segment collapses to one point and GDAL writes it as a MultiPoint inside a GeometryCollection. deck.gl's GeoJsonLayer then rejects the whole `boundaries.geojson` (no outlines at all), and logs it only once per session, so a multi-country browser run under-reports it. `drop_specks()` removes those parts before writing; keep it, and check exported geometry types are only LineString/MultiLineString.
 - **View ids are URL hashes and must be unique.** A preset named after a region (Japan's "Tokyo" preset vs Tokyo Prefecture) collides; `build_views()` now stops on duplicates.
 - **Don't edit `export_web_data.R` while an export is running.** Rscript reads the file as it goes, so an edit mid-run makes it fail with a parse error after the current country.
-- **Git LFS:** `data/kontur_boundaries_IN_20230628.gpkg.zip` is an LFS pointer, and git-lfs may not be installed. India's population file isn't in `data/` at all, so India can't be rendered or exported.
+- **Git LFS:** `data/kontur_boundaries_IN_20230628.gpkg.zip` is an LFS pointer, and git-lfs may not be installed. India now reads `data/kontur/` instead (`download_kontur.R IN`).
+- **The land-mask union can hit invalid geometry.** China's failed after ~25 min with a GEOS "side location conflict": the rebuilt outer rings and the projected Natural Earth crop are now passed through `st_make_valid()` (a no-op for valid input: Bangladesh re-exports byte-identical). The mask is the slowest step for big extents (China ~9 min, the US most of its ~30 min); a `terra` raster version (rasterize, `focal` dilate, `as.polygons(dissolve = TRUE)`, `fillHoles`) took 2.4 min for China but changes every country's outlines slightly, so it wasn't adopted.
+- **Tiled exports need memory and patience.** Keep `read_hex_points()` for them: loading the US's 4.2M polygons would exhaust 16 GB. `h3jsr` runs on V8 (~7 s per million cells per call).
 - **Running `run_country()` overwrites** `output/plots/<Name>.png` and `output/annotated/<Name>_population_density.png`, which are committed README images. For smoke tests, copy the config under a throwaway name with low `size`/`samples`.
 - **Rendered-map side effects:** `create_pop_matrix()` calls `readline()`. Under `Rscript` it returns "" and continues. `annotate_population_map()` calls `swatchplot()`, which leaves an `Rplots.pdf` at the repo root under `Rscript`; delete it, don't commit it.
 

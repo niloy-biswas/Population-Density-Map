@@ -20,6 +20,25 @@
 #     Region and district outlines (property "kind"), simplified and clipped
 #     to land.
 #
+# Countries with `web$tiles = TRUE` (millions of hexagons: the US, China,
+# India) are too big for one file. Their hexes.json has no h3/population/place
+# arrays; instead:
+#
+#   hexes.json  + "tiles": { "minZoom", "maxZoom", "extent": [w, s, e, n],
+#                            "levels": [{ "res", "zoom", "from" }],
+#                            "max": { "<res>": largest cell population },
+#                            "index": ["z/x/y", ...] }   # files that exist
+#               + "facts": summary facts (normally computed from the arrays)
+#               labels also carry "people" (normally summed in the browser)
+#   tiles/{z}/{x}/{y}.json  { "h3": [...], "population": [...],
+#                             "place": [...] }
+#
+# Each level is the hexagons aggregated to H3 resolution `res`, cut into XYZ
+# tiles at `zoom` (by cell centre, so every cell is in one tile). The map uses
+# a level from map zoom `from` up to the next level's `from`. h3 ids are
+# stored without the parts every id at that resolution shares: "8" + res in
+# front, and the trailing "f"s of the unused digits.
+#
 # Then rebuilds, from every exported country folder:
 #   web/data/countries.json  the index behind the search box (countries, their
 #                            city and region views, summary facts)
@@ -38,11 +57,17 @@ library(jsonlite)
 source("./scripts/countries.R")
 
 web_data_dir <- "web/data"
-simplify_metres <- 150
 # Decimal places in boundaries.geojson (4 ≈ 11 m).
 coordinate_precision <- 4
 # Average H3 resolution 8 cell area, for "people per km²" in summaries.
 hex_area_km2 <- 0.7373276
+
+# Pyramid for tiled countries (see the header). Hexagons should come out a
+# few pixels across at each zoom; resolution 5 (253 km²) was tried for the
+# country view and looked like a blur. A level's files are cut at its
+# highest zoom, so the zooms below it fetch child tiles rather than storing
+# the same cells twice.
+tile_levels <- data.frame(res = 6:8, zoom = c(5, 7, 8), from = c(3, 6, 8))
 
 # Defaults for each country's `web` list in countries.R.
 # levels: Kontur admin_level per tier (subdistrict levels are tried in order,
@@ -51,7 +76,12 @@ hex_area_km2 <- 0.7373276
 web_defaults <- list(
   levels = list(region = "4", district = "6", subdistrict = c("8", "10")),
   palette = c("#b5e3e6", "#7acdd3", "#3db0bd", "#1a91a8", "#1e6b98",
-              "#373f80", "#572c74", "#7f1f62")
+              "#373f80", "#572c74", "#7f1f62"),
+  # Land-mask raster cell (km) and outline simplification tolerance (m).
+  # Countries reaching the Arctic need a coarser mask: Web Mercator stretches
+  # high latitudes, so a 1 km grid over Canada runs to 100M+ cells.
+  mask_km = 1,
+  simplify_m = 150
 )
 
 # Merged field by field: modifyList() would recurse into the unnamed `views`
@@ -64,7 +94,14 @@ web_settings <- function(cfg) {
     palette = if (is.null(web$palette)) web_defaults$palette else web$palette,
     crop    = web$crop,
     bounds  = web$bounds,
-    land_km2 = web$land_km2
+    land_km2 = web$land_km2,
+    mask_km = if (is.null(web$mask_km)) web_defaults$mask_km else web$mask_km,
+    simplify_m = if (is.null(web$simplify_m)) {
+      web_defaults$simplify_m
+    } else {
+      web$simplify_m
+    },
+    tiles = isTRUE(web$tiles)
   )
 }
 
@@ -84,6 +121,18 @@ read_admin <- function(file, levels) {
   st_read(file, quiet = TRUE, query = sprintf(
     'SELECT * FROM "%s" WHERE CAST(admin_level AS TEXT) IN (%s)', layer, wanted
   ))
+}
+
+# Hexagons as their centre points (EPSG:3857), for tiled countries: millions
+# of polygons cost more memory than the machine has (Canada's 600k peaked at
+# 3.4 GB), and every step below only needs the centres.
+read_hex_points <- function(file) {
+  layer <- st_layers(file)$name[1]
+  hex <- suppressWarnings(st_read(file, quiet = TRUE, query = sprintf(
+    'SELECT h3, population FROM "%s" WHERE population > 0', layer
+  )))
+  st_sf(h3 = hex$h3, population = hex$population,
+        geometry = st_transform(h3jsr::cell_to_point(hex$h3), 3857))
 }
 
 # Lon/lat box (west, south, east, north) as a polygon in `crs`.
@@ -174,18 +223,20 @@ build_views <- function(cfg, web, admin) {
 # clipped to a land mask (EPSG:3857) made of two parts:
 # - Natural Earth 1:50m land: covers unpopulated land (Bhutan's mountains,
 #   Lapland) that the hexagons alone would leave out;
-# - the populated hexagons (rasterised at 1 km, padded, holes filled): follow
+# - the populated hexagons (rasterised at `km`, padded, holes filled): follow
 #   the coast more closely than 1:50m where people live.
-build_land_mask <- function(hex) {
+build_land_mask <- function(hex, km = 1) {
   # Kontur files are EPSG:3857, but derived ones may not be (merged Israel &
   # Palestine is 3106), so project to match outlined_areas().
   hex <- st_transform(hex["population"], 3857)
-  grid <- stars::st_rasterize(hex, dx = 1000, dy = 1000)
+  grid <- stars::st_rasterize(hex, dx = km * 1000, dy = km * 1000)
   grid[[1]][!is.na(grid[[1]])] <- 1
   populated <- st_union(st_as_sf(grid, merge = TRUE))
-  populated <- st_cast(st_buffer(populated, 1500), "POLYGON")
+  populated <- st_cast(st_buffer(populated, km * 1500), "POLYGON")
   outer <- lapply(populated, function(p) st_polygon(p[1]))
-  populated <- st_union(st_sfc(outer, crs = st_crs(populated)))
+  # Outer rings and the projected Natural Earth crop can come out invalid
+  # (China's did: a GEOS "side location conflict" in the union below).
+  populated <- st_union(st_make_valid(st_sfc(outer, crs = st_crs(populated))))
 
   # Crop in lon/lat before projecting: polar shapes break in Web Mercator.
   area <- st_bbox(st_transform(st_buffer(populated, 50000), 4326))
@@ -193,31 +244,42 @@ build_land_mask <- function(hex) {
   land <- suppressWarnings(suppressMessages(
     st_crop(st_make_valid(st_geometry(land)), area)
   ))
-  land <- st_union(st_transform(land, 3857))
+  land <- st_union(st_make_valid(st_transform(land, 3857)))
   st_union(c(land, populated))
 }
 
 # Map labels for regions and districts, placed inside each polygon's land part.
-build_labels <- function(areas, land) {
+# `people` (from area_people()), if given, adds each area's population: the
+# browser ranks labels by it, and can't sum it itself for a tiled country.
+build_labels <- function(areas, land, people = NULL) {
   areas <- suppressWarnings(st_intersection(areas, land))
   pts <- suppressWarnings(st_point_on_surface(areas))
   xy <- round(st_coordinates(st_transform(pts, 4326)), 4)
   lapply(seq_len(nrow(areas)), function(i) {
-    list(name = areas$label[i], kind = areas$kind[i],
-         position = unname(xy[i, ]))
+    label <- list(name = areas$label[i], kind = areas$kind[i],
+                  position = unname(xy[i, ]))
+    if (!is.null(people)) {
+      n <- people[[areas$kind[i]]][areas$label[i]]
+      label$people <- if (is.na(n)) 0 else unname(n)
+    }
+    label
   })
 }
 
 # Name of the polygon each point falls in, NA outside all of them.
-# Earlier levels win where several match (subdistrict before metro area).
+# Earlier levels win where several match (subdistrict before metro area), and
+# within a level the first polygon. Polygons first: sf prepares the first
+# argument, which is ~30x faster than st_join(points, polygons) and matters
+# at the US's 4M points.
 locate <- function(points, admin, levels) {
   out <- rep(NA_character_, nrow(points))
   for (lvl in levels) {
     polys <- admin_level(admin, lvl)
-    hit <- st_join(points, polys["label"], join = st_within, left = TRUE)
-    hit <- hit[!duplicated(hit$row_id), ]
-    fill <- is.na(out) & !is.na(hit$label)
-    out[fill] <- hit$label[fill]
+    found <- rep(NA_character_, nrow(points))
+    hits <- st_intersects(polys, points)
+    for (i in rev(seq_along(hits))) found[hits[[i]]] <- polys$label[i]
+    fill <- is.na(out) & !is.na(found)
+    out[fill] <- found[fill]
   }
   out
 }
@@ -226,8 +288,7 @@ locate <- function(points, admin, levels) {
 # store the distinct combinations once so the per-hex column is just an index.
 build_places <- function(hex, admin, levels) {
   admin <- st_transform(st_make_valid(admin), st_crs(hex))
-  pts <- st_sf(row_id = seq_len(nrow(hex)),
-               geometry = suppressWarnings(st_centroid(st_geometry(hex))))
+  pts <- st_sf(geometry = suppressWarnings(st_centroid(st_geometry(hex))))
   combos <- data.frame(
     subdistrict = locate(pts, admin, levels$subdistrict),
     district    = locate(pts, admin, levels$district),
@@ -265,10 +326,10 @@ drop_specks <- function(geom, precision) {
   }), crs = st_crs(geom))
 }
 
-write_boundaries <- function(areas, land, out_file) {
+write_boundaries <- function(areas, land, out_file, simplify_m) {
   # Outlines only, clipped to land so maritime zone edges don't cross the sea.
   areas <- st_simplify(areas, preserveTopology = TRUE,
-                       dTolerance = simplify_metres)
+                       dTolerance = simplify_m)
   lines <- suppressWarnings(st_intersection(st_boundary(areas), land))
   lines <- st_transform(lines, 4326)
   st_geometry(lines) <- drop_specks(st_geometry(lines), coordinate_precision)
@@ -281,6 +342,72 @@ write_boundaries <- function(areas, land, out_file) {
              paste0("COORDINATE_PRECISION=", coordinate_precision),
              "RFC7946=YES"
            ))
+}
+
+# ---- Tiles ----
+
+# h3 ids without the parts shared by every cell at `res` (see the header).
+compact_h3 <- function(ids, res) {
+  tail_f <- floor(3 * (15 - res) / 4)
+  shared <- substr(ids, 1, 2) == paste0("8", res) &
+    endsWith(ids, strrep("f", tail_f))
+  if (!all(shared)) stop("unexpected h3 id at resolution ", res)
+  substr(ids, 3, 15 - tail_f)
+}
+
+# XYZ tile column and row containing each lon/lat at `zoom`.
+tile_xy <- function(lon, lat, zoom) {
+  n <- 2^zoom
+  lat <- pmin(pmax(lat, -85.0511), 85.0511) * pi / 180
+  list(x = pmin(floor((lon + 180) / 360 * n), n - 1),
+       y = pmin(floor((1 - log(tan(lat) + 1 / cos(lat)) / pi) / 2 * n), n - 1))
+}
+
+# Res-8 cells summed into their parents at `res`. A parent takes the place
+# of its most populous child.
+aggregate_cells <- function(h3, pop, place, res) {
+  if (res == 8) return(data.frame(h3 = h3, population = pop, place = place))
+  parent <- h3jsr::get_parent(h3, res)
+  first <- order(-pop)
+  first <- first[!duplicated(parent[first])]
+  sums <- rowsum(pop, parent)
+  data.frame(h3 = parent[first],
+             population = as.integer(sums[parent[first], 1]),
+             place = place[first])
+}
+
+# Writes every level of the pyramid under out_dir/tiles/ and returns the
+# manifest's "tiles" object.
+write_tiles <- function(hex, place, out_dir) {
+  tiles_dir <- file.path(out_dir, "tiles")
+  unlink(tiles_dir, recursive = TRUE) # no stale tiles from a previous export
+  max_pop <- list()
+  index <- character(0)
+  for (i in seq_len(nrow(tile_levels))) {
+    lvl <- tile_levels[i, ]
+    cells <- aggregate_cells(hex$h3, as.integer(round(hex$population)),
+                             place, lvl$res)
+    cells <- cells[order(cells$population), ] # tallest last, as in hexes.json
+    centre <- st_coordinates(h3jsr::cell_to_point(cells$h3))
+    xy <- tile_xy(centre[, 1], centre[, 2], lvl$zoom)
+    cells$h3 <- compact_h3(cells$h3, lvl$res)
+    by_tile <- split(seq_len(nrow(cells)),
+                     paste(lvl$zoom, xy$x, xy$y, sep = "/"))
+    for (k in names(by_tile)) {
+      rows <- cells[by_tile[[k]], ]
+      file <- file.path(tiles_dir, paste0(k, ".json"))
+      dir.create(dirname(file), showWarnings = FALSE, recursive = TRUE)
+      writeLines(toJSON(list(h3 = rows$h3, population = rows$population,
+                             place = rows$place)), file)
+    }
+    max_pop[[as.character(lvl$res)]] <- max(cells$population)
+    index <- c(index, names(by_tile))
+    message(sprintf("  res %d: %d cells in %d tiles (largest %d)", lvl$res,
+                    nrow(cells), length(by_tile), max(lengths(by_tile))))
+  }
+  list(minZoom = min(tile_levels$from), maxZoom = max(tile_levels$zoom),
+       extent = bbox_vec(st_geometry(hex)), levels = tile_levels,
+       max = max_pop, index = index)
 }
 
 # Land area for the "people per km²" figure: web$land_km2 if set, else the
@@ -308,25 +435,38 @@ land_area_km2 <- function(cfg, ne) {
   sum(as.numeric(st_area(geom))) / 1e6
 }
 
-# Facts for the summary card on each country's page: people per km² of land,
-# where the densest hexagon is, and the most populous regions (districts if a
-# country's file has no named regions). `d` is a hexes.json read with
-# simplifyVector = FALSE, so a missing place name is NULL.
-country_facts <- function(d, land_km2) {
-  pop <- unlist(d$population)
-  idx <- unlist(d$place) + 1L
-  idx[idx == 0] <- NA # -1: outside every area
-  tier <- function(i) {
-    vapply(d$places, function(p) if (is.null(p[[i]])) NA_character_ else p[[i]],
-           "")[idx]
-  }
-  densest <- idx[which.max(pop)]
-  if (!is.na(densest)) {
+# Name at tier i (1 subdistrict, 2 district, 3 region) for each hexagon;
+# `place` is 0-based, -1 outside every area. `places` may come from
+# fromJSON(), where a missing name is NULL, or from build_places(), where
+# it is NA.
+place_tier <- function(place, places, i) {
+  idx <- place + 1L
+  idx[idx == 0] <- NA
+  vapply(places, function(p) as.character(if (is.null(p[[i]])) NA else p[[i]]),
+         "")[idx]
+}
+
+# People per region and per district name.
+area_people <- function(pop, place, places) {
+  list(region = tapply(pop, place_tier(place, places, 3), sum),
+       district = tapply(pop, place_tier(place, places, 2), sum))
+}
+
+# The summary facts that need every hexagon: how many there are, where the
+# densest is, and the most populous regions (districts if a country's file
+# has no named regions).
+hex_facts <- function(pop, place, places) {
+  densest <- place[which.max(pop)] + 1L
+  densest <- if (densest == 0) {
+    NA
+  } else {
     # unique(): city districts often share the city's name ("Labutta, Labutta").
-    densest <- paste(unique(unlist(d$places[[densest]])), collapse = ", ")
+    parts <- unlist(places[[densest]])
+    paste(unique(parts[!is.na(parts)]), collapse = ", ")
   }
   named <- Filter(function(a) any(!is.na(a)),
-                  list(region = tier(3), district = tier(2)))
+                  list(region = place_tier(place, places, 3),
+                       district = place_tier(place, places, 2)))
   top <- if (length(named)) {
     people <- sort(tapply(pop, named[[1]], sum), decreasing = TRUE)
     lapply(head(names(people), 5), function(n) {
@@ -335,11 +475,25 @@ country_facts <- function(d, land_km2) {
   } else {
     list()
   }
-  list(land_km2 = signif(land_km2, 3),
+  list(hexagons = length(pop), densest = densest,
+       top_kind = if (length(named)) names(named)[1] else NA, top = top)
+}
+
+# Facts for the summary card on each country's page: people per km² of land
+# plus hex_facts(). `d` is a hexes.json read with simplifyVector = FALSE;
+# tiled countries carry their hex_facts() in it.
+country_facts <- function(d, land_km2) {
+  facts <- if (is.null(d$facts)) {
+    hex_facts(unlist(d$population), unlist(d$place), d$places)
+  } else {
+    d$facts
+  }
+  list(hexagons = facts$hexagons, land_km2 = signif(land_km2, 3),
        per_km2 = round(signif(d$total / land_km2, 3)),
        max = d$max, max_per_km2 = signif(d$max / hex_area_km2, 2),
-       densest = densest, top_kind = if (length(named)) names(named)[1] else NA,
-       top = top)
+       densest = if (is.null(facts$densest)) NA else facts$densest,
+       top_kind = if (is.null(facts$top_kind)) NA else facts$top_kind,
+       top = facts$top)
 }
 
 # Index of exported countries for the search box and the country pages,
@@ -357,8 +511,8 @@ write_manifest <- function(data_dir = web_data_dir) {
       list(id = v$id, label = v$label,
            kind = if (v$id %in% presets) "city" else "region")
     })
-    c(list(key = d$key, name = d$name, total = d$total,
-           hexagons = length(d$h3)),
+    c(list(key = d$key, name = d$name, prose_name = prose_name(d$name),
+           total = d$total),
       country_facts(d, land_area_km2(countries[[d$key]], ne)),
       list(views = views))
   })
@@ -409,7 +563,22 @@ fmt_short <- function(x) {
 
 fmt_words <- function(x) {
   if (x < 1e6) return(fmt_int(x))
-  paste(formatC(x / 1e6, format = "f", digits = 1), "million")
+  if (x < 1e9) return(paste(formatC(x / 1e6, format = "f", digits = 1),
+                            "million"))
+  paste(formatC(x / 1e9, format = "f", digits = 2), "billion")
+}
+
+# Country names that take "the" in a sentence ("map of the United States").
+# The name goes in countries.json as prose_name, so app.js writes the same.
+names_with_the <- c("United States", "United Kingdom", "Netherlands",
+                    "Maldives")
+prose_name <- function(name) {
+  if (name %in% names_with_the) paste("the", name) else name
+}
+
+# Upper-case first letter, for a prose name starting a sentence.
+sentence_start <- function(x) {
+  paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 }
 
 # "A", "A and B", "A, B and C"
@@ -439,7 +608,8 @@ summary_html <- function(e) {
   text <- sprintf(paste0(
     "%s has %s people%s. They live in %s populated hexagons; the densest%s ",
     "holds %s people, about %s per km²."
-  ), e$name, fmt_int(e$total), density, fmt_int(e$hexagons), densest,
+  ), sentence_start(e$prose_name), fmt_int(e$total), density,
+  fmt_int(e$hexagons), densest,
   fmt_int(e$max), fmt_int(e$max_per_km2))
   out <- c(
     sprintf('<summary class="summary__toggle">%s in numbers</summary>',
@@ -556,8 +726,8 @@ page_html <- function(template, entries, e, landing) {
     url <- site_url
     description <- sprintf(paste0(
       "Population density map of %d countries in interactive 3D: ",
-      "Bangladesh, Pakistan, Japan, the UK, Germany, France and more. ",
-      "Hover any ~0.74 km² hexagon for its population."
+      "the US, China, India, Bangladesh, Japan, Germany and more. ",
+      "Hover any hexagon for its population."
     ), n_countries)
     ld <- ld_script(json_ld("3D Population Density Map", url, paste0(
       "Interactive 3D population density maps built from Kontur H3 ",
@@ -578,7 +748,7 @@ page_html <- function(template, entries, e, landing) {
     }
     description <- paste0(
       sprintf("Interactive 3D population density map of %s: %s people%s ",
-              e$name, fmt_words(e$total), density),
+              e$prose_name, fmt_words(e$total), density),
       "(Kontur 2023).",
       if (length(areas)) {
         sprintf(" Explore %s and more.", paste(areas, collapse = ", "))
@@ -608,18 +778,29 @@ page_html <- function(template, entries, e, landing) {
   ))
 }
 
-# Writes `file` only if its content changes; TRUE if it did (for lastmod).
+# A page without its About-menu country list: that list changes on every
+# page whenever a country is added, which isn't news about the page itself.
+own_content <- function(lines) {
+  lines[!grepl('data-country="', lines, fixed = TRUE)]
+}
+
+# Writes `file` only if its content changes. TRUE if the page's own content
+# changed (for lastmod), FALSE if nothing or only the country list did.
 write_page <- function(html, file) {
   dir.create(dirname(file), showWarnings = FALSE, recursive = TRUE)
   tmp <- tempfile(tmpdir = dirname(file))
   con <- file(tmp, "wb")
   writeLines(enc2utf8(html), con, useBytes = TRUE)
   close(con)
-  if (file.exists(file) && tools::md5sum(tmp) == tools::md5sum(file)) {
+  if (!file.exists(file)) return(file.rename(tmp, file))
+  if (tools::md5sum(tmp) == tools::md5sum(file)) {
     unlink(tmp)
     return(FALSE)
   }
+  changed <- !identical(own_content(readLines(tmp, encoding = "UTF-8")),
+                        own_content(readLines(file, encoding = "UTF-8")))
   file.rename(tmp, file)
+  changed
 }
 
 # lastmod is the day a page's content last changed. Unchanged pages keep the
@@ -668,7 +849,7 @@ write_pages <- function(entries, site_dir = dirname(web_data_dir)) {
     }
   }
   message("Pages: index.html + ", length(entries), " countries (",
-          sum(changed), " changed) + sitemap.xml")
+          sum(changed), " with new content) + sitemap.xml")
 }
 
 export_web_data <- function(country_key, data_dir = web_data_dir) {
@@ -677,7 +858,11 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
   web <- web_settings(cfg)
 
   admin <- read_admin(cfg$admin_file, web$levels)
-  hex <- st_read(cfg$hex_file, quiet = TRUE)
+  hex <- if (web$tiles) {
+    read_hex_points(cfg$hex_file)
+  } else {
+    st_read(cfg$hex_file, quiet = TRUE)
+  }
   if (!all(c("h3", "population") %in% names(hex))) {
     stop(cfg$hex_file, " has no h3/population columns")
   }
@@ -691,7 +876,7 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
   hex <- hex[order(hex$population), ]
 
   places <- build_places(hex, admin, web$levels)
-  land <- build_land_mask(hex)
+  land <- build_land_mask(hex, web$mask_km)
   areas <- outlined_areas(admin, web$levels)
 
   out <- list(
@@ -702,19 +887,29 @@ export_web_data <- function(country_key, data_dir = web_data_dir) {
     max        = max(hex$population),
     palette    = web$palette,
     views      = build_views(cfg, web, admin),
-    labels     = build_labels(areas, land),
-    places     = places$places,
-    h3         = hex$h3,
-    population = as.integer(round(hex$population)),
-    place      = places$place
+    labels     = NULL,
+    places     = places$places
   )
-
   out_dir <- file.path(data_dir, country_key)
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  pop <- as.integer(round(hex$population))
+  if (web$tiles) {
+    out$labels <- build_labels(areas, land,
+                               area_people(pop, places$place, places$places))
+    out$facts <- hex_facts(pop, places$place, places$places)
+    out$tiles <- write_tiles(hex, places$place, out_dir)
+  } else {
+    unlink(file.path(out_dir, "tiles"), recursive = TRUE)
+    out$labels <- build_labels(areas, land)
+    out$h3 <- hex$h3
+    out$population <- pop
+    out$place <- places$place
+  }
+
   hexes_file <- file.path(out_dir, "hexes.json")
   write_json(out, hexes_file, auto_unbox = TRUE, digits = NA, na = "null")
   boundaries_file <- file.path(out_dir, "boundaries.geojson")
-  write_boundaries(areas, land, boundaries_file)
+  write_boundaries(areas, land, boundaries_file, web$simplify_m)
 
   message(sprintf(
     "%s: %d hexes (%d untagged), %d places, %d views -> %s (%.1f MB)",
