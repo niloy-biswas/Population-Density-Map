@@ -9,6 +9,7 @@
     "per_km2": 107,
     "max": 8546,
     "max_per_km2": 12000,
+    "lived": 870,
     "densest": "Vienna",
     "top_kind": "region",
     "top": [
@@ -79,7 +80,9 @@
         "label": "Vorarlberg",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 24,
+    "ranked": 37
   },
   {
     "key": "bangladesh",
@@ -91,6 +94,7 @@
     "per_km2": 1280,
     "max": 37876,
     "max_per_km2": 51000,
+    "lived": 3100,
     "densest": "Chattogram District, Chattogram Division",
     "top_kind": "region",
     "top": [
@@ -161,7 +165,9 @@
         "label": "Sylhet Division",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 3,
+    "ranked": 37
   },
   {
     "key": "belgium",
@@ -173,6 +179,7 @@
     "per_km2": 385,
     "max": 21011,
     "max_per_km2": 28000,
+    "lived": 970,
     "densest": "Saint-Gilles - Sint-Gillis, Brussels-Capital",
     "top_kind": "region",
     "top": [
@@ -205,7 +212,9 @@
         "label": "Wallonia",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 8,
+    "ranked": 37
   },
   {
     "key": "bhutan",
@@ -217,6 +226,7 @@
     "per_km2": 22,
     "max": 17097,
     "max_per_km2": 23000,
+    "lived": 400,
     "densest": null,
     "top_kind": "region",
     "top": [
@@ -342,7 +352,9 @@
         "label": "Zhemgang District",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 34,
+    "ranked": 37
   },
   {
     "key": "canada",
@@ -354,6 +366,7 @@
     "per_km2": 4,
     "max": 27874,
     "max_per_km2": 38000,
+    "lived": 2500,
     "densest": "Old Toronto, Toronto, Ontario",
     "top_kind": "region",
     "top": [
@@ -459,7 +472,9 @@
         "label": "Yukon",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 37,
+    "ranked": 37
   },
   {
     "key": "china",
@@ -471,6 +486,7 @@
     "per_km2": 152,
     "max": 40268,
     "max_per_km2": 55000,
+    "lived": 2900,
     "densest": "Ulugqat County, Kizilsu Kirghiz Autonomous Prefecture, Xinjiang",
     "top_kind": "region",
     "top": [
@@ -666,7 +682,9 @@
         "label": "Zhejiang",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 18,
+    "ranked": 37
   },
   {
     "key": "czechia",
@@ -678,6 +696,7 @@
     "per_km2": 134,
     "max": 8134,
     "max_per_km2": 11000,
+    "lived": 950,
     "densest": "okres Praha-východ",
     "top_kind": "region",
     "top": [
@@ -763,7 +782,9 @@
         "label": "Zlínský kraj",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 20,
+    "ranked": 37
   },
   {
     "key": "denmark",
@@ -775,6 +796,7 @@
     "per_km2": 139,
     "max": 28072,
     "max_per_km2": 38000,
+    "lived": 980,
     "densest": "Tårnby Kommune, Capital Region of Denmark",
     "top_kind": "region",
     "top": [
@@ -825,7 +847,9 @@
         "label": "Region Zealand",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 19,
+    "ranked": 37
   },
   {
     "key": "finland",
@@ -837,6 +861,7 @@
     "per_km2": 17,
     "max": 6854,
     "max_per_km2": 9300,
+    "lived": 480,
     "densest": "Helsinki, Helsinki sub-region, Uusimaa",
     "top_kind": "region",
     "top": [
@@ -952,7 +977,9 @@
         "label": "Uusimaa",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 35,
+    "ranked": 37
   },
   {
     "key": "france",
@@ -964,6 +991,7 @@
     "per_km2": 119,
     "max": 30482,
     "max_per_km2": 41000,
+    "lived": 990,
     "densest": "Ile-de-France",
     "top_kind": "region",
     "top": [
@@ -1059,7 +1087,9 @@
         "label": "Provence-Alpes-Côte d'Azur",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 22,
+    "ranked": 37
   },
   {
     "key": "germany",
@@ -1071,6 +1101,7 @@
     "per_km2": 235,
     "max": 19256,
     "max_per_km2": 26000,
+    "lived": 1300,
     "densest": "Grevenbroich, Rhein-Kreis Neuss, North Rhine-Westphalia",
     "top_kind": "region",
     "top": [
@@ -1176,7 +1207,9 @@
         "label": "Thuringia",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 14,
+    "ranked": 37
   },
   {
     "key": "greece",
@@ -1188,6 +1221,7 @@
     "per_km2": 80,
     "max": 25236,
     "max_per_km2": 34000,
+    "lived": 3400,
     "densest": "Municipality of Zografos, Regional Unit of Central Athens, Attica",
     "top_kind": "region",
     "top": [
@@ -1278,7 +1312,9 @@
         "label": "Western Macedonia",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 29,
+    "ranked": 37
   },
   {
     "key": "hungary",
@@ -1290,6 +1326,7 @@
     "per_km2": 104,
     "max": 18745,
     "max_per_km2": 25000,
+    "lived": 1100,
     "densest": "Budapest",
     "top_kind": "region",
     "top": [
@@ -1415,7 +1452,9 @@
         "label": "Zala",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 25,
+    "ranked": 37
   },
   {
     "key": "india",
@@ -1427,6 +1466,7 @@
     "per_km2": 453,
     "max": 37151,
     "max_per_km2": 50000,
+    "lived": 2300,
     "densest": "Sonarpur, South 24 Parganas, West Bengal",
     "top_kind": "region",
     "top": [
@@ -1647,7 +1687,9 @@
         "label": "West Bengal",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 6,
+    "ranked": 37
   },
   {
     "key": "ireland",
@@ -1659,6 +1701,7 @@
     "per_km2": 74,
     "max": 9592,
     "max_per_km2": 13000,
+    "lived": 1200,
     "densest": "Rotunda A ED, County Dublin",
     "top_kind": "region",
     "top": [
@@ -1814,7 +1857,9 @@
         "label": "County Wicklow",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 30,
+    "ranked": 37
   },
   {
     "key": "israel",
@@ -1826,10 +1871,13 @@
     "per_km2": 425,
     "max": 31642,
     "max_per_km2": 43000,
+    "lived": 8200,
     "densest": null,
     "top_kind": null,
     "top": [],
-    "views": []
+    "views": [],
+    "density_rank": 7,
+    "ranked": 37
   },
   {
     "key": "israel_palestine",
@@ -1841,10 +1889,13 @@
     "per_km2": 526,
     "max": 31642,
     "max_per_km2": 43000,
+    "lived": 8400,
     "densest": null,
     "top_kind": null,
     "top": [],
-    "views": []
+    "views": [],
+    "density_rank": null,
+    "ranked": 37
   },
   {
     "key": "italy",
@@ -1856,6 +1907,7 @@
     "per_km2": 196,
     "max": 25410,
     "max_per_km2": 34000,
+    "lived": 2400,
     "densest": "Rome, Roma Capitale, Lazio",
     "top_kind": "region",
     "top": [
@@ -1981,7 +2033,9 @@
         "label": "Veneto",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 17,
+    "ranked": 37
   },
   {
     "key": "japan",
@@ -1993,6 +2047,7 @@
     "per_km2": 333,
     "max": 18582,
     "max_per_km2": 25000,
+    "lived": 2400,
     "densest": "Toshima, Tokyo",
     "top_kind": "region",
     "top": [
@@ -2258,7 +2313,9 @@
         "label": "Yamanashi Prefecture",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 9,
+    "ranked": 37
   },
   {
     "key": "maldives",
@@ -2270,6 +2327,7 @@
     "per_km2": 1740,
     "max": 31794,
     "max_per_km2": 43000,
+    "lived": 4700,
     "densest": "Henveiru, Malé",
     "top_kind": "region",
     "top": [
@@ -2400,7 +2458,9 @@
         "label": "Nilandhe Atholhu Uthuruburi",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 2,
+    "ranked": 37
   },
   {
     "key": "myanmar",
@@ -2412,6 +2472,7 @@
     "per_km2": 83,
     "max": 40200,
     "max_per_km2": 55000,
+    "lived": 4000,
     "densest": "Labutta, Ayeyarwady",
     "top_kind": "region",
     "top": [
@@ -2512,7 +2573,9 @@
         "label": "Yangon",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 28,
+    "ranked": 37
   },
   {
     "key": "nepal",
@@ -2524,6 +2587,7 @@
     "per_km2": 213,
     "max": 34892,
     "max_per_km2": 47000,
+    "lived": 1200,
     "densest": "Duhabi, Sunsari, Koshi Province",
     "top_kind": "region",
     "top": [
@@ -2584,7 +2648,9 @@
         "label": "Sudurpashchim Pradesh",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 16,
+    "ranked": 37
   },
   {
     "key": "netherlands",
@@ -2596,6 +2662,7 @@
     "per_km2": 474,
     "max": 11282,
     "max_per_km2": 15000,
+    "lived": 1800,
     "densest": "The Hague, South Holland",
     "top_kind": "region",
     "top": [
@@ -2681,7 +2748,9 @@
         "label": "Zeeland",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 5,
+    "ranked": 37
   },
   {
     "key": "nigeria",
@@ -2693,6 +2762,7 @@
     "per_km2": 246,
     "max": 34023,
     "max_per_km2": 46000,
+    "lived": 2800,
     "densest": "Kumshe, Bama, Borno State",
     "top_kind": "region",
     "top": [
@@ -2908,7 +2978,9 @@
         "label": "Zamfara State",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 13,
+    "ranked": 37
   },
   {
     "key": "norway",
@@ -2920,6 +2992,7 @@
     "per_km2": 17,
     "max": 4457,
     "max_per_km2": 6000,
+    "lived": 680,
     "densest": "Oslo",
     "top_kind": "region",
     "top": [
@@ -3000,7 +3073,9 @@
         "label": "Viken",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 35,
+    "ranked": 37
   },
   {
     "key": "pakistan",
@@ -3012,6 +3087,7 @@
     "per_km2": 276,
     "max": 33518,
     "max_per_km2": 45000,
+    "lived": 2500,
     "densest": "Sindh",
     "top_kind": "region",
     "top": [
@@ -3077,7 +3153,9 @@
         "label": "Sindh",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 12,
+    "ranked": 37
   },
   {
     "key": "palestine",
@@ -3089,10 +3167,13 @@
     "per_km2": 876,
     "max": 29534,
     "max_per_km2": 40000,
+    "lived": 9000,
     "densest": null,
     "top_kind": null,
     "top": [],
-    "views": []
+    "views": [],
+    "density_rank": 4,
+    "ranked": 37
   },
   {
     "key": "poland",
@@ -3104,6 +3185,7 @@
     "per_km2": 131,
     "max": 8664,
     "max_per_km2": 12000,
+    "lived": 780,
     "densest": "Masovian Voivodeship",
     "top_kind": "region",
     "top": [
@@ -3209,7 +3291,9 @@
         "label": "West Pomeranian Voivodeship",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 21,
+    "ranked": 37
   },
   {
     "key": "portugal",
@@ -3221,6 +3305,7 @@
     "per_km2": 114,
     "max": 16669,
     "max_per_km2": 23000,
+    "lived": 1500,
     "densest": "Arroios, Lisbon",
     "top_kind": "region",
     "top": [
@@ -3346,7 +3431,9 @@
         "label": "Viseu",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 23,
+    "ranked": 37
   },
   {
     "key": "romania",
@@ -3358,6 +3445,7 @@
     "per_km2": 85,
     "max": 13376,
     "max_per_km2": 18000,
+    "lived": 870,
     "densest": "Bucharest",
     "top_kind": "region",
     "top": [
@@ -3593,7 +3681,9 @@
         "label": "Vrancea",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 27,
+    "ranked": 37
   },
   {
     "key": "singapore",
@@ -3605,6 +3695,7 @@
     "per_km2": 8160,
     "max": 38556,
     "max_per_km2": 52000,
+    "lived": 29000,
     "densest": "Northwest",
     "top_kind": "region",
     "top": [
@@ -3655,7 +3746,9 @@
         "label": "Southwest",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 1,
+    "ranked": 37
   },
   {
     "key": "spain",
@@ -3667,6 +3760,7 @@
     "per_km2": 94,
     "max": 23246,
     "max_per_km2": 32000,
+    "lived": 2000,
     "densest": "Barcelona, Catalonia",
     "top_kind": "region",
     "top": [
@@ -3792,7 +3886,9 @@
         "label": "Valencian Community",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 26,
+    "ranked": 37
   },
   {
     "key": "sri_lanka",
@@ -3804,6 +3900,7 @@
     "per_km2": 332,
     "max": 25651,
     "max_per_km2": 35000,
+    "lived": 1500,
     "densest": "Colombo District, Western Province",
     "top_kind": "region",
     "top": [
@@ -3874,7 +3971,9 @@
         "label": "Western Province",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 10,
+    "ranked": 37
   },
   {
     "key": "sweden",
@@ -3886,6 +3985,7 @@
     "per_km2": 24,
     "max": 14616,
     "max_per_km2": 20000,
+    "lived": 930,
     "densest": "Stockholms kommun, Stockholm County",
     "top_kind": "region",
     "top": [
@@ -4016,7 +4116,9 @@
         "label": "Västra Götaland County",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 33,
+    "ranked": 37
   },
   {
     "key": "switzerland",
@@ -4028,6 +4130,7 @@
     "per_km2": 217,
     "max": 14438,
     "max_per_km2": 20000,
+    "lived": 1600,
     "densest": "Geneva",
     "top_kind": "region",
     "top": [
@@ -4183,7 +4286,9 @@
         "label": "Zurich",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 15,
+    "ranked": 37
   },
   {
     "key": "ukraine",
@@ -4195,6 +4300,7 @@
     "per_km2": 66,
     "max": 24769,
     "max_per_km2": 34000,
+    "lived": 1900,
     "densest": "Олександрійська міська громада, Oleksandriia Raion, Kirovohrad Oblast",
     "top_kind": "region",
     "top": [
@@ -4355,7 +4461,9 @@
         "label": "Zhytomyr Oblast",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 31,
+    "ranked": 37
   },
   {
     "key": "united_kingdom",
@@ -4367,6 +4475,7 @@
     "per_km2": 283,
     "max": 17273,
     "max_per_km2": 23000,
+    "lived": 3200,
     "densest": "City of Westminster, England",
     "top_kind": "region",
     "top": [
@@ -4413,7 +4522,9 @@
         "label": "Wales",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 11,
+    "ranked": 37
   },
   {
     "key": "united_states",
@@ -4425,6 +4536,7 @@
     "per_km2": 36,
     "max": 34353,
     "max_per_km2": 47000,
+    "lived": 1300,
     "densest": "New York County, New York",
     "top_kind": "region",
     "top": [
@@ -4730,6 +4842,8 @@
         "label": "Wyoming",
         "kind": "region"
       }
-    ]
+    ],
+    "density_rank": 32,
+    "ranked": 37
   }
 ]

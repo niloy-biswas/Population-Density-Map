@@ -475,8 +475,20 @@ hex_facts <- function(pop, place, places) {
   } else {
     list()
   }
-  list(hexagons = length(pop), densest = densest,
+  list(hexagons = length(pop), lived = lived_density(pop), densest = densest,
        top_kind = if (length(named)) names(named)[1] else NA, top = top)
+}
+
+# The density the typical person lives at: half the people live in hexagons
+# at least this dense. People per km² of land averages in empty land, so this
+# says more about crowding (Bangladesh 3,100 against 1,280; Japan 2,400
+# against ~340). A share of people above a density threshold was tried as an
+# "urban share" and rejected: dense villages count as urban (75% of
+# Bangladesh) and low-density towns don't (46% of Germany).
+lived_density <- function(pop) {
+  pop <- sort(pop)
+  half <- which(cumsum(as.numeric(pop)) >= sum(pop) / 2)[1]
+  signif(pop[half] / hex_area_km2, 2)
 }
 
 # Facts for the summary card on each country's page: people per km² of land
@@ -491,9 +503,29 @@ country_facts <- function(d, land_km2) {
   list(hexagons = facts$hexagons, land_km2 = signif(land_km2, 3),
        per_km2 = round(signif(d$total / land_km2, 3)),
        max = d$max, max_per_km2 = signif(d$max / hex_area_km2, 2),
+       # Tiled countries store it; one exported before it existed has none.
+       lived = if (is.null(facts$lived)) NA else facts$lived,
        densest = if (is.null(facts$densest)) NA else facts$densest,
        top_kind = if (is.null(facts$top_kind)) NA else facts$top_kind,
        top = facts$top)
+}
+
+# "Israel & Palestine" is a combined map, not another country: it isn't
+# counted or ranked.
+is_combined <- function(name) grepl(" & ", name, fixed = TRUE)
+
+# density_rank: place by people per km² among the countries on the map
+# (1 = densest), out of `ranked`.
+rank_density <- function(entries) {
+  per_km2 <- vapply(entries, function(e) {
+    if (is_combined(e$name)) NA_real_ else as.numeric(e$per_km2)
+  }, 0)
+  ranks <- rank(-per_km2, na.last = "keep", ties.method = "min")
+  for (i in seq_along(entries)) {
+    entries[[i]]$density_rank <- ranks[i]
+    entries[[i]]$ranked <- sum(!is.na(per_km2))
+  }
+  entries
 }
 
 # Index of exported countries for the search box and the country pages,
@@ -517,6 +549,7 @@ write_manifest <- function(data_dir = web_data_dir) {
       list(views = views))
   })
   entries <- entries[order(vapply(entries, `[[`, "", "name"))]
+  entries <- rank_density(entries)
   write_json(entries, file.path(data_dir, "countries.json"),
              auto_unbox = TRUE, pretty = TRUE, na = "null")
   message("countries.json: ", paste(vapply(entries, `[[`, "", "name"),
@@ -561,10 +594,15 @@ fmt_short <- function(x) {
   paste0(sub("\\.0$", "", number), names(unit))
 }
 
+# Populations in prose: "173.9 million", "47 million", "1.43 billion",
+# "37,900". Kontur's counts are model estimates, so the exact figure is false
+# precision. Same as fmtWords() in app.js.
 fmt_words <- function(x) {
-  if (x < 1e6) return(fmt_int(x))
-  if (x < 1e9) return(paste(formatC(x / 1e6, format = "f", digits = 1),
-                            "million"))
+  if (x < 1e6) return(fmt_int(signif(x, 3)))
+  if (x < 1e9) {
+    millions <- formatC(x / 1e6, format = "f", digits = 1)
+    return(paste(sub("\\.0$", "", millions), "million"))
+  }
   paste(formatC(x / 1e9, format = "f", digits = 2), "billion")
 }
 
@@ -596,21 +634,63 @@ stat_line <- function(e) {
   })
 }
 
+ordinal <- function(n) {
+  suffix <- if (n %% 100 %in% 11:13) {
+    "th"
+  } else {
+    c("st", "nd", "rd", rep("th", 7))[(n - 1) %% 10 + 1]
+  }
+  paste0(n, suffix)
+}
+
+# ", the 3rd highest of the 37 countries on this map"
+rank_phrase <- function(rank, of) {
+  if (is.na(rank)) return("")
+  place <- if (rank == 1) {
+    "highest"
+  } else if (rank == of) {
+    "lowest"
+  } else {
+    paste(ordinal(rank), "highest")
+  }
+  sprintf(", the %s of the %d countries on this map", place, of)
+}
+
+# Visitors quote these numbers, so say what they are: Kontur's figures are
+# modelled and won't match a census. app.js copies these two lines from the
+# page when it rewrites the summary for another country.
+summary_note <- c(
+  paste0("<p class=\"summary__note\">Kontur's 2023 estimates, modelled ",
+         "from satellite imagery, building footprints and OpenStreetMap, ",
+         "so they differ from census counts. ",
+         '<a href="https://data.humdata.org/dataset/kontur-population-dataset"',
+         ">Source data</a></p>"),
+  paste0('<p class="summary__credit">Map by <a href="/">Niloy Biswas</a>',
+         ' · <a href="/#mh-contact">Get in touch</a></p>')
+)
+
 # Inside <details data-summary>; same markup as renderSummary() in app.js.
 summary_html <- function(e) {
   density <- if (is.na(e$per_km2)) {
     ""
   } else {
-    sprintf(" on about %s km² of land, roughly %s per km²",
-            fmt_int(e$land_km2), fmt_int(e$per_km2))
+    sprintf(" on roughly %s km² of land, or %s per km²%s",
+            fmt_int(e$land_km2), fmt_int(e$per_km2),
+            rank_phrase(e$density_rank, e$ranked))
+  }
+  lived <- if (is.na(e$lived)) {
+    ""
+  } else {
+    sprintf(" Half of them live where there are %s or more people per km².",
+            fmt_int(e$lived))
   }
   densest <- if (is.na(e$densest)) "" else paste0(", in ", e$densest, ",")
   text <- sprintf(paste0(
-    "%s has %s people%s. They live in %s populated hexagons; the densest%s ",
-    "holds %s people, about %s per km²."
-  ), sentence_start(e$prose_name), fmt_int(e$total), density,
+    "%s has about %s people%s.%s The map splits them into %s populated ",
+    "hexagons; the densest%s holds about %s people, roughly %s per km²."
+  ), sentence_start(e$prose_name), fmt_words(e$total), density, lived,
   fmt_int(e$hexagons), densest,
-  fmt_int(e$max), fmt_int(e$max_per_km2))
+  fmt_words(e$max), fmt_int(e$max_per_km2))
   out <- c(
     sprintf('<summary class="summary__toggle">%s in numbers</summary>',
             html_escape(e$name)),
@@ -621,7 +701,7 @@ summary_html <- function(e) {
       share <- round(100 * a$people / e$total)
       sprintf(paste0('<li><span class="summary__name">%s</span>',
                      '<span class="summary__value">%s · %s</span></li>'),
-              html_escape(a$name), fmt_short(a$people),
+              html_escape(a$name), fmt_words(a$people),
               if (share < 1) "&lt;1%" else paste0(share, "%"))
     }, "")
     out <- c(out,
@@ -629,6 +709,7 @@ summary_html <- function(e) {
                      e$top_kind),
              '<ol class="summary__list">', items, "</ol>")
   }
+  out <- c(out, summary_note)
   paste0("                        ", out, collapse = "\n")
 }
 
@@ -716,8 +797,7 @@ fill_template <- function(template, values) {
 page_html <- function(template, entries, e, landing) {
   root <- if (landing) "" else "../"
   country_names <- vapply(entries, `[[`, "", "name")
-  # "Israel & Palestine" is a combined map, not another country.
-  n_countries <- sum(!grepl(" & ", country_names, fixed = TRUE))
+  n_countries <- sum(!is_combined(country_names))
   if (landing) {
     title <- sprintf(
       "Population Density Map: Interactive 3D Map of %d Countries",

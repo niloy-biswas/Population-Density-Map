@@ -81,6 +81,7 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmt = new Intl.NumberFormat('en');
   const fmtShort = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+  const ordinals = new Intl.PluralRules('en', { type: 'ordinal' });
 
   const el = {
     map: document.getElementById('map'),
@@ -115,6 +116,11 @@
     bearingValue: document.querySelector('[data-bearing-value]'),
     reset: document.querySelector('[data-reset]'),
   };
+
+  // The source note and credit at the end of "<Country> in numbers". The exporter writes them into every
+  // page (summary_note); keep a copy so renderSummary() can put them back after rewriting the summary.
+  const summaryNote = [...el.summary.querySelectorAll('.summary__note, .summary__credit')]
+    .map((node) => node.outerHTML).join('');
 
   let map;
   let overlay;
@@ -659,20 +665,31 @@
   // Same markup as summary_html() in scripts/export_web_data.R, which fills it in on each country's page.
   function renderSummary(c) {
     const density = c.per_km2
-      ? ` on about ${fmt.format(c.land_km2)} km² of land, roughly ${fmt.format(c.per_km2)} per km²`
+      ? ` on roughly ${fmt.format(c.land_km2)} km² of land, or ${fmt.format(c.per_km2)} per km²${rankPhrase(c.density_rank, c.ranked)}`
       : '';
+    const lived = c.lived ? ` Half of them live where there are ${fmt.format(c.lived)} or more people per km².` : '';
     const densest = c.densest ? `, in ${c.densest},` : '';
     const subject = c.prose_name[0].toUpperCase() + c.prose_name.slice(1); // "The United States"
-    const text = `${subject} has ${fmt.format(c.total)} people${density}. They live in ${fmt.format(c.hexagons)} `
-      + `populated hexagons; the densest${densest} holds ${fmt.format(c.max)} people, about ${fmt.format(c.max_per_km2)} per km².`;
+    const text = `${subject} has about ${fmtWords(c.total)} people${density}.${lived} The map splits them into `
+      + `${fmt.format(c.hexagons)} populated hexagons; the densest${densest} holds about ${fmtWords(c.max)} people, `
+      + `roughly ${fmt.format(c.max_per_km2)} per km².`;
     const items = c.top.map((a) => {
       const share = Math.round((100 * a.people) / c.total);
       return `<li><span class="summary__name">${escapeHtml(a.name)}</span>`
-        + `<span class="summary__value">${fmtShort.format(a.people)} · ${share < 1 ? '&lt;1' : share}%</span></li>`;
+        + `<span class="summary__value">${fmtWords(a.people)} · ${share < 1 ? '&lt;1' : share}%</span></li>`;
     }).join('');
     el.summary.innerHTML = `<summary class="summary__toggle">${escapeHtml(c.name)} in numbers</summary>
       <p class="summary__text">${escapeHtml(text)}</p>
-      ${items ? `<p class="summary__title">Most populous ${c.top_kind}s</p><ol class="summary__list">${items}</ol>` : ''}`;
+      ${items ? `<p class="summary__title">Most populous ${c.top_kind}s</p><ol class="summary__list">${items}</ol>` : ''}
+      ${summaryNote}`;
+  }
+
+  // ", the 3rd highest of the 37 countries on this map"; same as rank_phrase() in the exporter.
+  function rankPhrase(rank, of) {
+    if (!rank) return '';
+    const suffix = { one: 'st', two: 'nd', few: 'rd', other: 'th' }[ordinals.select(rank)];
+    const place = rank === 1 ? 'highest' : rank === of ? 'lowest' : `${rank}${suffix} highest`;
+    return `, the ${place} of the ${of} countries on this map`;
   }
 
   function centerChip(btn) {
@@ -904,7 +921,7 @@
       <p class="legend__title">People per hexagon (~${area < 1 ? area.toFixed(2) : fmt.format(Math.round(area))} km²)</p>
       <div class="legend__bar" style="background: ${gradientCss(paletteColors(paletteId))}"></div>
       <div class="legend__ticks">${ticks}</div>
-      <p class="legend__source">Data: Kontur Population 2023</p>`;
+      <p class="legend__source">Data: Kontur Population 2023 · Map by <a href="/">Niloy Biswas</a></p>`;
     el.legend.hidden = false;
   }
 
@@ -926,6 +943,14 @@
   function hexToRgb(hex) {
     const n = parseInt(hex.slice(1), 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  // Populations in prose: "173.9 million", "47 million", "1.43 billion", "37,900". Same as fmt_words()
+  // in scripts/export_web_data.R.
+  function fmtWords(n) {
+    if (n < 1e6) return fmt.format(Number(n.toPrecision(3)));
+    if (n < 1e9) return `${(n / 1e6).toFixed(1).replace(/\.0$/, '')} million`;
+    return `${(n / 1e9).toFixed(2)} billion`;
   }
 
   function escapeHtml(s) {

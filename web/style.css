@@ -576,6 +576,34 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+.summary__note,
+.summary__credit {
+  margin-top: 10px;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.summary__credit {
+  margin-top: 4px;
+}
+
+.summary__note a,
+.summary__credit a,
+.legend__source a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--glass-border);
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.summary__note a:hover,
+.summary__credit a:hover,
+.legend__source a:hover {
+  color: var(--accent);
+}
+
 /* ---- View control: layers popover + 3D toggle, above MapLibre's zoom and compass ---- */
 
 .view-ctrl {
@@ -731,7 +759,10 @@ a {
 .card__toggle:focus-visible,
 .view-settings__reset:focus-visible,
 .view-settings__slider input:focus-visible,
-.about__links a:focus-visible {
+.about__links a:focus-visible,
+.summary__note a:focus-visible,
+.summary__credit a:focus-visible,
+.legend__source a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
